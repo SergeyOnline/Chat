@@ -1,0 +1,10 @@
+# Folders #
+build/
+DerivedData/
+xcuserdata/
+
+# Files #
+*.xccheckout
+*.xcscmblueprint
+.DS_Store
+
