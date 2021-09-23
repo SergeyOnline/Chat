@@ -11,7 +11,7 @@ enum State: String {
 	case active = "active"
 	case inactive = "inactive"
 	case background = "background"
-	case suspended = "suspended"
+	case suspended = "not running"
 }
 
 @UIApplicationMain
