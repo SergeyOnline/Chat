@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProfileViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+class ProfileViewController: UIViewController {
 	
 	var closeButton: UIButton!
 	var imageView: UIImageView!
@@ -35,6 +35,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 		print(saveButton.frame) // (56.0, 696.0, 263.0, 32.0)
 	}
 	
+	//MARK: - Init
+	
 	init() {
 		super.init(nibName: nil, bundle: nil)
 		// Невозможно узнать saveButton.frame, так как кнопка еще не проинициализирована
@@ -58,7 +60,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 	
 	@objc func editButtonAction(_ sender: UIButton) {
 		
-		
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 		let cameraAction = UIAlertAction(title: NSLocalizedString("cameraAction", comment: ""), style: .default) { _ in
 			self.openCamera()
@@ -72,7 +73,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 			self.imageView.image = nil
 		}
 		
-		// Add the actions
 		picker.delegate = self
 		alert.addAction(cameraAction)
 		alert.addAction(gallaryAction)
@@ -80,7 +80,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 		self.present(alert, animated: true, completion: nil)
 	}
 	
-	func openCamera() {
+	
+	//MARK: - Private functions
+	
+	private func openCamera() {
 		if (UIImagePickerController .isSourceTypeAvailable(.camera)){
 			picker.sourceType = .camera
 			self.present(picker, animated: true, completion: nil)
@@ -88,25 +91,11 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 			print("No access to the camera")
 		}
 	}
-	func openGallary() {
+	private func openGallary() {
 		picker.sourceType = .photoLibrary
 		self.present(picker, animated: true, completion: nil)
 	}
 	
-	//MARK:UIImagePickerControllerDelegate
-	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-		picker.dismiss(animated: true, completion: nil)
-		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-	}
-	
-	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		print("picker cancel.")
-	}
-
-
-	
-	//MARK: - Private functions
 	private func setupElements() {
 		
 		let headerView = UIView()
@@ -169,5 +158,19 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 		editButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -22).isActive = true
 		editButton.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -25).isActive = true
 		
+	}
+}
+
+extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+	
+	//MARK:UIImagePickerControllerDelegate
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+		picker.dismiss(animated: true, completion: nil)
+		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+	}
+	
+	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+		print("picker cancel.")
 	}
 }
