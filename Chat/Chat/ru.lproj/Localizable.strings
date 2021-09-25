@@ -6,6 +6,9 @@
   
 */
 
+//MARK: - MainViewController
+
+"navigationItemTitle" = "Чат";
 
 //MARK:  - ProfileViewController
 
@@ -13,3 +16,6 @@
 "closeButtonTitle" = "Закрыть";
 "saveButtonTitle" = "Сохранить";
 "editButtonTitle" = "Править";
+"cameraAction" = "Камера";
+"gallaryAction" = "Галерея";
+"deleteAction" = "Удалить";

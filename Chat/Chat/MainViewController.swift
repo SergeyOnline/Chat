@@ -16,7 +16,7 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		self.navigationItem.title = "Chat"
+		self.navigationItem.title = NSLocalizedString("navigationItemTitle", comment: "")
 		
 		let userImageView = UserImageView(labelTitle: User().initials, labelfontSize: 20)
 		userImageView.layer.cornerRadius = 20

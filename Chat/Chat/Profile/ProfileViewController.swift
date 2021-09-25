@@ -20,7 +20,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		self.view.backgroundColor = .white
+		self.view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1) : .white
 		
 		// До вызова setupElements() невозможно узнать saveButton.frame, так как кнопка еще не проинициализирована
 		setupElements()
@@ -60,15 +60,15 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 		
 		
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-		let cameraAction = UIAlertAction(title: "Camera", style: .default) { _ in
+		let cameraAction = UIAlertAction(title: NSLocalizedString("cameraAction", comment: ""), style: .default) { _ in
 			self.openCamera()
 		}
 		
-		let gallaryAction = UIAlertAction(title: "Gallary", style: .default) { _ in
+		let gallaryAction = UIAlertAction(title: NSLocalizedString("gallaryAction", comment: ""), style: .default) { _ in
 			self.openGallary()
 		}
 		
-		let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { _ in
+		let deleteAction = UIAlertAction(title: NSLocalizedString("deleteAction", comment: ""), style: .destructive) { _ in
 			self.imageView.image = nil
 		}
 		
@@ -110,7 +110,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 	private func setupElements() {
 		
 		let headerView = UIView()
-		headerView.backgroundColor = UIColor(red: 0.969, green: 0.969, blue: 0.969, alpha: 1)
+		headerView.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) :  UIColor(red: 0.969, green: 0.969, blue: 0.969, alpha: 1)
 		headerView.translatesAutoresizingMaskIntoConstraints = false
 		self.view.addSubview(headerView)
 		headerView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
@@ -152,7 +152,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate &
 		
 		saveButton = ProfileButton(title: NSLocalizedString("saveButtonTitle", comment: ""), fontSize: 19)
 		saveButton.layer.cornerRadius = 14
-		saveButton.backgroundColor = UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
+		saveButton.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
 		saveButton.addTarget(self, action: #selector(saveButtonAction), for: .touchUpInside)
 		self.view.addSubview(saveButton)
 		saveButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
