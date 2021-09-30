@@ -1,0 +1,21 @@
+/* 
+  Localizable.strings
+  Chat
+
+  Created by Сергей on 25.09.2021.
+  
+*/
+
+//MARK: - MainViewController
+
+"navigationItemTitle" = "Chat";
+
+//MARK:  - ProfileViewController
+
+"profileLabel" = "My Profile";
+"closeButtonTitle" = "Close";
+"saveButtonTitle" = "Save";
+"editButtonTitle" = "Edit";
+"cameraAction" = "Camera";
+"gallaryAction" = "Gallery";
+"deleteAction" = "Delete";

@@ -21,6 +21,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
+		
+		window = UIWindow()
+		
+		let mainViewController = MainViewController()
+		
+		let navViewController = UINavigationController(rootViewController: mainViewController)
+		navViewController.modalPresentationStyle = .fullScreen
+		
+		window?.rootViewController = navViewController
+		window?.makeKeyAndVisible()
 		PrintStateTransitionFrom(.suspended, to: .inactive)
 		return true
 	}
