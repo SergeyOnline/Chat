@@ -20,13 +20,14 @@ class ConversationsListViewController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		onlineUsers = users.filter({ $0.online == true}).sorted(by: { u1, u2 in
-			u1.message.keys.sorted { $0 > $1 }[0] > u2.message.keys.sorted { $0 > $1 }[0]
-		})
-		
-		offlineUsers = users.filter({ $0.online == false}).sorted(by: { u1, u2 in
-			u1.message.keys.sorted { $0 > $1 }[0] > u2.message.keys.sorted { $0 > $1 }[0]
-		})
+		print("Users: \(users.count)")
+		onlineUsers = users.filter({ $0.online == true})
+		onlineUsers = sortUsers(users: onlineUsers)
+		offlineUsers = users.filter({ $0.online == false})
+		offlineUsers = sortUsers(users: offlineUsers)
+		print("Users online: \(onlineUsers.count)")
+		print("Users offline: \(offlineUsers.count)")
+	
 		
 		self.view.backgroundColor = .systemGray
 		self.navigationItem.title = NSLocalizedString("navigationItemTitle", comment: "")
@@ -52,6 +53,7 @@ class ConversationsListViewController: UIViewController {
 		tableView.register(ConversationCell.self, forCellReuseIdentifier: reuseIdentifier)
 		tableView.delegate = self
 		tableView.dataSource = self
+//		tableView.rowHeight = 80
 		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 80
 
@@ -68,7 +70,27 @@ class ConversationsListViewController: UIViewController {
 		//TODO: - settings
 		print("TO DO")
 	}
-
+	
+	//MARK: - Private functions
+	private func sortUsers(users: [User]) -> [User] {
+		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true && $0.message != nil }
+		var otheUsers = users.filter { $0.hasUnreadMessages == false || ($0.hasUnreadMessages && $0.message == nil)}
+		hasUnreadMassageUsers = hasUnreadMassageUsers.sorted(by: { u1, u2 in
+			return u1.message!.keys.sorted { $0 > $1 }[0] > u2.message!.keys.sorted { $0 > $1 }[0]
+		})
+		otheUsers = otheUsers.sorted(by: { u1, u2 in
+			if u1.message == nil && u2.message == nil {
+				return false
+			} else if u1.message == nil {
+				return false
+			} else if u2.message == nil {
+				return true
+			} else {
+				return u1.message!.keys.sorted { $0 > $1 }[0] > u2.message!.keys.sorted { $0 > $1 }[0]
+			}
+		})
+		return hasUnreadMassageUsers + otheUsers
+	}
 }
 
 extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -88,19 +110,23 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ConversationCell
 
+		var currentUsers: [User] = []
 		if indexPath.section == 0 {
-			cell.name = onlineUsers[indexPath.row].fullName
-			let key = onlineUsers[indexPath.row].message.keys.sorted(by: { $0 > $1 })[0]
-			cell.message = onlineUsers[indexPath.row].message[key]
-			cell.online = onlineUsers[indexPath.row].online
+			currentUsers = onlineUsers
+		} else {
+			currentUsers = offlineUsers
+		}
+		
+		cell.name = currentUsers[indexPath.row].fullName
+		if let key = currentUsers[indexPath.row].message?.keys.sorted(by: { $0 > $1 })[0] {
+			cell.message = currentUsers[indexPath.row].message![key]
 			cell.date = key
 		} else {
-			cell.name = offlineUsers[indexPath.row].fullName
-			let key = offlineUsers[indexPath.row].message.keys.sorted(by: { $0 > $1 })[0]
-			cell.message = offlineUsers[indexPath.row].message[key]
-			cell.online = offlineUsers[indexPath.row].online
-			cell.date = key
+			cell.message = nil
+			cell.date = nil
 		}
+		cell.online = currentUsers[indexPath.row].online
+		cell.hasUnreadMessages = currentUsers[indexPath.row].hasUnreadMessages
 		return cell
 	}
 	

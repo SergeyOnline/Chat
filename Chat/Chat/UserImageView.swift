@@ -10,6 +10,7 @@ import UIKit
 class UserImageView: UIImageView {
 
 	private var statusView: UIView!
+	private var initialLabel: ProfileLabel!
 	
 	init(labelTitle: String, labelfontSize: CGFloat) {
 		super.init(image: nil)
@@ -17,7 +18,7 @@ class UserImageView: UIImageView {
 		self.clipsToBounds = true
 		self.translatesAutoresizingMaskIntoConstraints = false
 	
-		let initialLabel = ProfileLabel(text: labelTitle, font: UIFont.systemFont(ofSize: labelfontSize))
+		initialLabel = ProfileLabel(text: labelTitle, font: UIFont.systemFont(ofSize: labelfontSize))
 		initialLabel.translatesAutoresizingMaskIntoConstraints = false
 		self.addSubview(initialLabel)
 		initialLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
@@ -59,5 +60,9 @@ extension UserImageView {
 		case .offline:
 			statusView.isHidden = true
 		}
+	}
+	
+	func setInitials(initials: String) {
+		initialLabel.text = initials
 	}
 }

@@ -52,22 +52,18 @@ struct TestData {
 	
 	static func ghasUnreadMessages() -> Bool {
 		let num = arc4random_uniform(100)
-		if num > 50 {
-			return true
-		} else {
-			return false
-		}
+		return (num > 50) ? true : false
 	}
 	
-	static let users = [User(firstName: "Sergey", lastName: "Gryaznov", message: [Date(): "My test message"], online: true, hasUnreadMessages: false),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
+	static let users = [User(firstName: "Sergey", lastName: "Gryaznov", message: [Date(timeInterval: 10, since: Date()): "My test message"], online: true, hasUnreadMessages: false),
+						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
+						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
+						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
+						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
+						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
+						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: true),
+						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: true),
+						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: true),
 						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
 						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
 						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),

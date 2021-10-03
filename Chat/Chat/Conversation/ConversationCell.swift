@@ -20,12 +20,28 @@ class ConversationCell: UITableViewCell, ConversationCellConfiguration {
 	var name: String? {
 		willSet {
 			nameLabel.text = newValue ?? ""
+			
+			guard let value = newValue else { return }
+			if value.isEmpty { return }
+			let arr = value.components(separatedBy: " ")
+			var initials = ""
+			initials.append(arr[0].first ?? " ")
+			if arr.count > 1 {
+				initials.append(arr[1].first ?? " ")
+			}
+			userImageView.setInitials(initials: initials)
 		}
 	}
 	
 	var message: String? {
 		willSet {
-			messageLabel.text = (newValue ?? "") + "\n"
+			if let value = newValue {
+				messageLabel.font = UIFont.systemFont(ofSize: bodyFontSize)
+				messageLabel.text = value + "\n"
+			} else {
+				messageLabel.font = UIFont.italicSystemFont(ofSize: bodyFontSize)
+				messageLabel.text = "No messages yet" + "\n"
+			}
 		}
 	}
 	
@@ -41,7 +57,19 @@ class ConversationCell: UITableViewCell, ConversationCellConfiguration {
 			userImageView.changeUserStatusTo(value ? .online : .offline)
 		}
 	}
-	var hasUnreadMessages: Bool?
+	var hasUnreadMessages: Bool? {
+		willSet {
+			guard let value = newValue else { return }
+			
+			if message != nil {
+				if value {
+					messageLabel.font = UIFont.boldSystemFont(ofSize: bodyFontSize + 2)
+				} else {
+					messageLabel.font = UIFont.systemFont(ofSize: bodyFontSize)
+				}
+			}
+		}
+	}
 	
 	private enum DateType {
 		case correct
@@ -74,6 +102,7 @@ class ConversationCell: UITableViewCell, ConversationCellConfiguration {
 		
 		dateLabel = UILabel()
 		dateLabel.font = UIFont.systemFont(ofSize: bodyFontSize)
+		dateLabel.textColor = .gray
 		dateLabel.textAlignment = .right
 		
 		let headerHorizontalStack = CustomStackView(axis: .horizontal, distribution: .fillProportionally)
@@ -83,14 +112,14 @@ class ConversationCell: UITableViewCell, ConversationCellConfiguration {
 		messageLabel = UILabel()
 		messageLabel.numberOfLines = 2
 		messageLabel.lineBreakMode = .byWordWrapping
-		messageLabel.font = UIFont.systemFont(ofSize: bodyFontSize)
+		messageLabel.textColor = .gray
 		
 		contentVerticalStack = CustomStackView(axis: .vertical, distribution: .fillProportionally)
 		contentVerticalStack.addArrangedSubview(headerHorizontalStack)
 		contentVerticalStack.addArrangedSubview(messageLabel)
 		contentVerticalStack.translatesAutoresizingMaskIntoConstraints = false
 		
-		userImageView = UserImageView(labelTitle: "TT", labelfontSize: imageHeight / 2)
+		userImageView = UserImageView(labelTitle: "", labelfontSize: imageHeight / 2)
 		userImageView.layer.masksToBounds = false
 		userImageView.layer.cornerRadius = imageHeight / 2
 		

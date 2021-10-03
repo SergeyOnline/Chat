@@ -12,7 +12,7 @@ class User {
 	var firstName: String
 	var lastName: String?
 	
-	var message: [Date: String]
+	var message: [Date: String]?
 	var online: Bool
 	var hasUnreadMessages: Bool
 	var imageView: UIImageView!
@@ -23,9 +23,7 @@ class User {
 		}
 		
 		set {
-			if newValue.isEmpty {
-				return
-			}
+			if newValue.isEmpty { return }
 			let arr = newValue.components(separatedBy: " ")
 			firstName = arr[0]
 			if arr.count > 1 {
@@ -40,7 +38,7 @@ class User {
 		}
 	}
 	
-	init(firstName: String, lastName: String?, message: [Date: String] = [:], online: Bool, hasUnreadMessages: Bool) {
+	init(firstName: String, lastName: String?, message: [Date: String]? = nil, online: Bool, hasUnreadMessages: Bool) {
 		self.firstName = firstName
 		self.lastName = lastName
 		self.message = message
