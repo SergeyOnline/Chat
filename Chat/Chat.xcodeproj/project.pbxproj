@@ -16,10 +16,13 @@
 		876BAC1326FF39C300D5BF31 /* ProfileLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1026FF39C300D5BF31 /* ProfileLabel.swift */; };
 		876BAC1626FF39D600D5BF31 /* UserImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1426FF39D500D5BF31 /* UserImageView.swift */; };
 		876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1526FF39D600D5BF31 /* ConversationsListViewController.swift */; };
-		876BAC1A26FF39E000D5BF31 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1926FF39E000D5BF31 /* User.swift */; };
+		876BAC1A26FF39E000D5BF31 /* Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1926FF39E000D5BF31 /* Owner.swift */; };
 		876BAC1D26FF3A1B00D5BF31 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC1F26FF3A1B00D5BF31 /* Localizable.strings */; };
 		876BAC2326FF3D7C00D5BF31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC2526FF3D7C00D5BF31 /* InfoPlist.strings */; };
 		876BAC3026FF460F00D5BF31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC2F26FF460F00D5BF31 /* Assets.xcassets */; };
+		8774D3392709B32B007D359C /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D3382709B32B007D359C /* ConversationCell.swift */; };
+		8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33A2709BB00007D359C /* CustomStackView.swift */; };
+		8774D33D2709CB6A007D359C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33C2709CB6A007D359C /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,12 +37,15 @@
 		876BAC1026FF39C300D5BF31 /* ProfileLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileLabel.swift; sourceTree = "<group>"; };
 		876BAC1426FF39D500D5BF31 /* UserImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserImageView.swift; sourceTree = "<group>"; };
 		876BAC1526FF39D600D5BF31 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
-		876BAC1926FF39E000D5BF31 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		876BAC1926FF39E000D5BF31 /* Owner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Owner.swift; sourceTree = "<group>"; };
 		876BAC1E26FF3A1B00D5BF31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		876BAC2026FF3A2D00D5BF31 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		876BAC2426FF3D7C00D5BF31 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		876BAC2626FF3D7E00D5BF31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		876BAC2F26FF460F00D5BF31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8774D3382709B32B007D359C /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
+		8774D33A2709BB00007D359C /* CustomStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStackView.swift; sourceTree = "<group>"; };
+		8774D33C2709CB6A007D359C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,8 +80,9 @@
 			children = (
 				876BAC0D26FF39C300D5BF31 /* Profile */,
 				876BAC1826FF39E000D5BF31 /* Models */,
-				876BAC1526FF39D600D5BF31 /* ConversationsListViewController.swift */,
+				8774D3372709B2EB007D359C /* Conversation */,
 				876BAC1426FF39D500D5BF31 /* UserImageView.swift */,
+				8774D33A2709BB00007D359C /* CustomStackView.swift */,
 				876BABF926FF38E800D5BF31 /* AppDelegate.swift */,
 				876BAC2F26FF460F00D5BF31 /* Assets.xcassets */,
 				876BABFD26FF38E800D5BF31 /* ViewController.swift */,
@@ -101,9 +108,19 @@
 		876BAC1826FF39E000D5BF31 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				876BAC1926FF39E000D5BF31 /* User.swift */,
+				876BAC1926FF39E000D5BF31 /* Owner.swift */,
+				8774D33C2709CB6A007D359C /* User.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		8774D3372709B2EB007D359C /* Conversation */ = {
+			isa = PBXGroup;
+			children = (
+				876BAC1526FF39D600D5BF31 /* ConversationsListViewController.swift */,
+				8774D3382709B32B007D359C /* ConversationCell.swift */,
+			);
+			path = Conversation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -180,14 +197,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */,
 				876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */,
 				876BAC1126FF39C300D5BF31 /* ProfileButton.swift in Sources */,
 				876BABFE26FF38E800D5BF31 /* ViewController.swift in Sources */,
 				876BAC1326FF39C300D5BF31 /* ProfileLabel.swift in Sources */,
-				876BAC1A26FF39E000D5BF31 /* User.swift in Sources */,
+				876BAC1A26FF39E000D5BF31 /* Owner.swift in Sources */,
 				876BAC1626FF39D600D5BF31 /* UserImageView.swift in Sources */,
 				876BAC1226FF39C300D5BF31 /* ProfileViewController.swift in Sources */,
 				876BABFA26FF38E800D5BF31 /* AppDelegate.swift in Sources */,
+				8774D3392709B32B007D359C /* ConversationCell.swift in Sources */,
+				8774D33D2709CB6A007D359C /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

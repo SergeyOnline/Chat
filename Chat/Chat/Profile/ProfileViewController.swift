@@ -11,7 +11,7 @@ class ProfileViewController: UIViewController {
 	
 	var closeButton: UIButton!
 	var imageView: UIImageView!
-	var user = User()
+	var user = Owner()
 	var saveButton: UIButton!
 	var editButton: UIButton!
 	
