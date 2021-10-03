@@ -12,10 +12,21 @@ class ConversationsListViewController: UIViewController {
 	private let reuseIdentifier = "Cell"
 	
 	var tableView: UITableView!
+	
+	private let users = TestData.users
+	private var onlineUsers: [User]!
+	private var offlineUsers: [User]!
 
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
+		onlineUsers = users.filter({ $0.online == true}).sorted(by: { u1, u2 in
+			u1.message.keys.sorted { $0 > $1 }[0] > u2.message.keys.sorted { $0 > $1 }[0]
+		})
+		
+		offlineUsers = users.filter({ $0.online == false}).sorted(by: { u1, u2 in
+			u1.message.keys.sorted { $0 > $1 }[0] > u2.message.keys.sorted { $0 > $1 }[0]
+		})
 		
 		self.view.backgroundColor = .systemGray
 		self.navigationItem.title = NSLocalizedString("navigationItemTitle", comment: "")
@@ -69,23 +80,27 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if section == 1 {
-			return 6
+			return offlineUsers.count
 		}
-		return 10
+		return onlineUsers.count
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ConversationCell
 
-		cell.name = "Test"
 		if indexPath.section == 0 {
-			cell.message = "This is message\nferfe\nfewrfegr"
-			cell.online = true
+			cell.name = onlineUsers[indexPath.row].fullName
+			let key = onlineUsers[indexPath.row].message.keys.sorted(by: { $0 > $1 })[0]
+			cell.message = onlineUsers[indexPath.row].message[key]
+			cell.online = onlineUsers[indexPath.row].online
+			cell.date = key
 		} else {
-			cell.message = "This is message"
-			cell.online = false
+			cell.name = offlineUsers[indexPath.row].fullName
+			let key = offlineUsers[indexPath.row].message.keys.sorted(by: { $0 > $1 })[0]
+			cell.message = offlineUsers[indexPath.row].message[key]
+			cell.online = offlineUsers[indexPath.row].online
+			cell.date = key
 		}
-		cell.date = Date()
 		return cell
 	}
 	

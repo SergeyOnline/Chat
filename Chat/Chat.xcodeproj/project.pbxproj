@@ -23,6 +23,7 @@
 		8774D3392709B32B007D359C /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D3382709B32B007D359C /* ConversationCell.swift */; };
 		8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33A2709BB00007D359C /* CustomStackView.swift */; };
 		8774D33D2709CB6A007D359C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33C2709CB6A007D359C /* User.swift */; };
+		8774D33F270A024D007D359C /* TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33E270A024C007D359C /* TestData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		8774D3382709B32B007D359C /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
 		8774D33A2709BB00007D359C /* CustomStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStackView.swift; sourceTree = "<group>"; };
 		8774D33C2709CB6A007D359C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		8774D33E270A024C007D359C /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 			children = (
 				876BAC1926FF39E000D5BF31 /* Owner.swift */,
 				8774D33C2709CB6A007D359C /* User.swift */,
+				8774D33E270A024C007D359C /* TestData.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */,
 				876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */,
 				876BAC1126FF39C300D5BF31 /* ProfileButton.swift in Sources */,
+				8774D33F270A024D007D359C /* TestData.swift in Sources */,
 				876BABFE26FF38E800D5BF31 /* ViewController.swift in Sources */,
 				876BAC1326FF39C300D5BF31 /* ProfileLabel.swift in Sources */,
 				876BAC1A26FF39E000D5BF31 /* Owner.swift in Sources */,

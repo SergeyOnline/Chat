@@ -109,10 +109,12 @@ class ConversationCell: UITableViewCell, ConversationCellConfiguration {
 	
 	}
 	
-	private func stringFromDate(_ date : Date?, whithType type : DateType = .correct) -> String {
+	private func stringFromDate(_ date : Date?) -> String {
 		guard let d = date else { return "" }
+		let calendar = Calendar(identifier: .gregorian)
+		let beginningDay = calendar.startOfDay(for: Date())
 		let dateFormatter = DateFormatter()
-		let dateFormat = (type == .correct) ? "HH:mm" : "dd MMM"
+		let dateFormat = (beginningDay < d) ? "HH:mm" : "dd/MM/YYYY"
 		dateFormatter.dateFormat = dateFormat
 		return dateFormatter.string(from: d)
 	}
