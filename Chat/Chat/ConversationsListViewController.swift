@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainViewController: UIViewController {
+class ConversationsListViewController: UIViewController {
 	
 	private let reuseIdentifier = "Cell"
 	
@@ -47,7 +47,7 @@ class MainViewController: UIViewController {
 
 }
 
-extension MainViewController: UITableViewDelegate, UITableViewDataSource {
+extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
 
 	// MARK: - Table view data source
 	func numberOfSections(in tableView: UITableView) -> Int {

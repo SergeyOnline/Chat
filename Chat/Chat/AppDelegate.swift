@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		window = UIWindow()
 		
-		let mainViewController = MainViewController()
+		let mainViewController = ConversationsListViewController()
 		
 		let navViewController = UINavigationController(rootViewController: mainViewController)
 		navViewController.modalPresentationStyle = .fullScreen
