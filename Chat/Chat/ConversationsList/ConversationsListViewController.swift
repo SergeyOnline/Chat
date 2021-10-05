@@ -56,7 +56,7 @@ class ConversationsListViewController: UIViewController {
 		userImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
 		let image = UIImage(named: "Gear")
-		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_sender:)))
+		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
 	
 		self.navigationItem.rightBarButtonItem = profileBarButtonItem
 		self.navigationItem.leftBarButtonItem = settingsBarButtonItem
@@ -80,7 +80,7 @@ class ConversationsListViewController: UIViewController {
 		self.present(profileViewController, animated: true, completion: nil)
 	}
 	
-	@objc func settingsBarButtonAction(_sender: UIBarButtonItem) {
+	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
 		//TODO: - settings
 		print("TO DO")
 	}

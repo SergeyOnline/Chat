@@ -19,3 +19,6 @@
 "cameraAction" = "Камера";
 "gallaryAction" = "Галерея";
 "deleteAction" = "Удалить";
+
+//MARK: - ConversationViewController
+"messageInputFieldPlaceholder" = "сообщение...";

@@ -10,7 +10,7 @@
 
 "navigationItemTitle" = "Tinkoff Chat";
 
-//MARK:  - ProfileViewController
+//MARK: - ProfileViewController
 
 "profileLabel" = "My Profile";
 "closeButtonTitle" = "Close";
@@ -19,3 +19,6 @@
 "cameraAction" = "Camera";
 "gallaryAction" = "Gallery";
 "deleteAction" = "Delete";
+
+//MARK: - ConversationViewController
+"messageInputFieldPlaceholder" = "message...";
