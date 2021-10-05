@@ -32,13 +32,31 @@ struct TestData {
 		}
 		return Date(timeInterval: TimeInterval(-offset), since: Date())
 	}
-	static func gMassage() -> [Date: String] {
-		var arr: [Date: String] = [:]
-		let count = arc4random_uniform(5)
+	static func gMassage() -> [Message]? {
+		var arr: [Message] = []
+		let count = arc4random_uniform(25)
 		for _ in 0...count {
-			arr[gDate()] = context[Int(arc4random_uniform(UInt32(context.count)))]
+			let text = context[Int(arc4random_uniform(UInt32(context.count)))]
+			arr.append(Message(body: text, date: gDate(), unread: gBool(), ownerID: gBool() ? User.idGenerator : 0))
 		}
-		return arr
+		if !arr.isEmpty {
+			arr.sort { $0.unread && !$1.unread }
+			
+			var unread = arr.filter { $0.unread }
+			var other = arr.filter { !$0.unread }
+			unread = unread.sorted(by: { u1, u2 in
+				return u1.date < u2.date
+			})
+			other = other.sorted(by: { u1, u2 in
+				return u1.date < u2.date
+			})
+			arr = unread + other
+//			for v in arr {
+//				print("\(v.date.description): \(v.unread ? "unread" : "-")")
+//			}
+//			print("---------------------------")
+		}
+		return arr.isEmpty ? nil : arr
 	}
 	
 	static func gBool() -> Bool {
@@ -50,55 +68,37 @@ struct TestData {
 		}
 	}
 	
-	static func ghasUnreadMessages() -> Bool {
-		let num = arc4random_uniform(100)
-		return (num > 50) ? true : false
-	}
-	
-	static let users = [User(firstName: "Sergey", lastName: "Gryaznov", message: [Date(timeInterval: 10, since: Date()): "My test message"], online: true, hasUnreadMessages: false),
-						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: nil, online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: true),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: true),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: true),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages()),
-						User(firstName: gFirstName(), lastName: gLastName(), message: gMassage(), online: gBool(), hasUnreadMessages: ghasUnreadMessages())]
+	static let users = [User(firstName: "Sergey", lastName: "Gryaznov", messages: [Message(body: "My test message", date: Date(timeInterval: 10, since: Date()), unread: true, ownerID: User.idGenerator)], online: true),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: gMassage(), online: gBool()),
+						User(firstName: gFirstName(), lastName: gLastName(), messages: nil, online: gBool())]
 }
 

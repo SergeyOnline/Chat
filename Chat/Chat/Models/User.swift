@@ -9,12 +9,25 @@ import UIKit
 
 class User {
 	
+	static var idGenerator = 1
+	
 	var firstName: String
 	var lastName: String?
-	
-	var message: [Date: String]?
+	var id: Int
+	var messages: [Message]?
 	var online: Bool
-	var hasUnreadMessages: Bool
+	var hasUnreadMessages: Bool {
+		get {
+			guard let allMessages = messages else { return false }
+			for message in allMessages {
+				if message.unread {
+					return true
+				}
+			}
+			return false
+		}
+	}
+	
 	var imageView: UIImageView!
 	
 	var fullName: String {
@@ -38,12 +51,13 @@ class User {
 		}
 	}
 	
-	init(firstName: String, lastName: String?, message: [Date: String]? = nil, online: Bool, hasUnreadMessages: Bool) {
+	init(firstName: String, lastName: String?, messages: [Message]? = nil, online: Bool) {
 		self.firstName = firstName
 		self.lastName = lastName
-		self.message = message
+		self.messages = messages
 		self.online = online
-		self.hasUnreadMessages = hasUnreadMessages
+		self.id = User.idGenerator
+		User.idGenerator += 1
 		imageView = UserImageView(labelTitle: initials, labelfontSize: 20)
 	}
 }
