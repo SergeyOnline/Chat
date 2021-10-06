@@ -29,7 +29,7 @@ class UserImageView: UIImageView {
 		statusView.layer.borderColor = UIColor.white.cgColor
 		statusView.backgroundColor = .green
 		statusView.translatesAutoresizingMaskIntoConstraints = false
-		statusView.layer.cornerRadius = 5
+		statusView.layer.cornerRadius = 6
 		statusView.clipsToBounds = false
 		self.addSubview(statusView)
 		statusView.isHidden = true
