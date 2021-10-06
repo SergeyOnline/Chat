@@ -15,7 +15,8 @@ class ConversationViewController: UIViewController {
 	var messageInputField: UITextView!
 	var textinputView: UIView!
 	
-	private let identifier = "MessageCell"
+	private let inputID = "input"
+	private let outputID = "output"
 	private let messageInputMaxHeight = 100.0
 	
     override func viewDidLoad() {
@@ -79,11 +80,23 @@ class ConversationViewController: UIViewController {
 		tableView = UITableView(frame: CGRect.zero, style: .plain)
 		tableView.delegate = self
 		tableView.dataSource = self
-		tableView.register(MessageCell.self, forCellReuseIdentifier: identifier)
+		tableView.register(MessageCell.self, forCellReuseIdentifier: inputID)
+		tableView.register(MessageCell.self, forCellReuseIdentifier: outputID)
 		tableView.separatorStyle = .none
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		
 		self.view.addSubview(tableView)
+		
+		tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+		tableView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		tableView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		tableView.bottomAnchor.constraint(equalTo: textinputView.topAnchor).isActive = true
+		
+		if user.messages != nil {
+			let cellNumber = user.messages!.count - 1
+			let indexPath = IndexPath(row: cellNumber, section: 0)
+			tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+		}
     }
 	
 	//MARK: - Actions
@@ -101,11 +114,14 @@ class ConversationViewController: UIViewController {
 		if user.messages == nil {
 			self.user.messages = [newMessage]
 		} else {
-			//TODO: - sort messages!!!
 			self.user.messages!.append(newMessage)
 		}
 		messageInputField.text = ""
+
 		self.tableView.reloadData()
+		let cellNumber = user.messages!.count - 1
+		let indexPath = IndexPath(row: cellNumber, section: 0)
+		tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 		//TODO: - Send request to server!
 	}
 	
@@ -117,34 +133,11 @@ class ConversationViewController: UIViewController {
 		} else {
 //			print(messageInputField.contentSize)
 		}
-		
-		tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-		tableView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
-		tableView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		tableView.bottomAnchor.constraint(equalTo: textinputView.topAnchor).isActive = true
-	}
-	
-	override func updateViewConstraints() {
-		super.updateViewConstraints()
-//		tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-//		tableView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
-//		tableView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor).isActive = true
-//		tableView.bottomAnchor.constraint(equalTo: textinputView.topAnchor).isActive = true
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		delegate?.changeMessagesForUserWhithID(user.id, to: user.messages)
-	}
-	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		
-//		if user.messages != nil {
-//			let cellNumber = user.messages!.count - 1
-//			let indexPath = IndexPath(row: cellNumber, section: 0)
-//			tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-//		}
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -188,7 +181,9 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! MessageCell
+	
+		let id = (user.messages?[indexPath.row].ownerID != 0) ? inputID : outputID
+		let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath) as! MessageCell
 		cell.messageText = user.messages?[indexPath.row].body ?? ""
 		cell.owherID = user.messages?[indexPath.row].ownerID ?? 0
 

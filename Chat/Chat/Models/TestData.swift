@@ -12,7 +12,7 @@ struct TestData {
 	
 	static let firstNames = ["Armando", "Bronson", "Bryson", "Dante", "Dominic", "Everett", "Hugo", "Isaak", "Issac", "Jace", "Kenley", "Knox", "Milo", "Octavio", "Osiris", "Ozzy", "Quinten", "Ricardo", "Roman", "Roy", "Westley", "Xavion", "Yehoshua", "Yousef", "Zechariah", "Ruth", "Paula", "Wilfreda", "Zaida", "Undine", "Clara", "Orabelle", "Yuki", "Laila", "Viktoria", "Vanessa", "Selena", "Thea", "Xanthia", "Fabiana", "Heidy", "Janelle", "Belen", "Bianca", "Praise", "Elaina", "Cali", "Skyla", "Veronika", "Zaira"]
 	
-	static let context = ["Sed ut perspici\natis unde omnis", " iste natus error sit", " voluptatem accusantium \ndoloremque laudantium, totam", " rem aperiam, eaque", " ipsa quae\n ab illo", " inventore veritatis", " et", " quasi architecto \nbeatae\n vitae", " dicta sunt ", "explicabo.", " Nemo enim ipsam\n voluptatem \nquia voluptas \nsit \naspernatur", " aut odit aut \nfugit, sed", " quia consequuntur ", "magni dolores\n eos qui ", "ratione voluptatem ", "sequi\n nesciunt. ", "Neque porro", " quisquam est, qui \ndolorem", " ipsum", " quia dolor", " sit amet, consectetur, adipisci", " velit, sed quia\n non\n numquam", " eius modi tempora", " incidunt\n ut labore", " et dolore magnam \naliquam", " quaerat ", "voluptatem. \nUt enim ad ", "minima veniam, ", "quis \nnostrum exercitationem", " ullam corporis\n suscipit l", "aboriosam, \nnisi \nut aliquid \nex ea commodi consequatur?", " Quis autem vel eum", " iure \nreprehenderit", " qui in ea voluptate velit", " esse quam nihil", " molestiae \nconsequatur, vel", " illum qui \ndolorem eum", " fugiat quo voluptas nulla pariatur?"]
+	static let context = ["Да", "Ок", "Как дела? \nЧто делаешь?", "В порядке", "Вчера был в аду\nСам как?", "Не знаю", "Нет", "Ну если подумать...\nНаверное не плохо.\nСам решай", "Меня нет", "Жив, здоров", "Был там\nНе очень\nДумаю есть места получше\nХотя...\nНе знаю...", "Купил слона?\nПочем?", "около 1000", "Неплохо.\nНо ты можешь лучше", "Кто знает...", "Лол))\nИ Как?", "А где?", "Приходи сегодня.\nПопробуем приготовить.", "Это не точно", "Да как так то?!?", "У тебя юудут проблемы, точно говорю", "В пол 5\n Или 6\n Посмотрим", "Ботинок", "Сам такой\nОбидка", "Дурень\nВсе только начинается", "Где-то", "Не хочу говорить\nПозднее может", "Ну так то да, такое себе", "Я дома\nНе занят", "Да\n Нет", "Во сколько?\nЯ подумаю\nТочно надо?\nЯ просто занят", "Выходи", "Вышел", "А у тебя есть?", "Ага))", "Не точно\nНу был там, да", "Я в столовке\nТебе взять еды?", "Если пойдешь еще раз, то меня позови", "Привет!", "Здоров"]
 	
 	static func gFirstName() -> String {
 		return firstNames[Int(arc4random_uniform(UInt32(firstNames.count)))]
@@ -34,7 +34,7 @@ struct TestData {
 	}
 	static func gMassage() -> [Message]? {
 		var arr: [Message] = []
-		let count = arc4random_uniform(25)
+		let count = arc4random_uniform(40)
 		for _ in 0...count {
 			let text = context[Int(arc4random_uniform(UInt32(context.count)))]
 			arr.append(Message(body: text, date: gDate(), unread: gBool(), ownerID: gBool() ? User.idGenerator : 0))
