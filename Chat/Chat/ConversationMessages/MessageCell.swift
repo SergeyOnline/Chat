@@ -16,14 +16,14 @@ class MessageCell: UITableViewCell, MessageCellConfiguration {
 		willSet {
 			guard let _ = newValue else { return }
 			
-			let attributedString = NSMutableAttributedString(string: newValue!)
-			let paragraphStyle = NSMutableParagraphStyle()
-			paragraphStyle.paragraphSpacingBefore = 5
-			paragraphStyle.paragraphSpacing = 5
-			attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
+//			let attributedString = NSMutableAttributedString(string: newValue!)
+//			let paragraphStyle = NSMutableParagraphStyle()
+//			paragraphStyle.paragraphSpacingBefore = 5
+//			paragraphStyle.paragraphSpacing = 5
+//			attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
 
-			messageLabel.attributedText = attributedString
-//			messageLabel.text = newValue!
+//			messageLabel.attributedText = attributedString
+			messageLabel.text = newValue!
 		}
 	}
 	var messageLabel: UILabel!
@@ -52,17 +52,25 @@ class MessageCell: UITableViewCell, MessageCellConfiguration {
 		messageLabel.lineBreakMode = .byWordWrapping
 		messageLabel.translatesAutoresizingMaskIntoConstraints = false
 		
-		self.contentView.addSubview(messageLabel)
-		messageLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
-		messageLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10).isActive = true
+		let vStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
+		vStack.addArrangedSubview(messageLabel)
+		vStack.translatesAutoresizingMaskIntoConstraints = false
+		vStack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+		vStack.isLayoutMarginsRelativeArrangement = true
+		vStack.layer.cornerRadius = 10
+		
+		self.contentView.addSubview(vStack)
+		vStack.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
+		vStack.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10).isActive = true
 		
 		if reuseIdentifier == "input" {
-			messageLabel.backgroundColor = UIColor(red: 0.875, green: 0.875, blue: 0.875, alpha: 1)
-			messageLabel.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 10).isActive = true
+			vStack.backgroundColor = UIColor(red: 0.875, green: 0.875, blue: 0.875, alpha: 1)
+			vStack.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 10).isActive = true
 		} else {
-			messageLabel.backgroundColor = UIColor(red: 0.863, green: 0.969, blue: 0.773, alpha: 1)
-			messageLabel.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -10).isActive = true
+			vStack.backgroundColor = UIColor(red: 0.863, green: 0.969, blue: 0.773, alpha: 1)
+			vStack.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -10).isActive = true
 		}
+		
 	}
 }
 
