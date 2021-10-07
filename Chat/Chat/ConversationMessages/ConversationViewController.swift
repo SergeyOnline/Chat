@@ -59,7 +59,7 @@ final class ConversationViewController: UIViewController {
 		messageInputField.isScrollEnabled = false
 		messageInputField.delegate = self
 		messageInputField.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
-		messageInputField.textColor = UIColor.lightGray
+		messageInputField.textColor = .lightGray
 		resizeTextViewToFitText()
 		
 		let addButton = UIButton(type: .contactAdd)
@@ -69,7 +69,7 @@ final class ConversationViewController: UIViewController {
 		
 		textinputView.addSubview(addButton)
 		addButton.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 12).isActive = true
-		addButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -5).isActive = true
+		addButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
 		addButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
 		let sendButton = UIButton(type: .roundedRect)
@@ -82,22 +82,22 @@ final class ConversationViewController: UIViewController {
 		
 		textinputView.addSubview(sendButton)
 		sendButton.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -12).isActive = true
-		sendButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -5).isActive = true
+		sendButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
 		sendButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
 		sendButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
 		
 		
 		textinputView.addSubview(messageInputField)
-		messageInputField.centerYAnchor.constraint(equalTo: textinputView.centerYAnchor).isActive = true
+		messageInputField.centerYAnchor.constraint(equalTo: textinputView.centerYAnchor, constant: -10).isActive = true
 		messageInputField.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 50).isActive = true
 		messageInputField.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -60).isActive = true
 		
 		
 		self.view.addSubview(textinputView)
-		textinputView.heightAnchor.constraint(equalTo: messageInputField.heightAnchor, constant: 20).isActive = true
+		textinputView.heightAnchor.constraint(equalTo: messageInputField.heightAnchor, constant: 40).isActive = true
 		textinputView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
 		textinputView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10).isActive = true
+		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 		
 
 		tableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -269,7 +269,7 @@ extension ConversationViewController: UITextViewDelegate {
 	}
 	
 	func textViewDidBeginEditing(_ textView: UITextView) {
-		if textView.textColor == UIColor.lightGray {
+		if textView.textColor == .lightGray {
 			textView.text = nil
 			textView.textColor = (traitCollection.userInterfaceStyle == .dark) ? .white : .black
 		}
@@ -278,7 +278,7 @@ extension ConversationViewController: UITextViewDelegate {
 	func textViewDidEndEditing(_ textView: UITextView) {
 		if textView.text.isEmpty {
 			textView.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
-			textView.textColor = UIColor.lightGray
+			textView.textColor = .lightGray
 		}
 	}
 }
