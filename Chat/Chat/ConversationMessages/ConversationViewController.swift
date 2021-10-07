@@ -19,6 +19,7 @@ class ConversationViewController: UIViewController {
 	private let outputID = "output"
 	private let maxHeightMessageInput = 120.0
 	private let minHeightMessageInput = 32.0
+	private var isKeyboerdHidden = true
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +27,7 @@ class ConversationViewController: UIViewController {
 		
 		self.navigationItem.title = user.fullName
 		self.navigationController?.navigationBar.tintColor = (traitCollection.userInterfaceStyle == .light) ? .black : .white
+//		self.navigationController?.navigationBar.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
@@ -97,7 +99,9 @@ class ConversationViewController: UIViewController {
 		if user.messages != nil {
 			let cellNumber = user.messages!.count - 1
 			let indexPath = IndexPath(row: cellNumber, section: 0)
-			tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+			DispatchQueue.main.async {
+				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+			}
 		}
     }
 	
@@ -121,9 +125,11 @@ class ConversationViewController: UIViewController {
 		messageInputField.text = ""
 
 		self.tableView.reloadData()
-		let cellNumber = user.messages!.count - 1
-		let indexPath = IndexPath(row: cellNumber, section: 0)
-		tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+		DispatchQueue.main.async {
+			let cellNumber = self.user.messages!.count - 1
+			let indexPath = IndexPath(row: cellNumber, section: 0)
+			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+		}
 		//TODO: - Send request to server!
 	}
 	
@@ -151,13 +157,35 @@ class ConversationViewController: UIViewController {
 	}
 	
 	@objc func keyboardWillShow(_ sender: NSNotification) {
-		guard let info = sender.userInfo else { return }
-		let height = (info["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
-		self.view.frame.origin.y = -height
+		if isKeyboerdHidden {
+			isKeyboerdHidden = false
+			guard let info = sender.userInfo else { return }
+			let height = (info["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
+			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height - height)
+			self.view.frame = frame
+		}
+		if user.messages != nil {
+			DispatchQueue.main.async {
+				let cellNumber = self.user.messages!.count - 1
+				let indexPath = IndexPath(row: cellNumber, section: 0)
+				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+			}
+		}
 	}
 	
 	@objc func keyboardWillHide(_ sender: NSNotification) {
-		self.view.frame.origin.y = 0
+		isKeyboerdHidden = true
+		guard let info = sender.userInfo else { return }
+		let height = (info["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
+		let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
+		self.view.frame = frame
+		if user.messages != nil {
+			DispatchQueue.main.async {
+				let cellNumber = self.user.messages!.count - 1
+				let indexPath = IndexPath(row: cellNumber, section: 0)
+				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+			}
+		}
 	}
 	
 	deinit {
