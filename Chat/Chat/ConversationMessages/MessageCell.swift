@@ -12,6 +12,16 @@ protocol MessageCellConfiguration: AnyObject {
 }
 
 final class MessageCell: UITableViewCell, MessageCellConfiguration {
+	
+	private enum Constants {
+		static let vStackUniversalOffset = 10.0
+		static let vStackCornerRadius = 10.0
+		static let InputReuseIdentifier = "input"
+		static let messageLabelCornerRadius = 8.0
+		static let inputMessageBackgroundColor = UIColor(red: 0.875, green: 0.875, blue: 0.875, alpha: 1)
+		static let outputMessageBackgroundColor = UIColor(red: 0.863, green: 0.969, blue: 0.773, alpha: 1)
+	}
+	
 	var messageText: String? {
 		willSet {
 			guard let _ = newValue else { return }
@@ -38,7 +48,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		
 		messageLabel = UILabel()
 		messageLabel.clipsToBounds = true
-		messageLabel.layer.cornerRadius = 8
+		messageLabel.layer.cornerRadius = Constants.messageLabelCornerRadius
 		messageLabel.textColor = .black
 		messageLabel.numberOfLines = 0
 		messageLabel.lineBreakMode = .byWordWrapping
@@ -47,20 +57,23 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		let vStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
 		vStack.addArrangedSubview(messageLabel)
 		vStack.translatesAutoresizingMaskIntoConstraints = false
-		vStack.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+		vStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
+											left: Constants.vStackUniversalOffset,
+											bottom: Constants.vStackUniversalOffset,
+											right: Constants.vStackUniversalOffset)
 		vStack.isLayoutMarginsRelativeArrangement = true
-		vStack.layer.cornerRadius = 10
+		vStack.layer.cornerRadius = Constants.vStackCornerRadius
 		
 		self.contentView.addSubview(vStack)
-		vStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
-		vStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10).isActive = true
+		vStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.vStackUniversalOffset).isActive = true
+		vStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 		
-		if reuseIdentifier == "input" {
-			vStack.backgroundColor = UIColor(red: 0.875, green: 0.875, blue: 0.875, alpha: 1)
-			vStack.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10).isActive = true
+		if reuseIdentifier == Constants.InputReuseIdentifier {
+			vStack.backgroundColor = Constants.inputMessageBackgroundColor
+			vStack.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.vStackUniversalOffset).isActive = true
 		} else {
-			vStack.backgroundColor = UIColor(red: 0.863, green: 0.969, blue: 0.773, alpha: 1)
-			vStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10).isActive = true
+			vStack.backgroundColor = Constants.outputMessageBackgroundColor
+			vStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 		}
 		
 	}

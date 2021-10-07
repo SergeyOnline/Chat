@@ -17,6 +17,13 @@ protocol ConversationCellConfiguration: AnyObject {
 
 final class ConversationsListCell: UITableViewCell, ConversationCellConfiguration {
 	
+	
+	private enum Constants {
+		static let headerFontSize = 15.0
+		static let bodyFontSize = 13.0
+		static let imageHeight = 44.0
+	}
+	
 	var name: String? {
 		willSet {
 			nameLabel.text = newValue ?? ""
@@ -36,10 +43,10 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 	var message: String? {
 		willSet {
 			if let value = newValue {
-				messageLabel.font = UIFont.systemFont(ofSize: bodyFontSize)
+				messageLabel.font = UIFont.systemFont(ofSize: Constants.bodyFontSize)
 				messageLabel.text = value + "\n"
 			} else {
-				messageLabel.font = UIFont.italicSystemFont(ofSize: bodyFontSize)
+				messageLabel.font = UIFont.italicSystemFont(ofSize: Constants.bodyFontSize)
 				messageLabel.text = "No messages yet" + "\n"
 			}
 		}
@@ -63,22 +70,13 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 			
 			if message != nil {
 				if value {
-					messageLabel.font = UIFont.boldSystemFont(ofSize: bodyFontSize + 2)
+					messageLabel.font = UIFont.boldSystemFont(ofSize: Constants.bodyFontSize + 2)
 				} else {
-					messageLabel.font = UIFont.systemFont(ofSize: bodyFontSize)
+					messageLabel.font = UIFont.systemFont(ofSize: Constants.bodyFontSize)
 				}
 			}
 		}
 	}
-	
-	private enum DateType {
-		case correct
-		case old
-	}
-	
-	private let headerFontSize = 15.0
-	private let bodyFontSize = 13.0
-	private let imageHeight = 44.0
 	
 	private var nameLabel: UILabel!
 	private var dateLabel: UILabel!
@@ -98,10 +96,10 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 	//MARK: - Private finctions
 	private func setup() {
 		nameLabel = UILabel()
-		nameLabel.font = UIFont.boldSystemFont(ofSize: headerFontSize)
+		nameLabel.font = UIFont.boldSystemFont(ofSize: Constants.headerFontSize)
 		
 		dateLabel = UILabel()
-		dateLabel.font = UIFont.systemFont(ofSize: bodyFontSize)
+		dateLabel.font = UIFont.systemFont(ofSize: Constants.bodyFontSize)
 		dateLabel.textColor = .gray
 		dateLabel.textAlignment = .right
 		
@@ -119,17 +117,17 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		contentVerticalStack.addArrangedSubview(messageLabel)
 		contentVerticalStack.translatesAutoresizingMaskIntoConstraints = false
 		
-		userImageView = UserImageView(labelTitle: "", labelfontSize: imageHeight / 2)
+		userImageView = UserImageView(labelTitle: "", labelfontSize: Constants.imageHeight / 2)
 		userImageView.layer.masksToBounds = false
-		userImageView.layer.cornerRadius = imageHeight / 2
+		userImageView.layer.cornerRadius = Constants.imageHeight / 2
 		
 		contentView.addSubview(userImageView)
 		contentView.addSubview(contentVerticalStack)
 	
 		userImageView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20).isActive = true
 		userImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-		userImageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
-		userImageView.widthAnchor.constraint(equalToConstant: imageHeight).isActive = true
+		userImageView.heightAnchor.constraint(equalToConstant: Constants.imageHeight).isActive = true
+		userImageView.widthAnchor.constraint(equalToConstant: Constants.imageHeight).isActive = true
 		
 		contentVerticalStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5).isActive = true
 		contentVerticalStack.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.9).isActive = true

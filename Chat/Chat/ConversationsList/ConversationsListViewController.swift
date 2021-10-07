@@ -13,7 +13,19 @@ protocol ConversationsListViewControllerDelegate: AnyObject {
 
 final class ConversationsListViewController: UIViewController {
 	
-	private let reuseIdentifier = "Cell"
+	private enum Constants {
+		static let cellReuseIdentifier = "Cell"
+		static let userImageViewCornerRadius = 20.0
+		static let userImageViewWidth = 40.0
+		static let userImageViewHeight = 40.0
+		static let userImageViewLabelfontSize = 20.0
+		static let tableViewRowHeight = 80.0
+		static let settingsButtonImageName = "Gear"
+	}
+	
+	private enum LocalizeKeys {
+		static let navigationItemTitle = "navigationItemTitle"
+	}
 	
 	var tableView: UITableView!
 	
@@ -37,18 +49,18 @@ final class ConversationsListViewController: UIViewController {
         super.viewDidLoad()
 
 		view.backgroundColor = .systemGray
-		navigationItem.title = NSLocalizedString("navigationItemTitle", comment: "")
+		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
 		
-		let userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: 20)
-		userImageView.layer.cornerRadius = 20
+		let userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
+		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
 	
 		
 		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
 		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))
-		userImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-		userImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
+		userImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
 		
-		let image = UIImage(named: "Gear")
+		let image = UIImage(named: Constants.settingsButtonImageName)
 		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
 	
 		navigationItem.rightBarButtonItem = profileBarButtonItem
@@ -57,10 +69,10 @@ final class ConversationsListViewController: UIViewController {
 		
 		tableView = UITableView(frame: view.safeAreaLayoutGuide.layoutFrame, style: .grouped)
 
-		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: reuseIdentifier)
+		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
 		tableView.delegate = self
 		tableView.dataSource = self
-		tableView.rowHeight = 80
+		tableView.rowHeight = Constants.tableViewRowHeight
 //		tableView.rowHeight = UITableView.automaticDimension
 //		tableView.estimatedRowHeight = 80
 
@@ -116,7 +128,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ConversationsListCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as! ConversationsListCell
 
 		var currentUsers: [User] = []
 		if indexPath.section == 0 {

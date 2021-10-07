@@ -15,17 +15,25 @@ final class ConversationViewController: UIViewController {
 	var messageInputField: UITextView!
 	var textinputView: UIView!
 	
-	private let inputID = "input"
-	private let outputID = "output"
-	private let maxHeightMessageInput = 120.0
-	private let minHeightMessageInput = 32.0
+	
+	private enum Constants {
+		static let inputID = "input"
+		static let outputID = "output"
+		static let maxHeightMessageInput = 120.0
+		static let minHeightMessageInput = 32.0
+		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
+		static let messageInputFieldCornerRadius = 8.0
+		static let sendButtonImageName = "Send"
+		static let viewBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
+	}
+	
 	private var isKeyboerdHidden = true
 	
 	private var tapGesture: UITapGestureRecognizer!
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
+		view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : Constants.viewBackgroundColor
 		
 		navigationItem.title = user.fullName
 		navigationController?.navigationBar.tintColor = (traitCollection.userInterfaceStyle == .light) ? .black : .white
@@ -42,7 +50,7 @@ final class ConversationViewController: UIViewController {
 		textinputView.translatesAutoresizingMaskIntoConstraints = false
 		
 		messageInputField = UITextView()
-		messageInputField.layer.cornerRadius = 8
+		messageInputField.layer.cornerRadius = Constants.messageInputFieldCornerRadius
 		messageInputField.translatesAutoresizingMaskIntoConstraints = false
 		messageInputField.isScrollEnabled = false
 		messageInputField.delegate = self
@@ -59,7 +67,7 @@ final class ConversationViewController: UIViewController {
 		addButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
 		let sendButton = UIButton(type: .roundedRect)
-		let image = UIImage(named: "Send")
+		let image = UIImage(named: Constants.sendButtonImageName)
 		sendButton.setImage(image, for: .normal)
 
 		sendButton.translatesAutoresizingMaskIntoConstraints = false
@@ -89,8 +97,8 @@ final class ConversationViewController: UIViewController {
 		tableView = UITableView(frame: CGRect.zero, style: .plain)
 		tableView.delegate = self
 		tableView.dataSource = self
-		tableView.register(MessageCell.self, forCellReuseIdentifier: inputID)
-		tableView.register(MessageCell.self, forCellReuseIdentifier: outputID)
+		tableView.register(MessageCell.self, forCellReuseIdentifier: Constants.inputID)
+		tableView.register(MessageCell.self, forCellReuseIdentifier: Constants.outputID)
 		tableView.separatorStyle = .none
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		
@@ -174,7 +182,7 @@ final class ConversationViewController: UIViewController {
 		if isKeyboerdHidden {
 			isKeyboerdHidden = false
 			guard let info = sender.userInfo else { return }
-			let height = (info["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
+			let height = (info[Constants.keyboardNotificatoinKey] as! CGRect).height
 			let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - height)
 			view.frame = frame
 		}
@@ -191,7 +199,7 @@ final class ConversationViewController: UIViewController {
 		if !isKeyboerdHidden {
 			isKeyboerdHidden = true
 			guard let info = sender.userInfo else { return }
-			let height = (info["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
+			let height = (info[Constants.keyboardNotificatoinKey] as! CGRect).height
 			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
 			self.view.frame = frame
 			if user.messages != nil {
@@ -214,11 +222,11 @@ final class ConversationViewController: UIViewController {
 		let expectedSize = messageInputField.sizeThatFits(size)
 		for constraint in messageInputField.constraints {
 			if constraint.firstAttribute == .height {
-				constraint.constant = max(min(expectedSize.height, maxHeightMessageInput), minHeightMessageInput)
+				constraint.constant = max(min(expectedSize.height, Constants.maxHeightMessageInput), Constants.minHeightMessageInput)
 			}
 		}
-		if expectedSize.height > maxHeightMessageInput {
-			messageInputField.heightAnchor.constraint(lessThanOrEqualToConstant: maxHeightMessageInput).isActive = true
+		if expectedSize.height > Constants.maxHeightMessageInput {
+			messageInputField.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.maxHeightMessageInput).isActive = true
 			messageInputField.isScrollEnabled = true
 
 		} else {
@@ -239,7 +247,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 	
-		let id = (user.messages?[indexPath.row].ownerID != 0) ? inputID : outputID
+		let id = (user.messages?[indexPath.row].ownerID != 0) ? Constants.inputID : Constants.outputID
 		let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath) as! MessageCell
 		cell.messageText = user.messages?[indexPath.row].body ?? ""
 		cell.owherID = user.messages?[indexPath.row].ownerID ?? 0

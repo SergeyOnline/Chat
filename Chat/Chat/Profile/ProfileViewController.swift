@@ -9,6 +9,16 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
 	
+	private enum LocalizeKeys {
+		static let cameraAction = "cameraAction"
+		static let gallaryAction = "gallaryAction"
+		static let deleteAction = "deleteAction"
+		static let profileLabel = "profileLabel"
+		static let closeButtonTitle = "closeButtonTitle"
+		static let saveButtonTitle = "saveButtonTitle"
+		static let editButtonTitle = "editButtonTitle"
+	}
+	
 	var closeButton: UIButton!
 	var imageView: UIImageView!
 	var user = Owner()
@@ -53,15 +63,15 @@ final class ProfileViewController: UIViewController {
 	@objc func editButtonAction(_ sender: UIButton) {
 		
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-		let cameraAction = UIAlertAction(title: NSLocalizedString("cameraAction", comment: ""), style: .default) { _ in
+		let cameraAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.cameraAction, comment: ""), style: .default) { _ in
 			self.openCamera()
 		}
 		
-		let gallaryAction = UIAlertAction(title: NSLocalizedString("gallaryAction", comment: ""), style: .default) { _ in
+		let gallaryAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.gallaryAction, comment: ""), style: .default) { _ in
 			self.openGallary()
 		}
 		
-		let deleteAction = UIAlertAction(title: NSLocalizedString("deleteAction", comment: ""), style: .destructive) { _ in
+		let deleteAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.deleteAction, comment: ""), style: .destructive) { _ in
 			self.imageView.image = nil
 		}
 		
@@ -99,10 +109,10 @@ final class ProfileViewController: UIViewController {
 		headerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
 		headerView.heightAnchor.constraint(equalToConstant: 96).isActive = true
 		
-		let profileLabel = ProfileLabel(text: NSLocalizedString("profileLabel", comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
+		let profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
 		headerView.addSubview(profileLabel)
 		
-		closeButton = ProfileButton(title: NSLocalizedString("closeButtonTitle", comment: ""), fontSize: 17)
+		closeButton = ProfileButton(title: NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), fontSize: 17)
 		closeButton.addTarget(self, action: #selector(closeButtonAction), for: .touchUpInside)
 		headerView.addSubview(closeButton)
 		
@@ -131,7 +141,7 @@ final class ProfileViewController: UIViewController {
 		infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		infoLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 32).isActive = true
 		
-		saveButton = ProfileButton(title: NSLocalizedString("saveButtonTitle", comment: ""), fontSize: 19)
+		saveButton = ProfileButton(title: NSLocalizedString(LocalizeKeys.saveButtonTitle, comment: ""), fontSize: 19)
 		saveButton.layer.cornerRadius = 14
 		saveButton.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
 		saveButton.addTarget(self, action: #selector(saveButtonAction), for: .touchUpInside)
@@ -142,7 +152,7 @@ final class ProfileViewController: UIViewController {
 		saveButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
 		saveButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
-		editButton = ProfileButton(title: NSLocalizedString("editButtonTitle", comment: ""), fontSize: 16)
+		editButton = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 16)
 		editButton.addTarget(self, action: #selector(editButtonAction), for: .touchUpInside)
 		view.addSubview(editButton)
 		editButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
