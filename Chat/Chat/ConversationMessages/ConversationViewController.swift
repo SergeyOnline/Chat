@@ -17,7 +17,8 @@ class ConversationViewController: UIViewController {
 	
 	private let inputID = "input"
 	private let outputID = "output"
-	private let messageInputMaxHeight = 100.0
+	private let maxHeightMessageInput = 120.0
+	private let minHeightMessageInput = 32.0
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +38,8 @@ class ConversationViewController: UIViewController {
 		messageInputField.layer.cornerRadius = 8
 		messageInputField.translatesAutoresizingMaskIntoConstraints = false
 		messageInputField.isScrollEnabled = false
+		messageInputField.delegate = self
+		resizeTextViewToFitText()
 		
 		let addButton = UIButton(type: .contactAdd)
 		addButton.translatesAutoresizingMaskIntoConstraints = false
@@ -65,7 +68,6 @@ class ConversationViewController: UIViewController {
 		
 		textinputView.addSubview(messageInputField)
 		messageInputField.centerYAnchor.constraint(equalTo: textinputView.centerYAnchor).isActive = true
-		messageInputField.heightAnchor.constraint(lessThanOrEqualToConstant: messageInputMaxHeight).isActive = true
 		messageInputField.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 50).isActive = true
 		messageInputField.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -60).isActive = true
 		
@@ -125,16 +127,6 @@ class ConversationViewController: UIViewController {
 		//TODO: - Send request to server!
 	}
 	
-	override func viewDidLayoutSubviews() {
-		super.viewDidLayoutSubviews()
-		if messageInputField.contentSize.height > messageInputMaxHeight - 15 {
-			messageInputField.isScrollEnabled = true
-//			print(messageInputField.contentSize)
-		} else {
-//			print(messageInputField.contentSize)
-		}
-	}
-	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		delegate?.changeMessagesForUserWhithID(user.id, to: user.messages)
@@ -165,11 +157,32 @@ class ConversationViewController: UIViewController {
 	}
 	
 	@objc func keyboardWillHide(_ sender: NSNotification) {
-		self.view.frame.origin.y = 0 // Move view to original position
+		self.view.frame.origin.y = 0
 	}
 	
 	deinit {
 		NotificationCenter.default.removeObserver(self)
+	}
+	
+	//MARK: - Private functions
+	private func resizeTextViewToFitText() {
+		let size = CGSize(width: messageInputField.frame.width, height: .infinity)
+		let expectedSize = messageInputField.sizeThatFits(size)
+		for constraint in messageInputField.constraints {
+			if constraint.firstAttribute == .height {
+				constraint.constant = max(min(expectedSize.height, maxHeightMessageInput), minHeightMessageInput)
+			}
+		}
+		if expectedSize.height > maxHeightMessageInput {
+			messageInputField.heightAnchor.constraint(lessThanOrEqualToConstant: maxHeightMessageInput).isActive = true
+			self.messageInputField.isScrollEnabled = true
+
+		} else {
+			self.messageInputField.isScrollEnabled = false
+		}
+		UIView.animate(withDuration: 0.1) {
+			self.view.layoutIfNeeded()
+		}
 	}
 
 }
@@ -190,4 +203,10 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 		return cell
 	}
 	
+}
+
+extension ConversationViewController: UITextViewDelegate {
+	func textViewDidChange(_ textView: UITextView) {
+		resizeTextViewToFitText()
+	}
 }
