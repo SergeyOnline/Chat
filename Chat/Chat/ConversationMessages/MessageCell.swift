@@ -11,7 +11,7 @@ protocol MessageCellConfiguration: AnyObject {
 	var messageText: String? { get set }
 }
 
-class MessageCell: UITableViewCell, MessageCellConfiguration {
+final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	var messageText: String? {
 		willSet {
 			guard let _ = newValue else { return }

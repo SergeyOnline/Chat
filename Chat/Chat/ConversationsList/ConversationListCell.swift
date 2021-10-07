@@ -15,7 +15,7 @@ protocol ConversationCellConfiguration: AnyObject {
 	var hasUnreadMessages: Bool? { get set }
 }
 
-class ConversationsListCell: UITableViewCell, ConversationCellConfiguration {
+final class ConversationsListCell: UITableViewCell, ConversationCellConfiguration {
 	
 	var name: String? {
 		willSet {

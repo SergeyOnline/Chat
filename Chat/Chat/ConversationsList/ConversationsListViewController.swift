@@ -11,7 +11,7 @@ protocol ConversationsListViewControllerDelegate: AnyObject {
 	func changeMessagesForUserWhithID(_ id: Int, to: [Message]?)
 }
 
-class ConversationsListViewController: UIViewController {
+final class ConversationsListViewController: UIViewController {
 	
 	private let reuseIdentifier = "Cell"
 	

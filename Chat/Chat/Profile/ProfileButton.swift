@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProfileButton: UIButton {
+final class ProfileButton: UIButton {
 	
 	override var isHighlighted: Bool {
 		didSet {

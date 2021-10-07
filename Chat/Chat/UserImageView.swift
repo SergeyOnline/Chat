@@ -7,7 +7,7 @@
 
 import UIKit
 
-class UserImageView: UIImageView {
+final class UserImageView: UIImageView {
 
 	private var statusView: UIView!
 	private var initialLabel: ProfileLabel!

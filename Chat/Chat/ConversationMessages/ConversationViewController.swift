@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ConversationViewController: UIViewController {
+final class ConversationViewController: UIViewController {
 
 	var user: User
 	weak var delegate: ConversationsListViewControllerDelegate?
@@ -117,7 +117,7 @@ class ConversationViewController: UIViewController {
 	}
 	
 	@objc func sendButtonAction(_ sender: UIButton) {
-		messageInputField.resignFirstResponder()
+//		messageInputField.resignFirstResponder()
 		if messageInputField.text.isEmpty {
 			return
 		}
@@ -188,16 +188,18 @@ class ConversationViewController: UIViewController {
 	}
 	
 	@objc func keyboardWillHide(_ sender: NSNotification) {
-		isKeyboerdHidden = true
-		guard let info = sender.userInfo else { return }
-		let height = (info["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
-		let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
-		self.view.frame = frame
-		if user.messages != nil {
-			DispatchQueue.main.async {
-				let cellNumber = self.user.messages!.count - 1
-				let indexPath = IndexPath(row: cellNumber, section: 0)
-				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+		if !isKeyboerdHidden {
+			isKeyboerdHidden = true
+			guard let info = sender.userInfo else { return }
+			let height = (info["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
+			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
+			self.view.frame = frame
+			if user.messages != nil {
+				DispatchQueue.main.async {
+					let cellNumber = self.user.messages!.count - 1
+					let indexPath = IndexPath(row: cellNumber, section: 0)
+					self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+				}
 			}
 		}
 	}

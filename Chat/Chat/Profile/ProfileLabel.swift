@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProfileLabel: UILabel {
+final class ProfileLabel: UILabel {
 
 	convenience init(text: String, font: UIFont) {
 		self.init()
