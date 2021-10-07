@@ -51,10 +51,6 @@ struct TestData {
 				return u1.date < u2.date
 			})
 			arr = unread + other
-//			for v in arr {
-//				print("\(v.date.description): \(v.unread ? "unread" : "-")")
-//			}
-//			print("---------------------------")
 		}
 		return arr.isEmpty ? nil : arr
 	}

@@ -78,13 +78,13 @@ class ConversationsListCell: UITableViewCell, ConversationCellConfiguration {
 	
 	private let headerFontSize = 15.0
 	private let bodyFontSize = 13.0
+	private let imageHeight = 44.0
 	
 	private var nameLabel: UILabel!
 	private var dateLabel: UILabel!
 	private var messageLabel: UILabel!
 	private var userImageView: UserImageView!
 	private var contentVerticalStack: CustomStackView!
-	private let imageHeight = 44.0
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -123,18 +123,18 @@ class ConversationsListCell: UITableViewCell, ConversationCellConfiguration {
 		userImageView.layer.masksToBounds = false
 		userImageView.layer.cornerRadius = imageHeight / 2
 		
-		self.contentView.addSubview(userImageView)
-		self.contentView.addSubview(contentVerticalStack)
+		contentView.addSubview(userImageView)
+		contentView.addSubview(contentVerticalStack)
 	
-		userImageView.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 20).isActive = true
-		userImageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor).isActive = true
+		userImageView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20).isActive = true
+		userImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
 		userImageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
 		userImageView.widthAnchor.constraint(equalToConstant: imageHeight).isActive = true
 		
-		contentVerticalStack.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 5).isActive = true
-		contentVerticalStack.heightAnchor.constraint(equalTo: self.contentView.heightAnchor, multiplier: 0.9).isActive = true
+		contentVerticalStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5).isActive = true
+		contentVerticalStack.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.9).isActive = true
 		contentVerticalStack.leftAnchor.constraint(equalTo: userImageView.rightAnchor, constant: 10).isActive = true
-		contentVerticalStack.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -20).isActive = true
+		contentVerticalStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20).isActive = true
 	
 	}
 	

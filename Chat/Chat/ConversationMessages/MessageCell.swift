@@ -15,14 +15,6 @@ class MessageCell: UITableViewCell, MessageCellConfiguration {
 	var messageText: String? {
 		willSet {
 			guard let _ = newValue else { return }
-			
-//			let attributedString = NSMutableAttributedString(string: newValue!)
-//			let paragraphStyle = NSMutableParagraphStyle()
-//			paragraphStyle.paragraphSpacingBefore = 5
-//			paragraphStyle.paragraphSpacing = 5
-//			attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
-
-//			messageLabel.attributedText = attributedString
 			messageLabel.text = newValue!
 		}
 	}
@@ -42,7 +34,7 @@ class MessageCell: UITableViewCell, MessageCellConfiguration {
 	//MARK: - Private functions
 	private func setup() {
 		
-		self.selectionStyle = .none
+		selectionStyle = .none
 		
 		messageLabel = UILabel()
 		messageLabel.clipsToBounds = true
@@ -60,15 +52,15 @@ class MessageCell: UITableViewCell, MessageCellConfiguration {
 		vStack.layer.cornerRadius = 10
 		
 		self.contentView.addSubview(vStack)
-		vStack.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 10).isActive = true
-		vStack.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10).isActive = true
+		vStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true
+		vStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10).isActive = true
 		
 		if reuseIdentifier == "input" {
 			vStack.backgroundColor = UIColor(red: 0.875, green: 0.875, blue: 0.875, alpha: 1)
-			vStack.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 10).isActive = true
+			vStack.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10).isActive = true
 		} else {
 			vStack.backgroundColor = UIColor(red: 0.863, green: 0.969, blue: 0.773, alpha: 1)
-			vStack.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -10).isActive = true
+			vStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10).isActive = true
 		}
 		
 	}

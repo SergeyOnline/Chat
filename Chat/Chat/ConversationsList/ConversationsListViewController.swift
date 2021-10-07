@@ -20,14 +20,14 @@ class ConversationsListViewController: UIViewController {
 	private let users = TestData.users
 	private var onlineUsers: [User] {
 		get {
-			var users = self.users.filter({ $0.online == true})
+			var users = users.filter({ $0.online == true})
 			users = sortUsers(users: users)
 			return users
 		}
 	}
 	private var offlineUsers: [User] {
 		get {
-			var users = self.users.filter({ $0.online == false})
+			var users = users.filter({ $0.online == false})
 			users = sortUsers(users: users)
 			return users
 		}
@@ -35,16 +35,9 @@ class ConversationsListViewController: UIViewController {
 
 	override func viewDidLoad() {
         super.viewDidLoad()
-		
-		print("Users: \(users.count)")
-		
-		
-		print("Users online: \(onlineUsers.count)")
-		print("Users offline: \(offlineUsers.count)")
-	
-		
-		self.view.backgroundColor = .systemGray
-		self.navigationItem.title = NSLocalizedString("navigationItemTitle", comment: "")
+
+		view.backgroundColor = .systemGray
+		navigationItem.title = NSLocalizedString("navigationItemTitle", comment: "")
 		
 		let userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: 20)
 		userImageView.layer.cornerRadius = 20
@@ -58,11 +51,11 @@ class ConversationsListViewController: UIViewController {
 		let image = UIImage(named: "Gear")
 		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
 	
-		self.navigationItem.rightBarButtonItem = profileBarButtonItem
-		self.navigationItem.leftBarButtonItem = settingsBarButtonItem
+		navigationItem.rightBarButtonItem = profileBarButtonItem
+		navigationItem.leftBarButtonItem = settingsBarButtonItem
 
 		
-		tableView = UITableView(frame: self.view.safeAreaLayoutGuide.layoutFrame, style: .grouped)
+		tableView = UITableView(frame: view.safeAreaLayoutGuide.layoutFrame, style: .grouped)
 
 		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: reuseIdentifier)
 		tableView.delegate = self
@@ -71,13 +64,13 @@ class ConversationsListViewController: UIViewController {
 //		tableView.rowHeight = UITableView.automaticDimension
 //		tableView.estimatedRowHeight = 80
 
-		self.view.addSubview(tableView)
+		view.addSubview(tableView)
     }
 
 	//MARK: - Actions
 	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
 		let profileViewController = ProfileViewController()
-		self.present(profileViewController, animated: true, completion: nil)
+		present(profileViewController, animated: true, completion: nil)
 	}
 	
 	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
@@ -171,7 +164,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 
 extension ConversationsListViewController: ConversationsListViewControllerDelegate {
 	func changeMessagesForUserWhithID(_ id: Int, to messages: [Message]?) {
-		for user in self.users {
+		for user in users {
 			if user.id == id {
 				user.messages = messages
 				break

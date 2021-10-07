@@ -25,20 +25,20 @@ class ConversationViewController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		self.view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
+		view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
 		
-		self.navigationItem.title = user.fullName
-		self.navigationController?.navigationBar.tintColor = (traitCollection.userInterfaceStyle == .light) ? .black : .white
-//		self.navigationController?.navigationBar.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
+		navigationItem.title = user.fullName
+		navigationController?.navigationBar.tintColor = (traitCollection.userInterfaceStyle == .light) ? .black : .white
+
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
 	
 		tapGesture =  UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
-		self.view.addGestureRecognizer(tapGesture)
+		view.addGestureRecognizer(tapGesture)
 		
 		textinputView = UIView()
-		textinputView.backgroundColor = self.view.backgroundColor
+		textinputView.backgroundColor = view.backgroundColor
 		textinputView.translatesAutoresizingMaskIntoConstraints = false
 		
 		messageInputField = UITextView()
@@ -81,9 +81,9 @@ class ConversationViewController: UIViewController {
 		
 		self.view.addSubview(textinputView)
 		textinputView.heightAnchor.constraint(equalTo: messageInputField.heightAnchor, constant: 20).isActive = true
-		textinputView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
-		textinputView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		textinputView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -10).isActive = true
+		textinputView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		textinputView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10).isActive = true
 		
 
 		tableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -96,9 +96,9 @@ class ConversationViewController: UIViewController {
 		
 		self.view.addSubview(tableView)
 		
-		tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-		tableView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
-		tableView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
 		tableView.bottomAnchor.constraint(equalTo: textinputView.topAnchor).isActive = true
 		
 		if user.messages != nil {
@@ -123,12 +123,12 @@ class ConversationViewController: UIViewController {
 		}
 		let newMessage = Message(body: messageInputField.text, date: Date(), unread: false, ownerID: 0)
 		if user.messages == nil {
-			self.user.messages = [newMessage]
+			user.messages = [newMessage]
 		} else {
-			self.user.messages!.append(newMessage)
+			user.messages!.append(newMessage)
 		}
 		messageInputField.text = ""
-
+		resizeTextViewToFitText()
 		self.tableView.reloadData()
 		DispatchQueue.main.async {
 			let cellNumber = self.user.messages!.count - 1
@@ -139,7 +139,7 @@ class ConversationViewController: UIViewController {
 	}
 	
 	@objc func tapGestureAction(_ sender: UITapGestureRecognizer) {
-		let location = sender.location(in: self.view)
+		let location = sender.location(in: view)
 		if !textinputView.point(inside: location, with: nil) {
 			if messageInputField.isFirstResponder {
 				messageInputField.resignFirstResponder()
@@ -175,8 +175,8 @@ class ConversationViewController: UIViewController {
 			isKeyboerdHidden = false
 			guard let info = sender.userInfo else { return }
 			let height = (info["UIKeyboardFrameEndUserInfoKey"] as! CGRect).height
-			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height - height)
-			self.view.frame = frame
+			let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - height)
+			view.frame = frame
 		}
 		if user.messages != nil {
 			DispatchQueue.main.async {
@@ -217,10 +217,10 @@ class ConversationViewController: UIViewController {
 		}
 		if expectedSize.height > maxHeightMessageInput {
 			messageInputField.heightAnchor.constraint(lessThanOrEqualToConstant: maxHeightMessageInput).isActive = true
-			self.messageInputField.isScrollEnabled = true
+			messageInputField.isScrollEnabled = true
 
 		} else {
-			self.messageInputField.isScrollEnabled = false
+			messageInputField.isScrollEnabled = false
 		}
 		UIView.animate(withDuration: 0.1) {
 			self.view.layoutIfNeeded()

@@ -11,7 +11,7 @@ class ProfileButton: UIButton {
 	
 	override var isHighlighted: Bool {
 		didSet {
-			UIView.animate(withDuration: self.isHighlighted ? 0 : 0.3, delay: 0.0, options: [.beginFromCurrentState, .allowUserInteraction], animations: {
+			UIView.animate(withDuration: isHighlighted ? 0 : 0.3, delay: 0.0, options: [.beginFromCurrentState, .allowUserInteraction], animations: {
 				self.setTitleColor(.systemBlue.withAlphaComponent(self.isHighlighted ? 0.4 : 1), for: .normal)
 			})
 		}
