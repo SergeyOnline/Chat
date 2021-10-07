@@ -21,6 +21,8 @@ class ConversationViewController: UIViewController {
 	private let minHeightMessageInput = 32.0
 	private var isKeyboerdHidden = true
 	
+	private var tapGesture: UITapGestureRecognizer!
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		self.view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
@@ -32,6 +34,9 @@ class ConversationViewController: UIViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
 	
+		tapGesture =  UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
+		self.view.addGestureRecognizer(tapGesture)
+		
 		textinputView = UIView()
 		textinputView.backgroundColor = self.view.backgroundColor
 		textinputView.translatesAutoresizingMaskIntoConstraints = false
@@ -131,6 +136,15 @@ class ConversationViewController: UIViewController {
 			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 		}
 		//TODO: - Send request to server!
+	}
+	
+	@objc func tapGestureAction(_ sender: UITapGestureRecognizer) {
+		let location = sender.location(in: self.view)
+		if !textinputView.point(inside: location, with: nil) {
+			if messageInputField.isFirstResponder {
+				messageInputField.resignFirstResponder()
+			}
+		}
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
