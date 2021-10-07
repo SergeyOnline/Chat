@@ -25,6 +25,8 @@ final class ConversationsListViewController: UIViewController {
 	
 	private enum LocalizeKeys {
 		static let navigationItemTitle = "navigationItemTitle"
+		static let onlineHeaderTitle = "onlineHeaderTitle";
+		static let offlineHeaderTitle = "offlineHeaderTitle";
 	}
 	
 	var tableView: UITableView!
@@ -152,8 +154,8 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	
 	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		switch section {
-		case 0: return "Online"
-		case 1: return "History"
+		case 0: return NSLocalizedString(LocalizeKeys.onlineHeaderTitle, comment: "")
+		case 1: return NSLocalizedString(LocalizeKeys.offlineHeaderTitle, comment: "")
 		default: return ""
 		}
 	}

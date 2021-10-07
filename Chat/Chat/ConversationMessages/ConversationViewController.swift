@@ -27,6 +27,10 @@ final class ConversationViewController: UIViewController {
 		static let viewBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
 	}
 	
+	private enum LocalizeKeys {
+		static let messageInputFieldPlaceholder = "messageInputFieldPlaceholder"
+	}
+	
 	private var isKeyboerdHidden = true
 	
 	private var tapGesture: UITapGestureRecognizer!
@@ -54,6 +58,8 @@ final class ConversationViewController: UIViewController {
 		messageInputField.translatesAutoresizingMaskIntoConstraints = false
 		messageInputField.isScrollEnabled = false
 		messageInputField.delegate = self
+		messageInputField.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
+		messageInputField.textColor = UIColor.lightGray
 		resizeTextViewToFitText()
 		
 		let addButton = UIButton(type: .contactAdd)
@@ -260,5 +266,19 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 extension ConversationViewController: UITextViewDelegate {
 	func textViewDidChange(_ textView: UITextView) {
 		resizeTextViewToFitText()
+	}
+	
+	func textViewDidBeginEditing(_ textView: UITextView) {
+		if textView.textColor == UIColor.lightGray {
+			textView.text = nil
+			textView.textColor = (traitCollection.userInterfaceStyle == .dark) ? .white : .black
+		}
+	}
+	
+	func textViewDidEndEditing(_ textView: UITextView) {
+		if textView.text.isEmpty {
+			textView.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
+			textView.textColor = UIColor.lightGray
+		}
 	}
 }

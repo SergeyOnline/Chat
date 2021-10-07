@@ -21,4 +21,7 @@
 "deleteAction" = "Delete";
 
 //MARK: - ConversationViewController
-"messageInputFieldPlaceholder" = "message...";
+"messageInputFieldPlaceholder" = "Message...";
+"onlineHeaderTitle" = "Online";
+"offlineHeaderTitle" = "Offline";
+

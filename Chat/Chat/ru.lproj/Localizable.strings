@@ -21,4 +21,6 @@
 "deleteAction" = "Удалить";
 
 //MARK: - ConversationViewController
-"messageInputFieldPlaceholder" = "сообщение...";
+"messageInputFieldPlaceholder" = "Сообщение...";
+"onlineHeaderTitle" = "В сети";
+"offlineHeaderTitle" = "Не в сети";
