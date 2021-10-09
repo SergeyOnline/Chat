@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8768BDEE270C417B0078C271 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8768BDED270C417B0078C271 /* ConversationViewController.swift */; };
+		8768BDF1270C53650078C271 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8768BDF0270C53650078C271 /* MessageCell.swift */; };
 		876BABFA26FF38E800D5BF31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BABF926FF38E800D5BF31 /* AppDelegate.swift */; };
 		876BABFE26FF38E800D5BF31 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BABFD26FF38E800D5BF31 /* ViewController.swift */; };
 		876BAC0126FF38E800D5BF31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 876BABFF26FF38E800D5BF31 /* Main.storyboard */; };
@@ -15,14 +17,21 @@
 		876BAC1226FF39C300D5BF31 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC0F26FF39C300D5BF31 /* ProfileViewController.swift */; };
 		876BAC1326FF39C300D5BF31 /* ProfileLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1026FF39C300D5BF31 /* ProfileLabel.swift */; };
 		876BAC1626FF39D600D5BF31 /* UserImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1426FF39D500D5BF31 /* UserImageView.swift */; };
-		876BAC1726FF39D600D5BF31 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1526FF39D600D5BF31 /* MainViewController.swift */; };
-		876BAC1A26FF39E000D5BF31 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1926FF39E000D5BF31 /* User.swift */; };
+		876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1526FF39D600D5BF31 /* ConversationsListViewController.swift */; };
+		876BAC1A26FF39E000D5BF31 /* Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876BAC1926FF39E000D5BF31 /* Owner.swift */; };
 		876BAC1D26FF3A1B00D5BF31 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC1F26FF3A1B00D5BF31 /* Localizable.strings */; };
 		876BAC2326FF3D7C00D5BF31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC2526FF3D7C00D5BF31 /* InfoPlist.strings */; };
 		876BAC3026FF460F00D5BF31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC2F26FF460F00D5BF31 /* Assets.xcassets */; };
+		8774D3392709B32B007D359C /* ConversationListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D3382709B32B007D359C /* ConversationListCell.swift */; };
+		8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33A2709BB00007D359C /* CustomStackView.swift */; };
+		8774D33D2709CB6A007D359C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33C2709CB6A007D359C /* User.swift */; };
+		8774D33F270A024D007D359C /* TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33E270A024C007D359C /* TestData.swift */; };
+		8783FD03270BCB8400C21A66 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8783FD02270BCB8400C21A66 /* Message.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8768BDED270C417B0078C271 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
+		8768BDF0270C53650078C271 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		876BABF626FF38E800D5BF31 /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		876BABF926FF38E800D5BF31 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		876BABFD26FF38E800D5BF31 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -33,13 +42,18 @@
 		876BAC0F26FF39C300D5BF31 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		876BAC1026FF39C300D5BF31 /* ProfileLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileLabel.swift; sourceTree = "<group>"; };
 		876BAC1426FF39D500D5BF31 /* UserImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserImageView.swift; sourceTree = "<group>"; };
-		876BAC1526FF39D600D5BF31 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		876BAC1926FF39E000D5BF31 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		876BAC1526FF39D600D5BF31 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
+		876BAC1926FF39E000D5BF31 /* Owner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Owner.swift; sourceTree = "<group>"; };
 		876BAC1E26FF3A1B00D5BF31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		876BAC2026FF3A2D00D5BF31 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		876BAC2426FF3D7C00D5BF31 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		876BAC2626FF3D7E00D5BF31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		876BAC2F26FF460F00D5BF31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8774D3382709B32B007D359C /* ConversationListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationListCell.swift; sourceTree = "<group>"; };
+		8774D33A2709BB00007D359C /* CustomStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStackView.swift; sourceTree = "<group>"; };
+		8774D33C2709CB6A007D359C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		8774D33E270A024C007D359C /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
+		8783FD02270BCB8400C21A66 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +67,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8768BDEF270C419C0078C271 /* ConversationMessages */ = {
+			isa = PBXGroup;
+			children = (
+				8768BDED270C417B0078C271 /* ConversationViewController.swift */,
+				8768BDF0270C53650078C271 /* MessageCell.swift */,
+			);
+			path = ConversationMessages;
+			sourceTree = "<group>";
+		};
 		876BABED26FF38E800D5BF31 = {
 			isa = PBXGroup;
 			children = (
@@ -74,7 +97,9 @@
 			children = (
 				876BAC0D26FF39C300D5BF31 /* Profile */,
 				876BAC1826FF39E000D5BF31 /* Models */,
-				876BAC1526FF39D600D5BF31 /* MainViewController.swift */,
+				8774D3372709B2EB007D359C /* ConversationsList */,
+				8768BDEF270C419C0078C271 /* ConversationMessages */,
+				8774D33A2709BB00007D359C /* CustomStackView.swift */,
 				876BAC1426FF39D500D5BF31 /* UserImageView.swift */,
 				876BABF926FF38E800D5BF31 /* AppDelegate.swift */,
 				876BAC2F26FF460F00D5BF31 /* Assets.xcassets */,
@@ -101,9 +126,21 @@
 		876BAC1826FF39E000D5BF31 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				876BAC1926FF39E000D5BF31 /* User.swift */,
+				876BAC1926FF39E000D5BF31 /* Owner.swift */,
+				8774D33C2709CB6A007D359C /* User.swift */,
+				8774D33E270A024C007D359C /* TestData.swift */,
+				8783FD02270BCB8400C21A66 /* Message.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		8774D3372709B2EB007D359C /* ConversationsList */ = {
+			isa = PBXGroup;
+			children = (
+				876BAC1526FF39D600D5BF31 /* ConversationsListViewController.swift */,
+				8774D3382709B32B007D359C /* ConversationListCell.swift */,
+			);
+			path = ConversationsList;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -180,14 +217,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				876BAC1726FF39D600D5BF31 /* MainViewController.swift in Sources */,
+				8768BDEE270C417B0078C271 /* ConversationViewController.swift in Sources */,
+				8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */,
+				876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */,
 				876BAC1126FF39C300D5BF31 /* ProfileButton.swift in Sources */,
+				8774D33F270A024D007D359C /* TestData.swift in Sources */,
 				876BABFE26FF38E800D5BF31 /* ViewController.swift in Sources */,
 				876BAC1326FF39C300D5BF31 /* ProfileLabel.swift in Sources */,
-				876BAC1A26FF39E000D5BF31 /* User.swift in Sources */,
+				876BAC1A26FF39E000D5BF31 /* Owner.swift in Sources */,
 				876BAC1626FF39D600D5BF31 /* UserImageView.swift in Sources */,
 				876BAC1226FF39C300D5BF31 /* ProfileViewController.swift in Sources */,
+				8783FD03270BCB8400C21A66 /* Message.swift in Sources */,
+				8768BDF1270C53650078C271 /* MessageCell.swift in Sources */,
 				876BABFA26FF38E800D5BF31 /* AppDelegate.swift in Sources */,
+				8774D3392709B32B007D359C /* ConversationListCell.swift in Sources */,
+				8774D33D2709CB6A007D359C /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,7 +8,7 @@
 
 //MARK: - MainViewController
 
-"navigationItemTitle" = "Чат";
+"navigationItemTitle" = "Тинькофф Чат";
 
 //MARK:  - ProfileViewController
 
@@ -19,3 +19,8 @@
 "cameraAction" = "Камера";
 "gallaryAction" = "Галерея";
 "deleteAction" = "Удалить";
+
+//MARK: - ConversationViewController
+"messageInputFieldPlaceholder" = "Сообщение...";
+"onlineHeaderTitle" = "В сети";
+"offlineHeaderTitle" = "Не в сети";

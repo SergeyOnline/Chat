@@ -8,9 +8,9 @@
 
 //MARK: - MainViewController
 
-"navigationItemTitle" = "Chat";
+"navigationItemTitle" = "Tinkoff Chat";
 
-//MARK:  - ProfileViewController
+//MARK: - ProfileViewController
 
 "profileLabel" = "My Profile";
 "closeButtonTitle" = "Close";
@@ -19,3 +19,9 @@
 "cameraAction" = "Camera";
 "gallaryAction" = "Gallery";
 "deleteAction" = "Delete";
+
+//MARK: - ConversationViewController
+"messageInputFieldPlaceholder" = "Message...";
+"onlineHeaderTitle" = "Online";
+"offlineHeaderTitle" = "Offline";
+
