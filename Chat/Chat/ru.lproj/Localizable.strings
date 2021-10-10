@@ -24,3 +24,9 @@
 "messageInputFieldPlaceholder" = "Сообщение...";
 "onlineHeaderTitle" = "В сети";
 "offlineHeaderTitle" = "Не в сети";
+
+//MARK: = ThemesViewController
+"closeButtonTitle" = "Закрыть";
+"theme1ButtonTitle" = "Тема 1";
+"theme2ButtonTitle" = "Тема 2";
+"theme3ButtonTitle" = "Тема 3";

@@ -27,6 +27,7 @@
 		8774D33D2709CB6A007D359C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33C2709CB6A007D359C /* User.swift */; };
 		8774D33F270A024D007D359C /* TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33E270A024C007D359C /* TestData.swift */; };
 		8781CC142713191000566A90 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC132713191000566A90 /* ThemesViewController.swift */; };
+		8781CC16271324BE00566A90 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC15271324BE00566A90 /* Themes.swift */; };
 		8783FD03270BCB8400C21A66 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8783FD02270BCB8400C21A66 /* Message.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		8774D33C2709CB6A007D359C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		8774D33E270A024C007D359C /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
 		8781CC132713191000566A90 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
+		8781CC15271324BE00566A90 /* Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
 		8783FD02270BCB8400C21A66 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -133,6 +135,7 @@
 				8774D33C2709CB6A007D359C /* User.swift */,
 				8774D33E270A024C007D359C /* TestData.swift */,
 				8783FD02270BCB8400C21A66 /* Message.swift */,
+				8781CC15271324BE00566A90 /* Themes.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8781CC16271324BE00566A90 /* Themes.swift in Sources */,
 				8768BDEE270C417B0078C271 /* ConversationViewController.swift in Sources */,
 				8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */,
 				876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */,

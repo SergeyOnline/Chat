@@ -50,7 +50,6 @@ final class ConversationsListViewController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 
-		view.backgroundColor = .systemGray
 		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
 		
 		let userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
@@ -69,17 +68,31 @@ final class ConversationsListViewController: UIViewController {
 		navigationItem.leftBarButtonItem = settingsBarButtonItem
 
 		
-		tableView = UITableView(frame: view.safeAreaLayoutGuide.layoutFrame, style: .grouped)
-
+		tableView = UITableView(frame: CGRect.zero, style: .grouped)
 		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.rowHeight = Constants.tableViewRowHeight
+		tableView.translatesAutoresizingMaskIntoConstraints = false
 //		tableView.rowHeight = UITableView.automaticDimension
 //		tableView.estimatedRowHeight = 80
 
 		view.addSubview(tableView)
+		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		tableView.bottomAnchor.constraint(equalTo:  view.bottomAnchor).isActive = true
     }
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
+		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
+		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
+		
+	}
 
 	//MARK: - Actions
 	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
@@ -89,7 +102,14 @@ final class ConversationsListViewController: UIViewController {
 	
 	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
 		//TODO: - settings
-		print("TO DO")
+		let themesVC = ThemesViewController()
+		themesVC.modalPresentationStyle = .fullScreen
+		themesVC.completion = {
+			self.tableView.reloadData()
+			self.viewWillAppear(false)
+			self.logThemeChanging()
+		}
+		present(themesVC, animated: true, completion: nil)
 	}
 	
 	//MARK: - Private functions
@@ -112,6 +132,10 @@ final class ConversationsListViewController: UIViewController {
 			}
 		})
 		return hasUnreadMassageUsers + otheUsers
+	}
+	
+	private func logThemeChanging() {
+		print(Theme.theme)
 	}
 }
 
@@ -173,6 +197,11 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 		}
 		conversationVC.delegate = self
 		self.navigationController?.pushViewController(conversationVC, animated: true)
+	}
+	
+	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		let header = view as! UITableViewHeaderFooterView
+		header.textLabel?.textColor = TableViewAppearance.headerTitleColor.uiColor()
 	}
 }
 

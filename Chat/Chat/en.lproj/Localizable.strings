@@ -25,3 +25,8 @@
 "onlineHeaderTitle" = "Online";
 "offlineHeaderTitle" = "Offline";
 
+//MARK: = ThemesViewController
+"closeButtonTitle" = "Close";
+"theme1ButtonTitle" = "Theme 1";
+"theme2ButtonTitle" = "Theme 2";
+"theme3ButtonTitle" = "Theme 3";

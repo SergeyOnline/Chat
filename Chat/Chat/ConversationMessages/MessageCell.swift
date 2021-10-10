@@ -45,6 +45,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	private func setup() {
 		
 		selectionStyle = .none
+		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		
 		messageLabel = UILabel()
 		messageLabel.clipsToBounds = true

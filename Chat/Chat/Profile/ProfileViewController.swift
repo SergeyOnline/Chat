@@ -30,7 +30,8 @@ final class ProfileViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1) : .white
+//		view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1) : .white
+		view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		setupElements()
 	}
 	
@@ -101,7 +102,8 @@ final class ProfileViewController: UIViewController {
 	private func setupElements() {
 		
 		let headerView = UIView()
-		headerView.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) :  UIColor(red: 0.969, green: 0.969, blue: 0.969, alpha: 1)
+//		headerView.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) :  UIColor(red: 0.969, green: 0.969, blue: 0.969, alpha: 1)
+		headerView.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		headerView.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(headerView)
 		headerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -110,6 +112,7 @@ final class ProfileViewController: UIViewController {
 		headerView.heightAnchor.constraint(equalToConstant: 96).isActive = true
 		
 		let profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
+		profileLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		headerView.addSubview(profileLabel)
 		
 		closeButton = ProfileButton(title: NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), fontSize: 17)
@@ -130,11 +133,13 @@ final class ProfileViewController: UIViewController {
 		imageView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 7).isActive = true
 		
 		let nameLabel = ProfileLabel(text: user.fullName, font: UIFont.boldSystemFont(ofSize: 24))
+		nameLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		view.addSubview(nameLabel)
 		nameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 32).isActive = true
 		
 		let infoLabel = ProfileLabel(text: user.info, font: UIFont.systemFont(ofSize: 16))
+		infoLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		infoLabel.numberOfLines = 0
 		infoLabel.lineBreakMode = .byWordWrapping
 		view.addSubview(infoLabel)
@@ -143,7 +148,8 @@ final class ProfileViewController: UIViewController {
 		
 		saveButton = ProfileButton(title: NSLocalizedString(LocalizeKeys.saveButtonTitle, comment: ""), fontSize: 19)
 		saveButton.layer.cornerRadius = 14
-		saveButton.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
+//		saveButton.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
+		saveButton.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		saveButton.addTarget(self, action: #selector(saveButtonAction), for: .touchUpInside)
 		view.addSubview(saveButton)
 		saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true

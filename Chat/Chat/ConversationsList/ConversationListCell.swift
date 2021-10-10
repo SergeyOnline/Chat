@@ -86,6 +86,7 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
+		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		setup()
 	}
 	
@@ -93,10 +94,17 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+		nameLabel.textColor = TableViewCellAppearance.textColor.uiColor()
+	}
+	
 	//MARK: - Private finctions
 	private func setup() {
 		nameLabel = UILabel()
 		nameLabel.font = UIFont.boldSystemFont(ofSize: Constants.headerFontSize)
+		nameLabel.textColor = TableViewCellAppearance.textColor.uiColor()
 		
 		dateLabel = UILabel()
 		dateLabel.font = UIFont.systemFont(ofSize: Constants.bodyFontSize)

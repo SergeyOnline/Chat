@@ -24,7 +24,6 @@ final class ConversationViewController: UIViewController {
 		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
 		static let messageInputFieldCornerRadius = 8.0
 		static let sendButtonImageName = "Send"
-		static let viewBackgroundColor = UIColor(red: 239/255, green: 239/255, blue: 245/255, alpha: 1)
 	}
 	
 	private enum LocalizeKeys {
@@ -37,10 +36,12 @@ final class ConversationViewController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : Constants.viewBackgroundColor
+		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		
 		navigationItem.title = user.fullName
-		navigationController?.navigationBar.tintColor = (traitCollection.userInterfaceStyle == .light) ? .black : .white
+		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
+		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
 
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
@@ -50,7 +51,7 @@ final class ConversationViewController: UIViewController {
 		view.addGestureRecognizer(tapGesture)
 		
 		textinputView = UIView()
-		textinputView.backgroundColor = view.backgroundColor
+		textinputView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
 		textinputView.translatesAutoresizingMaskIntoConstraints = false
 		
 		messageInputField = UITextView()
@@ -93,7 +94,7 @@ final class ConversationViewController: UIViewController {
 		messageInputField.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -60).isActive = true
 		
 		
-		self.view.addSubview(textinputView)
+		view.addSubview(textinputView)
 		textinputView.heightAnchor.constraint(equalTo: messageInputField.heightAnchor, constant: 40).isActive = true
 		textinputView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
 		textinputView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
@@ -101,6 +102,7 @@ final class ConversationViewController: UIViewController {
 		
 
 		tableView = UITableView(frame: CGRect.zero, style: .plain)
+		tableView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.register(MessageCell.self, forCellReuseIdentifier: Constants.inputID)
@@ -108,7 +110,7 @@ final class ConversationViewController: UIViewController {
 		tableView.separatorStyle = .none
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		
-		self.view.addSubview(tableView)
+		view.addSubview(tableView)
 		
 		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
 		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
@@ -131,7 +133,6 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	@objc func sendButtonAction(_ sender: UIButton) {
-//		messageInputField.resignFirstResponder()
 		if messageInputField.text.isEmpty {
 			return
 		}
