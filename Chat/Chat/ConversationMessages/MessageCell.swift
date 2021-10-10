@@ -57,6 +57,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		
 		let vStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
 		vStack.addArrangedSubview(messageLabel)
+		messageLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width * 0.75).isActive = true
 		vStack.translatesAutoresizingMaskIntoConstraints = false
 		vStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
 											left: Constants.vStackUniversalOffset,
