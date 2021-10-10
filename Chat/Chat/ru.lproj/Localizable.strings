@@ -27,6 +27,6 @@
 
 //MARK: = ThemesViewController
 "closeButtonTitle" = "Закрыть";
-"theme1ButtonTitle" = "Тема 1";
-"theme2ButtonTitle" = "Тема 2";
-"theme3ButtonTitle" = "Тема 3";
+"theme1ButtonTitle" = "Светлая";
+"theme2ButtonTitle" = "Темная";
+"theme3ButtonTitle" = "Темно-синяя";
