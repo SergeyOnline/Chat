@@ -51,13 +51,13 @@ class ThemesViewController: UIViewController {
 		switch sender.tag {
 		case 1:
 			Theme.theme = .light
-			UserDefaults.standard.set(1, forKey: "theme")
+			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
 		case 2:
 			Theme.theme = .dark
-			UserDefaults.standard.set(2, forKey: "theme")
+			UserDefaults.standard.set(2, forKey: UserDefaultsKeys.theme)
 		case 3:
 			Theme.theme = .darkBlue
-			UserDefaults.standard.set(3, forKey: "theme")
+			UserDefaults.standard.set(3, forKey: UserDefaultsKeys.theme)
 		default: Theme.theme = .light
 		}
 		viewWillAppear(true)

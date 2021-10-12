@@ -32,11 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window?.makeKeyAndVisible()
 		PrintStateTransitionFrom(.suspended, to: .inactive)
 		
-		print(UserDefaults.standard.integer(forKey: "theme"))
-		
-		switch UserDefaults.standard.integer(forKey: "theme") {
+		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
 		case 0:
-			UserDefaults.standard.set(1, forKey: "theme")
+			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
 			Theme.theme = .light
 		case 1:
 			Theme.theme = .light

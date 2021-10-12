@@ -171,7 +171,7 @@ final class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
 	
-	//MARK:UIImagePickerControllerDelegate
+	//MARK: - Image Picker Controller Delegate
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
 		picker.dismiss(animated: true, completion: nil)
@@ -179,6 +179,6 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 	}
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		print("picker cancel.")
+		picker.dismiss(animated: true, completion: nil)
 	}
 }

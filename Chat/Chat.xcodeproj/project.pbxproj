@@ -29,6 +29,7 @@
 		8781CC142713191000566A90 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC132713191000566A90 /* ThemesViewController.swift */; };
 		8781CC16271324BE00566A90 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC15271324BE00566A90 /* Themes.swift */; };
 		8783FD03270BCB8400C21A66 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8783FD02270BCB8400C21A66 /* Message.swift */; };
+		87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		8781CC132713191000566A90 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		8781CC15271324BE00566A90 /* Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
 		8783FD02270BCB8400C21A66 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				8768BDEF270C419C0078C271 /* ConversationMessages */,
 				8774D33A2709BB00007D359C /* CustomStackView.swift */,
 				8781CC132713191000566A90 /* ThemesViewController.swift */,
+				87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */,
 				876BAC1426FF39D500D5BF31 /* UserImageView.swift */,
 				876BABF926FF38E800D5BF31 /* AppDelegate.swift */,
 				876BAC2F26FF460F00D5BF31 /* Assets.xcassets */,
@@ -227,6 +230,7 @@
 				8768BDEE270C417B0078C271 /* ConversationViewController.swift in Sources */,
 				8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */,
 				876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */,
+				87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */,
 				876BAC1126FF39C300D5BF31 /* ProfileButton.swift in Sources */,
 				8774D33F270A024D007D359C /* TestData.swift in Sources */,
 				876BABFE26FF38E800D5BF31 /* ViewController.swift in Sources */,
