@@ -14,7 +14,7 @@ protocol ConversationsListViewControllerDelegate: AnyObject {
 final class ConversationsListViewController: UIViewController {
 	
 	private enum Constants {
-		static let cellReuseIdentifier = "Cell"
+		static let cellReuseIdentifier = "ConversationsListCell"
 		static let userImageViewCornerRadius = 20.0
 		static let userImageViewWidth = 40.0
 		static let userImageViewHeight = 40.0
@@ -29,8 +29,18 @@ final class ConversationsListViewController: UIViewController {
 		static let offlineHeaderTitle = "offlineHeaderTitle";
 	}
 	
-	var tableView: UITableView!
+	//MARK: - UI
+	var tableView: UITableView = {
+		let table = UITableView(frame: CGRect.zero, style: .grouped)
+		return table
+	}()
 	
+	var userImageView: UserImageView = {
+		let imageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
+		return imageView
+	}()
+	
+	//MARK: - Model
 	private let users = TestData.users
 	private var onlineUsers: [User] {
 		get {
@@ -39,6 +49,7 @@ final class ConversationsListViewController: UIViewController {
 			return users
 		}
 	}
+	
 	private var offlineUsers: [User] {
 		get {
 			var users = users.filter({ $0.online == false})
@@ -47,15 +58,12 @@ final class ConversationsListViewController: UIViewController {
 		}
 	}
 
-	var userImageView: UserImageView!
-	
 	override func viewDidLoad() {
         super.viewDidLoad()
 
 		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
 		navigationItem.backButtonTitle = ""
 		
-		userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
 		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
 		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
 			userImageView.image = UIImage(data: imageData)
@@ -72,15 +80,13 @@ final class ConversationsListViewController: UIViewController {
 		navigationItem.rightBarButtonItem = profileBarButtonItem
 		navigationItem.leftBarButtonItem = settingsBarButtonItem
 
-		
-		tableView = UITableView(frame: CGRect.zero, style: .grouped)
 		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.rowHeight = Constants.tableViewRowHeight
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 //		tableView.rowHeight = UITableView.automaticDimension
-//		tableView.estimatedRowHeight = 80
+		tableView.estimatedRowHeight = 80
 
 		view.addSubview(tableView)
 		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -130,7 +136,11 @@ final class ConversationsListViewController: UIViewController {
 		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true }
 		var otheUsers = users.filter { $0.hasUnreadMessages == false }
 		hasUnreadMassageUsers = hasUnreadMassageUsers.sorted(by: { u1, u2 in
-			return u1.messages!.last!.date > u2.messages!.last!.date
+			
+			guard let lastU1Date = u1.messages?.last?.date else { return false }
+			guard let lastU2Date = u2.messages?.last?.date else { return false }
+
+			return lastU1Date > lastU2Date
 		})
 		otheUsers = otheUsers.sorted(by: { u1, u2 in
 			if u1.messages == nil && u2.messages == nil {
@@ -140,7 +150,9 @@ final class ConversationsListViewController: UIViewController {
 			} else if u2.messages == nil {
 				return true
 			} else {
-				return u1.messages!.last!.date > u2.messages!.last!.date
+				guard let lastU1Date = u1.messages?.last?.date else { return false }
+				guard let lastU2Date = u2.messages?.last?.date else { return false }
+				return lastU1Date > lastU2Date
 			}
 		})
 		return hasUnreadMassageUsers + otheUsers
@@ -166,8 +178,10 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as! ConversationsListCell
-
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as? ConversationsListCell else {
+			return UITableViewCell()
+		}
+		
 		var currentUsers: [User] = []
 		if indexPath.section == 0 {
 			currentUsers = onlineUsers
@@ -212,7 +226,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	}
 	
 	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-		let header = view as! UITableViewHeaderFooterView
+		guard let header = view as? UITableViewHeaderFooterView else { return }
 		header.textLabel?.textColor = TableViewAppearance.headerTitleColor.uiColor()
 	}
 }

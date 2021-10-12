@@ -19,11 +19,26 @@ final class ProfileViewController: UIViewController {
 		static let editButtonTitle = "editButtonTitle"
 	}
 	
-	var closeButton: UIButton!
-	var imageView: UIImageView!
+	//MARK: - Model
 	var user = Owner()
-	var saveButton: UIButton!
-	var editButton: UIButton!
+	
+	//MARK: - UI
+	var closeButton: UIButton = {
+		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), fontSize: 17)
+		return button
+	}()
+	
+	var imageView: UIImageView
+	var saveButton: UIButton = {
+		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.saveButtonTitle, comment: ""), fontSize: 19)
+		return button
+	}()
+	
+	var editButton: UIButton = {
+		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 16)
+		return button
+	}()
+	
 	var completion: (()-> Void)!
 	
 	private var picker = UIImagePickerController()
@@ -43,6 +58,7 @@ final class ProfileViewController: UIViewController {
 	//MARK: - Init
 	
 	init() {
+		imageView = UserImageView(labelTitle: user.initials, labelfontSize: 120)
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -118,7 +134,6 @@ final class ProfileViewController: UIViewController {
 		profileLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		headerView.addSubview(profileLabel)
 		
-		closeButton = ProfileButton(title: NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), fontSize: 17)
 		closeButton.addTarget(self, action: #selector(closeButtonAction), for: .touchUpInside)
 		headerView.addSubview(closeButton)
 		
@@ -127,7 +142,6 @@ final class ProfileViewController: UIViewController {
 		closeButton.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -16).isActive = true
 		closeButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor).isActive = true
 		
-		imageView = UserImageView(labelTitle: user.initials, labelfontSize: 120)
 		imageView.layer.cornerRadius = 120
 		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
 			imageView.image = UIImage(data: imageData)
@@ -152,7 +166,6 @@ final class ProfileViewController: UIViewController {
 		infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		infoLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 32).isActive = true
 		
-		saveButton = ProfileButton(title: NSLocalizedString(LocalizeKeys.saveButtonTitle, comment: ""), fontSize: 19)
 		saveButton.layer.cornerRadius = 14
 //		saveButton.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
 		saveButton.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
@@ -164,7 +177,6 @@ final class ProfileViewController: UIViewController {
 		saveButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
 		saveButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
-		editButton = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 16)
 		editButton.addTarget(self, action: #selector(editButtonAction), for: .touchUpInside)
 		view.addSubview(editButton)
 		editButton.widthAnchor.constraint(equalToConstant: 70).isActive = true

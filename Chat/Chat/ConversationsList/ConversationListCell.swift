@@ -78,11 +78,31 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		}
 	}
 	
-	private var nameLabel: UILabel!
-	private var dateLabel: UILabel!
-	private var messageLabel: UILabel!
-	private var userImageView: UserImageView!
-	private var contentVerticalStack: CustomStackView!
+	//MARK: - UI
+	private var nameLabel: UILabel = {
+		let label = UILabel()
+		return label
+	}()
+	
+	private var dateLabel: UILabel = {
+		let label = UILabel()
+		return label
+	}()
+	
+	private var messageLabel: UILabel = {
+		let label = UILabel()
+		return label
+	}()
+	
+	private var userImageView: UserImageView = {
+		let imageView = UserImageView(labelTitle: "", labelfontSize: Constants.imageHeight / 2)
+		return imageView
+	}()
+	
+	private var contentVerticalStack: CustomStackView = {
+		let stack = CustomStackView(axis: .vertical, distribution: .fillProportionally)
+		return stack
+	}()
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -102,11 +122,9 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 	
 	//MARK: - Private finctions
 	private func setup() {
-		nameLabel = UILabel()
 		nameLabel.font = UIFont.boldSystemFont(ofSize: Constants.headerFontSize)
 		nameLabel.textColor = TableViewCellAppearance.textColor.uiColor()
 		
-		dateLabel = UILabel()
 		dateLabel.font = UIFont.systemFont(ofSize: Constants.bodyFontSize)
 		dateLabel.textColor = .gray
 		dateLabel.textAlignment = .right
@@ -115,17 +133,14 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		headerHorizontalStack.addArrangedSubview(nameLabel)
 		headerHorizontalStack.addArrangedSubview(dateLabel)
 		
-		messageLabel = UILabel()
 		messageLabel.numberOfLines = 2
 		messageLabel.lineBreakMode = .byWordWrapping
 		messageLabel.textColor = .gray
 		
-		contentVerticalStack = CustomStackView(axis: .vertical, distribution: .fillProportionally)
 		contentVerticalStack.addArrangedSubview(headerHorizontalStack)
 		contentVerticalStack.addArrangedSubview(messageLabel)
 		contentVerticalStack.translatesAutoresizingMaskIntoConstraints = false
 		
-		userImageView = UserImageView(labelTitle: "", labelfontSize: Constants.imageHeight / 2)
 		userImageView.layer.masksToBounds = false
 		userImageView.layer.cornerRadius = Constants.imageHeight / 2
 		

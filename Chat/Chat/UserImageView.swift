@@ -9,16 +9,21 @@ import UIKit
 
 final class UserImageView: UIImageView {
 
-	private var statusView: UIView!
-	private var initialLabel: ProfileLabel!
+	private var statusView: UIView = {
+		let view = UIView()
+		return view
+	}()
+	
+	private var initialLabel: ProfileLabel
 	
 	init(labelTitle: String, labelfontSize: CGFloat) {
+		
+		initialLabel = ProfileLabel(text: labelTitle, font: UIFont.systemFont(ofSize: labelfontSize))
 		super.init(image: nil)
 		backgroundColor = UIColor(red: 0.894, green: 0.908, blue: 0.17, alpha: 1)
 		clipsToBounds = true
 		translatesAutoresizingMaskIntoConstraints = false
 	
-		initialLabel = ProfileLabel(text: labelTitle, font: UIFont.systemFont(ofSize: labelfontSize))
 		initialLabel.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(initialLabel)
 		initialLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true

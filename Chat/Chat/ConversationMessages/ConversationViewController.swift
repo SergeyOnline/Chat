@@ -8,12 +8,28 @@
 import UIKit
 
 final class ConversationViewController: UIViewController {
-
+	
+	//MARK: - Model
 	var user: User
+	
+	//MARK: - Dependencies
 	weak var delegate: ConversationsListViewControllerDelegate?
-	var tableView: UITableView!
-	var messageInputField: UITextView!
-	var textinputView: UIView!
+	
+	//MARK: - UI
+	var tableView: UITableView = {
+		let table = UITableView(frame: CGRect.zero, style: .plain)
+		return table
+	}()
+	
+	var messageInputField: UITextView = {
+		let textView = UITextView()
+		return textView
+	}()
+	
+	var textinputView: UIView = {
+		let view = UIView()
+		return view
+	}()
 	
 	private enum Constants {
 		static let inputID = "input"
@@ -34,14 +50,17 @@ final class ConversationViewController: UIViewController {
 		static let messageInputFieldPlaceholder = "messageInputFieldPlaceholder"
 	}
 	
-	private var isKeyboerdHidden = true
+	private var isKeyboardHidden = true
 	
-	private var tapGesture: UITapGestureRecognizer!
+	private var tapGesture: UITapGestureRecognizer = {
+		let gesture =  UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
+		return gesture
+	}()
 	
-    override func viewDidLoad() {
-        super.viewDidLoad()
+	override func viewDidLoad() {
+		super.viewDidLoad()
 		setup()
-    }
+	}
 	
 	//MARK: - Actions
 	@objc func addButtonAction(_ sender: UIButton) {
@@ -92,7 +111,7 @@ final class ConversationViewController: UIViewController {
 			}
 		}
 	}
-    
+	
 	init(user: User) {
 		self.user = user
 		super.init(nibName: nil, bundle: nil)
@@ -103,35 +122,35 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	@objc func keyboardWillShow(_ sender: NSNotification) {
-		if isKeyboerdHidden {
-			isKeyboerdHidden = false
+		if isKeyboardHidden {
+			isKeyboardHidden = false
 			guard let info = sender.userInfo else { return }
-			let height = (info[Constants.keyboardNotificatoinKey] as! CGRect).height
+			guard let rect = info[Constants.keyboardNotificatoinKey] as? CGRect else { return }
+			let height = rect.height
 			let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - height)
 			view.frame = frame
 		}
-		if user.messages != nil {
-			DispatchQueue.main.async {
-				let cellNumber = self.user.messages!.count - 1
-				let indexPath = IndexPath(row: cellNumber, section: 0)
-				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-			}
+		guard let messages = user.messages else { return }
+		DispatchQueue.main.async {
+			let cellNumber = messages.count - 1
+			let indexPath = IndexPath(row: cellNumber, section: 0)
+			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 		}
 	}
 	
 	@objc func keyboardWillHide(_ sender: NSNotification) {
-		if !isKeyboerdHidden {
-			isKeyboerdHidden = true
+		if !isKeyboardHidden {
+			isKeyboardHidden = true
 			guard let info = sender.userInfo else { return }
-			let height = (info[Constants.keyboardNotificatoinKey] as! CGRect).height
+			guard let rect = info[Constants.keyboardNotificatoinKey] as? CGRect else { return }
+			let height = rect.height
 			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
 			self.view.frame = frame
-			if user.messages != nil {
-				DispatchQueue.main.async {
-					let cellNumber = self.user.messages!.count - 1
-					let indexPath = IndexPath(row: cellNumber, section: 0)
-					self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-				}
+			guard let messages = user.messages else  { return }
+			DispatchQueue.main.async {
+				let cellNumber = messages.count - 1
+				let indexPath = IndexPath(row: cellNumber, section: 0)
+				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 			}
 		}
 	}
@@ -152,24 +171,25 @@ final class ConversationViewController: UIViewController {
 		if expectedSize.height > Constants.maxHeightMessageInput {
 			messageInputField.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.maxHeightMessageInput).isActive = true
 			messageInputField.isScrollEnabled = true
-
+			
 		} else {
 			messageInputField.isScrollEnabled = false
 		}
-		UIView.animate(withDuration: 0.1) {
-			self.view.layoutIfNeeded()
-		}
+		
+		view.layoutIfNeeded()
+		
 	}
 	
 	private func setupNavigationBar() {
 		
-//		navigationItem.title = user.fullName
 		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
 		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
 		
 		let navigationTitleView = UIView()
-		navigationTitleView.frame = navigationController!.navigationBar.frame
+		if let frame = navigationController?.navigationBar.frame {
+			navigationTitleView.frame = frame
+		}
 		let titleLabel = UILabel()
 		titleLabel.font = Constants.titleFont
 		titleLabel.text = user.fullName
@@ -184,7 +204,7 @@ final class ConversationViewController: UIViewController {
 		navigationTitleView.addSubview(titleLabel)
 		
 		navigationItem.titleView = navigationTitleView
-
+		
 		titleLabel.centerYAnchor.constraint(equalTo: navigationTitleView.centerYAnchor).isActive = true
 		titleLabel.centerXAnchor.constraint(equalTo: navigationTitleView.centerXAnchor).isActive = true
 		userImageView.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
@@ -197,18 +217,15 @@ final class ConversationViewController: UIViewController {
 		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		
 		setupNavigationBar()
-
+		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
-	
-		tapGesture =  UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
+		
 		view.addGestureRecognizer(tapGesture)
 		
-		textinputView = UIView()
 		textinputView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
 		textinputView.translatesAutoresizingMaskIntoConstraints = false
 		
-		messageInputField = UITextView()
 		messageInputField.layer.cornerRadius = Constants.messageInputFieldCornerRadius
 		messageInputField.translatesAutoresizingMaskIntoConstraints = false
 		messageInputField.isScrollEnabled = false
@@ -230,7 +247,7 @@ final class ConversationViewController: UIViewController {
 		let sendButton = UIButton(type: .roundedRect)
 		let image = UIImage(named: Constants.sendButtonImageName)
 		sendButton.setImage(image, for: .normal)
-
+		
 		sendButton.translatesAutoresizingMaskIntoConstraints = false
 		sendButton.addTarget(self, action: #selector(sendButtonAction(_:)), for: .touchUpInside)
 		sendButton.translatesAutoresizingMaskIntoConstraints = false
@@ -252,7 +269,6 @@ final class ConversationViewController: UIViewController {
 		textinputView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
 		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 		
-		tableView = UITableView(frame: CGRect.zero, style: .plain)
 		tableView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		tableView.delegate = self
 		tableView.dataSource = self
@@ -268,15 +284,14 @@ final class ConversationViewController: UIViewController {
 		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
 		tableView.bottomAnchor.constraint(equalTo: textinputView.topAnchor).isActive = true
 		
-		if user.messages != nil {
-			let cellNumber = user.messages!.count - 1
-			let indexPath = IndexPath(row: cellNumber, section: 0)
-			DispatchQueue.main.async {
-				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-			}
+		guard let messages = user.messages else { return }
+		let cellNumber = messages.count - 1
+		let indexPath = IndexPath(row: cellNumber, section: 0)
+		DispatchQueue.main.async {
+			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 		}
 	}
-
+	
 }
 
 extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
@@ -286,12 +301,14 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-	
+		
 		let id = (user.messages?[indexPath.row].ownerID != 0) ? Constants.inputID : Constants.outputID
-		let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath) as! MessageCell
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath) as? MessageCell else {
+			return UITableViewCell()
+		}
+		
 		cell.messageText = user.messages?[indexPath.row].body ?? ""
 		cell.owherID = user.messages?[indexPath.row].ownerID ?? 0
-
 		return cell
 	}
 	

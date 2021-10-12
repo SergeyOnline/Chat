@@ -24,11 +24,16 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	
 	var messageText: String? {
 		willSet {
-			guard let _ = newValue else { return }
-			messageLabel.text = newValue!
+			guard let value = newValue else { return }
+			messageLabel.text = value
 		}
 	}
-	var messageLabel: UILabel!
+	
+	var messageLabel: UILabel = {
+		let label = UILabel()
+		return label
+	}()
+	
 	var owherID: Int = 0
 
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -47,7 +52,6 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		selectionStyle = .none
 		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		
-		messageLabel = UILabel()
 		messageLabel.clipsToBounds = true
 		messageLabel.layer.cornerRadius = Constants.messageLabelCornerRadius
 		messageLabel.textColor = .black
@@ -55,27 +59,27 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		messageLabel.lineBreakMode = .byWordWrapping
 		messageLabel.translatesAutoresizingMaskIntoConstraints = false
 		
-		let vStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
-		vStack.addArrangedSubview(messageLabel)
+		let wrapperMessageLabelStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
+		wrapperMessageLabelStack.addArrangedSubview(messageLabel)
 		messageLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width * 0.75).isActive = true
-		vStack.translatesAutoresizingMaskIntoConstraints = false
-		vStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
+		wrapperMessageLabelStack.translatesAutoresizingMaskIntoConstraints = false
+		wrapperMessageLabelStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
 											left: Constants.vStackUniversalOffset,
 											bottom: Constants.vStackUniversalOffset,
 											right: Constants.vStackUniversalOffset)
-		vStack.isLayoutMarginsRelativeArrangement = true
-		vStack.layer.cornerRadius = Constants.vStackCornerRadius
+		wrapperMessageLabelStack.isLayoutMarginsRelativeArrangement = true
+		wrapperMessageLabelStack.layer.cornerRadius = Constants.vStackCornerRadius
 		
-		self.contentView.addSubview(vStack)
-		vStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.vStackUniversalOffset).isActive = true
-		vStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
+		self.contentView.addSubview(wrapperMessageLabelStack)
+		wrapperMessageLabelStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.vStackUniversalOffset).isActive = true
+		wrapperMessageLabelStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 		
 		if reuseIdentifier == Constants.InputReuseIdentifier {
-			vStack.backgroundColor = Constants.inputMessageBackgroundColor
-			vStack.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.vStackUniversalOffset).isActive = true
+			wrapperMessageLabelStack.backgroundColor = Constants.inputMessageBackgroundColor
+			wrapperMessageLabelStack.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.vStackUniversalOffset).isActive = true
 		} else {
-			vStack.backgroundColor = Constants.outputMessageBackgroundColor
-			vStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
+			wrapperMessageLabelStack.backgroundColor = Constants.outputMessageBackgroundColor
+			wrapperMessageLabelStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 		}
 		
 	}
