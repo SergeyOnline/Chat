@@ -31,6 +31,12 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	
 	var messageLabel: UILabel = {
 		let label = UILabel()
+		label.clipsToBounds = true
+		label.layer.cornerRadius = Constants.messageLabelCornerRadius
+		label.textColor = .black
+		label.numberOfLines = 0
+		label.lineBreakMode = .byWordWrapping
+		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
 	
@@ -51,13 +57,6 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		
 		selectionStyle = .none
 		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
-		
-		messageLabel.clipsToBounds = true
-		messageLabel.layer.cornerRadius = Constants.messageLabelCornerRadius
-		messageLabel.textColor = .black
-		messageLabel.numberOfLines = 0
-		messageLabel.lineBreakMode = .byWordWrapping
-		messageLabel.translatesAutoresizingMaskIntoConstraints = false
 		
 		let wrapperMessageLabelStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
 		wrapperMessageLabelStack.addArrangedSubview(messageLabel)
@@ -81,7 +80,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			wrapperMessageLabelStack.backgroundColor = Constants.outputMessageBackgroundColor
 			wrapperMessageLabelStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 		}
-		
 	}
+	
 }
 

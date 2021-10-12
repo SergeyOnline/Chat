@@ -23,20 +23,34 @@ final class ProfileViewController: UIViewController {
 	var user = Owner()
 	
 	//MARK: - UI
-	var closeButton: UIButton = {
+	private var closeButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), fontSize: 17)
+		button.addTarget(self, action: #selector(closeButtonAction), for: .touchUpInside)
 		return button
 	}()
 	
-	var imageView: UIImageView
+	private var imageView: UIImageView
+	private var infoLabel: ProfileLabel
+	
 	var saveButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.saveButtonTitle, comment: ""), fontSize: 19)
+		button.layer.cornerRadius = 14
+		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		button.addTarget(self, action: #selector(saveButtonAction), for: .touchUpInside)
 		return button
 	}()
 	
-	var editButton: UIButton = {
+	private var editButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 16)
+		button.addTarget(self, action: #selector(editButtonAction), for: .touchUpInside)
 		return button
+	}()
+	
+	private var headerView: UIView = {
+		let view = UIView()
+		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		view.translatesAutoresizingMaskIntoConstraints = false
+		return view
 	}()
 	
 	var completion: (()-> Void)!
@@ -45,10 +59,8 @@ final class ProfileViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-//		view.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1) : .white
 		view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
-		setupElements()
+		setup()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -59,6 +71,7 @@ final class ProfileViewController: UIViewController {
 	
 	init() {
 		imageView = UserImageView(labelTitle: user.initials, labelfontSize: 120)
+		infoLabel = ProfileLabel(text: user.info, font: UIFont.systemFont(ofSize: 16))
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -118,23 +131,14 @@ final class ProfileViewController: UIViewController {
 		present(picker, animated: true, completion: nil)
 	}
 	
-	private func setupElements() {
+	private func setup() {
 		
-		let headerView = UIView()
-//		headerView.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) :  UIColor(red: 0.969, green: 0.969, blue: 0.969, alpha: 1)
-		headerView.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		headerView.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(headerView)
-		headerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-		headerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-		headerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-		headerView.heightAnchor.constraint(equalToConstant: 96).isActive = true
+		setupHeaderViewConstraints()
 		
 		let profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
 		profileLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		headerView.addSubview(profileLabel)
-		
-		closeButton.addTarget(self, action: #selector(closeButtonAction), for: .touchUpInside)
 		headerView.addSubview(closeButton)
 		
 		profileLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 16).isActive = true
@@ -147,10 +151,7 @@ final class ProfileViewController: UIViewController {
 			imageView.image = UIImage(data: imageData)
 		}
 		view.addSubview(imageView)
-		imageView.widthAnchor.constraint(equalToConstant: 240).isActive = true
-		imageView.heightAnchor.constraint(equalToConstant: 240).isActive = true
-		imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-		imageView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 7).isActive = true
+		setupImageViewConstraints()
 		
 		let nameLabel = ProfileLabel(text: user.fullName, font: UIFont.boldSystemFont(ofSize: 24))
 		nameLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
@@ -158,32 +159,52 @@ final class ProfileViewController: UIViewController {
 		nameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 32).isActive = true
 		
-		let infoLabel = ProfileLabel(text: user.info, font: UIFont.systemFont(ofSize: 16))
-		infoLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
-		infoLabel.numberOfLines = 0
-		infoLabel.lineBreakMode = .byWordWrapping
+		setupInfoLabel()
 		view.addSubview(infoLabel)
 		infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		infoLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 32).isActive = true
 		
-		saveButton.layer.cornerRadius = 14
-//		saveButton.backgroundColor = (traitCollection.userInterfaceStyle == .dark) ? .darkGray.withAlphaComponent(0.4) : UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
-		saveButton.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		saveButton.addTarget(self, action: #selector(saveButtonAction), for: .touchUpInside)
 		view.addSubview(saveButton)
+		setupSaveButtonConstraints()
+		
+		view.addSubview(editButton)
+		setupEditButtonConstraints()
+		
+	}
+	
+	private func setupInfoLabel() {
+		infoLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
+		infoLabel.numberOfLines = 0
+		infoLabel.lineBreakMode = .byWordWrapping
+	}
+	
+	private func setupHeaderViewConstraints() {
+		headerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+		headerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+		headerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+		headerView.heightAnchor.constraint(equalToConstant: 96).isActive = true
+	}
+	
+	private func setupImageViewConstraints() {
+		imageView.widthAnchor.constraint(equalToConstant: 240).isActive = true
+		imageView.heightAnchor.constraint(equalToConstant: 240).isActive = true
+		imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		imageView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 7).isActive = true
+	}
+	
+	private func setupSaveButtonConstraints() {
 		saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		saveButton.widthAnchor.constraint(equalToConstant: 263).isActive = true
 		saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
 		saveButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
 		saveButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		
-		editButton.addTarget(self, action: #selector(editButtonAction), for: .touchUpInside)
-		view.addSubview(editButton)
+	}
+	
+	private func setupEditButtonConstraints() {
 		editButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
 		editButton.heightAnchor.constraint(equalToConstant: 40).isActive =  true
 		editButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -22).isActive = true
 		editButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
-		
 	}
 }
 

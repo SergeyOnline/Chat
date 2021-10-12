@@ -60,39 +60,7 @@ final class ConversationsListViewController: UIViewController {
 
 	override func viewDidLoad() {
         super.viewDidLoad()
-
-		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
-		navigationItem.backButtonTitle = ""
-		
-		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
-		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-			userImageView.image = UIImage(data: imageData)
-		}
-		
-		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
-		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))
-		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
-		userImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
-		
-		let image = UIImage(named: Constants.settingsButtonImageName)
-		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
-	
-		navigationItem.rightBarButtonItem = profileBarButtonItem
-		navigationItem.leftBarButtonItem = settingsBarButtonItem
-
-		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
-		tableView.delegate = self
-		tableView.dataSource = self
-		tableView.rowHeight = Constants.tableViewRowHeight
-		tableView.translatesAutoresizingMaskIntoConstraints = false
-//		tableView.rowHeight = UITableView.automaticDimension
-		tableView.estimatedRowHeight = 80
-
-		view.addSubview(tableView)
-		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		tableView.bottomAnchor.constraint(equalTo:  view.bottomAnchor).isActive = true
+		setup()
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -119,7 +87,6 @@ final class ConversationsListViewController: UIViewController {
 	}
 	
 	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
-		//TODO: - settings
 		let themesVC = ThemesViewController()
 		themesVC.modalPresentationStyle = .fullScreen
 		themesVC.completion = {
@@ -130,7 +97,52 @@ final class ConversationsListViewController: UIViewController {
 		present(themesVC, animated: true, completion: nil)
 	}
 	
-	//MARK: - Private functions
+	//MARK: -- Private functions
+	
+	private func setup() {
+		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
+		navigationItem.backButtonTitle = ""
+		
+		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
+		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+			userImageView.image = UIImage(data: imageData)
+		}
+		
+		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
+		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))
+		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
+		userImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
+		
+		let image = UIImage(named: Constants.settingsButtonImageName)
+		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
+	
+		navigationItem.rightBarButtonItem = profileBarButtonItem
+		navigationItem.leftBarButtonItem = settingsBarButtonItem
+
+		setupTableView()
+		view.addSubview(tableView)
+		setupTableViewConstraints()
+	}
+	
+	//MARK: - setup Table View and Constraints
+	
+	private func setupTableView() {
+		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
+		tableView.delegate = self
+		tableView.dataSource = self
+		tableView.rowHeight = Constants.tableViewRowHeight
+		tableView.translatesAutoresizingMaskIntoConstraints = false
+//		tableView.rowHeight = UITableView.automaticDimension
+		tableView.estimatedRowHeight = 80
+	}
+	
+	private func setupTableViewConstraints() {
+		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		tableView.bottomAnchor.constraint(equalTo:  view.bottomAnchor).isActive = true
+	}
+	
 	private func sortUsers(users: [User]) -> [User] {
 		
 		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true }

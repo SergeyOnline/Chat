@@ -57,6 +57,24 @@ final class ConversationViewController: UIViewController {
 		return gesture
 	}()
 	
+	private let addButton: UIButton = {
+		let button = UIButton(type: .contactAdd)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.addTarget(self, action: #selector(addButtonAction(_:)), for: .touchUpInside)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		return button
+	}()
+	
+	private let sendButton: UIButton = {
+		let button = UIButton(type: .roundedRect)
+		let image = UIImage(named: Constants.sendButtonImageName)
+		button.setImage(image, for: .normal)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.addTarget(self, action: #selector(sendButtonAction(_:)), for: .touchUpInside)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		return button
+	}()
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setup()
@@ -180,6 +198,40 @@ final class ConversationViewController: UIViewController {
 		
 	}
 	
+	private func setup() {
+		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		
+		setupNavigationBar()
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
+		
+		view.addGestureRecognizer(tapGesture)
+		
+		textinputView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
+		textinputView.translatesAutoresizingMaskIntoConstraints = false
+		
+		setupMessageInputField()
+		
+		textinputView.addSubview(addButton)
+		setupAddButtonConstraints()
+		
+		textinputView.addSubview(sendButton)
+		setupSendButtonConstraints()
+		
+		textinputView.addSubview(messageInputField)
+		setupMessageInputFieldConstraints()
+		
+		view.addSubview(textinputView)
+		setupTextinputViewConstraints()
+		
+		setupTableView()
+		view.addSubview(tableView)
+		setupTableViewConstraints()
+		
+		scrollTableViewToEnd()
+	}
+	
 	private func setupNavigationBar() {
 		
 		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
@@ -213,19 +265,7 @@ final class ConversationViewController: UIViewController {
 		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
 	}
 	
-	private func setup() {
-		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		
-		setupNavigationBar()
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
-		
-		view.addGestureRecognizer(tapGesture)
-		
-		textinputView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
-		textinputView.translatesAutoresizingMaskIntoConstraints = false
-		
+	private func setupMessageInputField() {
 		messageInputField.layer.cornerRadius = Constants.messageInputFieldCornerRadius
 		messageInputField.translatesAutoresizingMaskIntoConstraints = false
 		messageInputField.isScrollEnabled = false
@@ -233,42 +273,15 @@ final class ConversationViewController: UIViewController {
 		messageInputField.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
 		messageInputField.textColor = .lightGray
 		resizeTextViewToFitText()
-		
-		let addButton = UIButton(type: .contactAdd)
-		addButton.translatesAutoresizingMaskIntoConstraints = false
-		addButton.addTarget(self, action: #selector(addButtonAction(_:)), for: .touchUpInside)
-		addButton.translatesAutoresizingMaskIntoConstraints = false
-		
-		textinputView.addSubview(addButton)
-		addButton.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 12).isActive = true
-		addButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
-		addButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		
-		let sendButton = UIButton(type: .roundedRect)
-		let image = UIImage(named: Constants.sendButtonImageName)
-		sendButton.setImage(image, for: .normal)
-		
-		sendButton.translatesAutoresizingMaskIntoConstraints = false
-		sendButton.addTarget(self, action: #selector(sendButtonAction(_:)), for: .touchUpInside)
-		sendButton.translatesAutoresizingMaskIntoConstraints = false
-		
-		textinputView.addSubview(sendButton)
-		sendButton.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -12).isActive = true
-		sendButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
-		sendButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
-		sendButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
-		
-		textinputView.addSubview(messageInputField)
+	}
+	
+	private func setupMessageInputFieldConstraints() {
 		messageInputField.centerYAnchor.constraint(equalTo: textinputView.centerYAnchor, constant: -10).isActive = true
 		messageInputField.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 50).isActive = true
 		messageInputField.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -60).isActive = true
-		
-		view.addSubview(textinputView)
-		textinputView.heightAnchor.constraint(equalTo: messageInputField.heightAnchor, constant: 40).isActive = true
-		textinputView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-		textinputView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-		
+	}
+	
+	private func setupTableView() {
 		tableView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		tableView.delegate = self
 		tableView.dataSource = self
@@ -276,14 +289,36 @@ final class ConversationViewController: UIViewController {
 		tableView.register(MessageCell.self, forCellReuseIdentifier: Constants.outputID)
 		tableView.separatorStyle = .none
 		tableView.translatesAutoresizingMaskIntoConstraints = false
-		
-		view.addSubview(tableView)
-		
+	}
+	
+	private func setupTableViewConstraints() {
 		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
 		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
 		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
 		tableView.bottomAnchor.constraint(equalTo: textinputView.topAnchor).isActive = true
-		
+	}
+	
+	private func setupAddButtonConstraints() {
+		addButton.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 12).isActive = true
+		addButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
+		addButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+	}
+	
+	private func setupSendButtonConstraints() {
+		sendButton.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -12).isActive = true
+		sendButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
+		sendButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
+		sendButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+	}
+	
+	private func setupTextinputViewConstraints() {
+		textinputView.heightAnchor.constraint(equalTo: messageInputField.heightAnchor, constant: 40).isActive = true
+		textinputView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		textinputView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+	}
+	
+	private func scrollTableViewToEnd() {
 		guard let messages = user.messages else { return }
 		let cellNumber = messages.count - 1
 		let indexPath = IndexPath(row: cellNumber, section: 0)

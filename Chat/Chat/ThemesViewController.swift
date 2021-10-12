@@ -27,21 +27,39 @@ class ThemesViewController: UIViewController {
 	
 	private var theme1Button: UIButton = {
 		let button = UIButton(type: .system)
+		button.layer.cornerRadius = Constants.buttonsCornerRadius
+		button.tag = 1
+		button.setTitle(NSLocalizedString(LocalizeKeys.theme1ButtonTitle, comment: ""), for: .normal)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
 		return button
 	}()
 	
 	private var theme2Button: UIButton = {
 		let button = UIButton(type: .system)
+		button.layer.cornerRadius = Constants.buttonsCornerRadius
+		button.tag = 2
+		button.setTitle(NSLocalizedString(LocalizeKeys.theme2ButtonTitle, comment: ""), for: .normal)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
 		return button
 	}()
 	
 	private var theme3Button: UIButton = {
 		let button = UIButton(type: .system)
+		button.layer.cornerRadius = Constants.buttonsCornerRadius
+		button.tag = 3
+		button.setTitle(NSLocalizedString(LocalizeKeys.theme3ButtonTitle, comment: ""), for: .normal)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
 		return button
 	}()
 	
 	private var closeButton: UIButton = {
 		let button = UIButton(type: .system)
+		button.setTitle(NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), for: .normal)
+		button.addTarget(self, action: #selector(closeButtonAction(_:)), for: .touchUpInside)
+		button.translatesAutoresizingMaskIntoConstraints = false
 		return button
 	}()
 	
@@ -98,57 +116,53 @@ class ThemesViewController: UIViewController {
 		headerView.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(headerView)
 		
-		headerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-		headerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-		headerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-		headerView.heightAnchor.constraint(equalToConstant: 88).isActive = true
-		
-		closeButton.setTitle(NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), for: .normal)
-		closeButton.addTarget(self, action: #selector(closeButtonAction(_:)), for: .touchUpInside)
-		closeButton.translatesAutoresizingMaskIntoConstraints = false
-		
+		setupHeaderViewConstraints()
+
 		headerView.addSubview(closeButton)
-		closeButton.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -10).isActive = true
-		closeButton.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -10).isActive = true
-		closeButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
-		closeButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
-		
-		theme1Button.layer.cornerRadius = Constants.buttonsCornerRadius
-		theme1Button.tag = 1
-		theme1Button.setTitle(NSLocalizedString(LocalizeKeys.theme1ButtonTitle, comment: ""), for: .normal)
-		theme1Button.translatesAutoresizingMaskIntoConstraints = false
-		theme1Button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
-		
-		theme2Button.layer.cornerRadius = Constants.buttonsCornerRadius
-		theme2Button.tag = 2
-		theme2Button.setTitle(NSLocalizedString(LocalizeKeys.theme2ButtonTitle, comment: ""), for: .normal)
-		theme2Button.translatesAutoresizingMaskIntoConstraints = false
-		theme2Button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
-		
-		theme3Button.layer.cornerRadius = Constants.buttonsCornerRadius
-		theme3Button.tag = 3
-		theme3Button.setTitle(NSLocalizedString(LocalizeKeys.theme3ButtonTitle, comment: ""), for: .normal)
-		theme3Button.translatesAutoresizingMaskIntoConstraints = false
-		theme3Button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
+		setupCloseButtonConstraints()
 		
 		view.addSubview(theme1Button)
 		view.addSubview(theme2Button)
 		view.addSubview(theme3Button)
 		
-		theme2Button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-		theme2Button.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-		theme2Button.widthAnchor.constraint(equalToConstant: view.frame.width / 2).isActive = true
-		theme2Button.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		
+		setupTheme2ButtonConstraints()
+		setupTheme1ButtonConstraints()
+		setupTheme3ButtonConstraints()
+	}
+	
+	private func setupHeaderViewConstraints() {
+		headerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+		headerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+		headerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+		headerView.heightAnchor.constraint(equalToConstant: 88).isActive = true
+	}
+	
+	private func setupCloseButtonConstraints() {
+		closeButton.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -10).isActive = true
+		closeButton.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -10).isActive = true
+		closeButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
+		closeButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
+	}
+	
+	private func setupTheme1ButtonConstraints() {
 		theme1Button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		theme1Button.centerYAnchor.constraint(equalTo: theme2Button.centerYAnchor, constant: -80).isActive = true
 		theme1Button.widthAnchor.constraint(equalTo: theme2Button.widthAnchor).isActive = true
 		theme1Button.heightAnchor.constraint(equalTo: theme2Button.heightAnchor).isActive = true
-		
+	}
+	
+	private func setupTheme2ButtonConstraints() {
+		theme2Button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		theme2Button.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+		theme2Button.widthAnchor.constraint(equalToConstant: view.frame.width / 2).isActive = true
+		theme2Button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+	}
+	
+	private func setupTheme3ButtonConstraints() {
 		theme3Button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		theme3Button.centerYAnchor.constraint(equalTo: theme2Button.centerYAnchor, constant: 80).isActive = true
 		theme3Button.widthAnchor.constraint(equalTo: theme2Button.widthAnchor).isActive = true
 		theme3Button.heightAnchor.constraint(equalTo: theme2Button.heightAnchor).isActive = true
 	}
-
+	
 }

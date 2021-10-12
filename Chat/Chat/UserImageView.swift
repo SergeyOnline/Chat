@@ -11,6 +11,13 @@ final class UserImageView: UIImageView {
 
 	private var statusView: UIView = {
 		let view = UIView()
+		view.layer.borderWidth = 2
+		view.layer.borderColor = UIColor.white.cgColor
+		view.backgroundColor = .green
+		view.translatesAutoresizingMaskIntoConstraints = false
+		view.layer.cornerRadius = 6
+		view.clipsToBounds = false
+		view.isHidden = true
 		return view
 	}()
 	
@@ -29,15 +36,7 @@ final class UserImageView: UIImageView {
 		initialLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 		initialLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
 		
-		statusView = UIView()
-		statusView.layer.borderWidth = 2
-		statusView.layer.borderColor = UIColor.white.cgColor
-		statusView.backgroundColor = .green
-		statusView.translatesAutoresizingMaskIntoConstraints = false
-		statusView.layer.cornerRadius = 6
-		statusView.clipsToBounds = false
 		addSubview(statusView)
-		statusView.isHidden = true
 		statusView.topAnchor.constraint(equalTo: topAnchor).isActive = true
 		statusView.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
 		statusView.heightAnchor.constraint(equalToConstant: 12).isActive = true
