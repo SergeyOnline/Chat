@@ -16,10 +16,15 @@ class ThemesViewController: UIViewController {
 		static let theme3ButtonTitle = "theme3ButtonTitle"
 	}
 	
+	private enum Constants {
+		static let buttonsCornerRadius = 10.0
+	}
+	
 	private var headerView: UIView!
 	private var theme1Button: UIButton!
 	private var theme2Button: UIButton!
 	private var theme3Button: UIButton!
+	private var closeButton: UIButton!
 	
 	var completion: (()-> Void)!
 	
@@ -36,8 +41,12 @@ class ThemesViewController: UIViewController {
 		view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		headerView.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		theme1Button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		theme1Button.setTitleColor(NavigationBarAppearance.elementsColor.uiColor(), for: .normal)
 		theme2Button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		theme2Button.setTitleColor(NavigationBarAppearance.elementsColor.uiColor(), for: .normal)
 		theme3Button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		theme3Button.setTitleColor(NavigationBarAppearance.elementsColor.uiColor(), for: .normal)
+		closeButton.setTitleColor(NavigationBarAppearance.elementsColor.uiColor(), for: .normal)
 		
 	}
 	
@@ -75,7 +84,7 @@ class ThemesViewController: UIViewController {
 		headerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
 		headerView.heightAnchor.constraint(equalToConstant: 88).isActive = true
 		
-		let closeButton = UIButton(type: .system)
+		closeButton = UIButton(type: .system)
 		closeButton.setTitle(NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), for: .normal)
 		closeButton.addTarget(self, action: #selector(closeButtonAction(_:)), for: .touchUpInside)
 		closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -87,19 +96,21 @@ class ThemesViewController: UIViewController {
 		closeButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
 		
 		theme1Button = UIButton(type: .system)
-		theme1Button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		theme1Button.layer.cornerRadius = Constants.buttonsCornerRadius
 		theme1Button.tag = 1
 		theme1Button.setTitle(NSLocalizedString(LocalizeKeys.theme1ButtonTitle, comment: ""), for: .normal)
 		theme1Button.translatesAutoresizingMaskIntoConstraints = false
 		theme1Button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
 		
 		theme2Button = UIButton(type: .system)
+		theme2Button.layer.cornerRadius = Constants.buttonsCornerRadius
 		theme2Button.tag = 2
 		theme2Button.setTitle(NSLocalizedString(LocalizeKeys.theme2ButtonTitle, comment: ""), for: .normal)
 		theme2Button.translatesAutoresizingMaskIntoConstraints = false
 		theme2Button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
 		
 		theme3Button = UIButton(type: .system)
+		theme3Button.layer.cornerRadius = Constants.buttonsCornerRadius
 		theme3Button.tag = 3
 		theme3Button.setTitle(NSLocalizedString(LocalizeKeys.theme3ButtonTitle, comment: ""), for: .normal)
 		theme3Button.translatesAutoresizingMaskIntoConstraints = false
