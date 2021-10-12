@@ -47,14 +47,18 @@ final class ConversationsListViewController: UIViewController {
 		}
 	}
 
+	var userImageView: UserImageView!
+	
 	override func viewDidLoad() {
         super.viewDidLoad()
 
 		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
 		
-		let userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
+		userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
 		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
-	
+		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+			userImageView.image = UIImage(data: imageData)
+		}
 		
 		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
 		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))
@@ -97,6 +101,13 @@ final class ConversationsListViewController: UIViewController {
 	//MARK: - Actions
 	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
 		let profileViewController = ProfileViewController()
+		profileViewController.completion = {
+			if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+				self.userImageView.image = UIImage(data: imageData)
+			} else {
+				self.userImageView.image = nil
+			}
+		}
 		present(profileViewController, animated: true, completion: nil)
 	}
 	

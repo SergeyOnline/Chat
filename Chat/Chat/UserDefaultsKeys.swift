@@ -9,4 +9,5 @@ import Foundation
 
 enum UserDefaultsKeys {
 	static let theme = "theme"
+	static let userImage = "image"
 }

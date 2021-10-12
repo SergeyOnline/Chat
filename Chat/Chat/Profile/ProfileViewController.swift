@@ -24,6 +24,7 @@ final class ProfileViewController: UIViewController {
 	var user = Owner()
 	var saveButton: UIButton!
 	var editButton: UIButton!
+	var completion: (()-> Void)!
 	
 	private var picker = UIImagePickerController()
 	
@@ -74,6 +75,8 @@ final class ProfileViewController: UIViewController {
 		
 		let deleteAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.deleteAction, comment: ""), style: .destructive) { _ in
 			self.imageView.image = nil
+			UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.userImage)
+			self.completion()
 		}
 		
 		picker.delegate = self
@@ -126,6 +129,9 @@ final class ProfileViewController: UIViewController {
 		
 		imageView = UserImageView(labelTitle: user.initials, labelfontSize: 120)
 		imageView.layer.cornerRadius = 120
+		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+			imageView.image = UIImage(data: imageData)
+		}
 		view.addSubview(imageView)
 		imageView.widthAnchor.constraint(equalToConstant: 240).isActive = true
 		imageView.heightAnchor.constraint(equalToConstant: 240).isActive = true
@@ -176,6 +182,11 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
 		picker.dismiss(animated: true, completion: nil)
 		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+		
+		guard let image = imageView.image else { return }
+		let imageData = image.jpegData(compressionQuality: 0.3)
+		UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.userImage)
+		completion()
 	}
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
