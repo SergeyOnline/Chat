@@ -53,6 +53,7 @@ final class ConversationsListViewController: UIViewController {
         super.viewDidLoad()
 
 		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
+		navigationItem.backButtonTitle = ""
 		
 		userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
 		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius

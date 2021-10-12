@@ -15,7 +15,6 @@ final class ConversationViewController: UIViewController {
 	var messageInputField: UITextView!
 	var textinputView: UIView!
 	
-	
 	private enum Constants {
 		static let inputID = "input"
 		static let outputID = "output"
@@ -24,6 +23,11 @@ final class ConversationViewController: UIViewController {
 		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
 		static let messageInputFieldCornerRadius = 8.0
 		static let sendButtonImageName = "Send"
+		static let userImageViewCornerRadius = 18.0
+		static let userImageViewWidth = 36.0
+		static let userImageViewHeight = 36.0
+		static let userImageViewLabelfontSize = 18.0
+		static let titleFont = UIFont.boldSystemFont(ofSize: 16)
 	}
 	
 	private enum LocalizeKeys {
@@ -36,94 +40,7 @@ final class ConversationViewController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		
-		navigationItem.title = user.fullName
-		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
-		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
-		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
-
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
-	
-		tapGesture =  UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
-		view.addGestureRecognizer(tapGesture)
-		
-		textinputView = UIView()
-		textinputView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
-		textinputView.translatesAutoresizingMaskIntoConstraints = false
-		
-		messageInputField = UITextView()
-		messageInputField.layer.cornerRadius = Constants.messageInputFieldCornerRadius
-		messageInputField.translatesAutoresizingMaskIntoConstraints = false
-		messageInputField.isScrollEnabled = false
-		messageInputField.delegate = self
-		messageInputField.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
-		messageInputField.textColor = .lightGray
-		resizeTextViewToFitText()
-		
-		let addButton = UIButton(type: .contactAdd)
-		addButton.translatesAutoresizingMaskIntoConstraints = false
-		addButton.addTarget(self, action: #selector(addButtonAction(_:)), for: .touchUpInside)
-		addButton.translatesAutoresizingMaskIntoConstraints = false
-		
-		textinputView.addSubview(addButton)
-		addButton.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 12).isActive = true
-		addButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
-		addButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		
-		let sendButton = UIButton(type: .roundedRect)
-		let image = UIImage(named: Constants.sendButtonImageName)
-		sendButton.setImage(image, for: .normal)
-
-		sendButton.translatesAutoresizingMaskIntoConstraints = false
-		sendButton.addTarget(self, action: #selector(sendButtonAction(_:)), for: .touchUpInside)
-		sendButton.translatesAutoresizingMaskIntoConstraints = false
-		
-		textinputView.addSubview(sendButton)
-		sendButton.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -12).isActive = true
-		sendButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
-		sendButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
-		sendButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
-		
-		
-		textinputView.addSubview(messageInputField)
-		messageInputField.centerYAnchor.constraint(equalTo: textinputView.centerYAnchor, constant: -10).isActive = true
-		messageInputField.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 50).isActive = true
-		messageInputField.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -60).isActive = true
-		
-		
-		view.addSubview(textinputView)
-		textinputView.heightAnchor.constraint(equalTo: messageInputField.heightAnchor, constant: 40).isActive = true
-		textinputView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-		textinputView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-		
-
-		tableView = UITableView(frame: CGRect.zero, style: .plain)
-		tableView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
-		tableView.delegate = self
-		tableView.dataSource = self
-		tableView.register(MessageCell.self, forCellReuseIdentifier: Constants.inputID)
-		tableView.register(MessageCell.self, forCellReuseIdentifier: Constants.outputID)
-		tableView.separatorStyle = .none
-		tableView.translatesAutoresizingMaskIntoConstraints = false
-		
-		view.addSubview(tableView)
-		
-		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		tableView.bottomAnchor.constraint(equalTo: textinputView.topAnchor).isActive = true
-		
-		if user.messages != nil {
-			let cellNumber = user.messages!.count - 1
-			let indexPath = IndexPath(row: cellNumber, section: 0)
-			DispatchQueue.main.async {
-				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-			}
-		}
+		setup()
     }
 	
 	//MARK: - Actions
@@ -241,6 +158,122 @@ final class ConversationViewController: UIViewController {
 		}
 		UIView.animate(withDuration: 0.1) {
 			self.view.layoutIfNeeded()
+		}
+	}
+	
+	private func setupNavigationBar() {
+		
+//		navigationItem.title = user.fullName
+		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
+		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
+		
+		let navigationTitleView = UIView()
+		navigationTitleView.frame = navigationController!.navigationBar.frame
+		let titleLabel = UILabel()
+		titleLabel.font = Constants.titleFont
+		titleLabel.text = user.fullName
+		titleLabel.sizeToFit()
+		titleLabel.textAlignment = .center
+		titleLabel.translatesAutoresizingMaskIntoConstraints = false
+		titleLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
+		let userImageView = UserImageView(labelTitle: user.initials, labelfontSize: Constants.userImageViewLabelfontSize)
+		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
+		userImageView.translatesAutoresizingMaskIntoConstraints = false
+		navigationTitleView.addSubview(userImageView)
+		navigationTitleView.addSubview(titleLabel)
+		
+		navigationItem.titleView = navigationTitleView
+
+		titleLabel.centerYAnchor.constraint(equalTo: navigationTitleView.centerYAnchor).isActive = true
+		titleLabel.centerXAnchor.constraint(equalTo: navigationTitleView.centerXAnchor).isActive = true
+		userImageView.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
+		userImageView.rightAnchor.constraint(equalTo: titleLabel.leftAnchor, constant: -10).isActive = true
+		userImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
+		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
+	}
+	
+	private func setup() {
+		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		
+		setupNavigationBar()
+
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
+	
+		tapGesture =  UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
+		view.addGestureRecognizer(tapGesture)
+		
+		textinputView = UIView()
+		textinputView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
+		textinputView.translatesAutoresizingMaskIntoConstraints = false
+		
+		messageInputField = UITextView()
+		messageInputField.layer.cornerRadius = Constants.messageInputFieldCornerRadius
+		messageInputField.translatesAutoresizingMaskIntoConstraints = false
+		messageInputField.isScrollEnabled = false
+		messageInputField.delegate = self
+		messageInputField.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
+		messageInputField.textColor = .lightGray
+		resizeTextViewToFitText()
+		
+		let addButton = UIButton(type: .contactAdd)
+		addButton.translatesAutoresizingMaskIntoConstraints = false
+		addButton.addTarget(self, action: #selector(addButtonAction(_:)), for: .touchUpInside)
+		addButton.translatesAutoresizingMaskIntoConstraints = false
+		
+		textinputView.addSubview(addButton)
+		addButton.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 12).isActive = true
+		addButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
+		addButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		
+		let sendButton = UIButton(type: .roundedRect)
+		let image = UIImage(named: Constants.sendButtonImageName)
+		sendButton.setImage(image, for: .normal)
+
+		sendButton.translatesAutoresizingMaskIntoConstraints = false
+		sendButton.addTarget(self, action: #selector(sendButtonAction(_:)), for: .touchUpInside)
+		sendButton.translatesAutoresizingMaskIntoConstraints = false
+		
+		textinputView.addSubview(sendButton)
+		sendButton.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -12).isActive = true
+		sendButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
+		sendButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
+		sendButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+		
+		textinputView.addSubview(messageInputField)
+		messageInputField.centerYAnchor.constraint(equalTo: textinputView.centerYAnchor, constant: -10).isActive = true
+		messageInputField.leftAnchor.constraint(equalTo: textinputView.leftAnchor, constant: 50).isActive = true
+		messageInputField.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -60).isActive = true
+		
+		view.addSubview(textinputView)
+		textinputView.heightAnchor.constraint(equalTo: messageInputField.heightAnchor, constant: 40).isActive = true
+		textinputView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		textinputView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+		
+		tableView = UITableView(frame: CGRect.zero, style: .plain)
+		tableView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+		tableView.delegate = self
+		tableView.dataSource = self
+		tableView.register(MessageCell.self, forCellReuseIdentifier: Constants.inputID)
+		tableView.register(MessageCell.self, forCellReuseIdentifier: Constants.outputID)
+		tableView.separatorStyle = .none
+		tableView.translatesAutoresizingMaskIntoConstraints = false
+		
+		view.addSubview(tableView)
+		
+		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		tableView.bottomAnchor.constraint(equalTo: textinputView.topAnchor).isActive = true
+		
+		if user.messages != nil {
+			let cellNumber = user.messages!.count - 1
+			let indexPath = IndexPath(row: cellNumber, section: 0)
+			DispatchQueue.main.async {
+				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+			}
 		}
 	}
 
