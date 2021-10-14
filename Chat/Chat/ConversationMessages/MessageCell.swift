@@ -67,7 +67,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 											bottom: Constants.vStackUniversalOffset,
 											right: Constants.vStackUniversalOffset)
 		wrapperMessageLabelStack.isLayoutMarginsRelativeArrangement = true
-		if #available(iOS 13.0, *) {
+		if #available(iOS 14.0, *) {
 			wrapperMessageLabelStack.layer.cornerRadius = Constants.vStackCornerRadius
 		}
 		
@@ -76,14 +76,14 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		wrapperMessageLabelStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 		
 		if reuseIdentifier == Constants.InputReuseIdentifier {
-			if #available(iOS 13.0, *) {
+			if #available(iOS 14.0, *) {
 				wrapperMessageLabelStack.backgroundColor = Constants.inputMessageBackgroundColor
 			} else {
 				messageLabel.backgroundColor = Constants.inputMessageBackgroundColor
 			}
 			wrapperMessageLabelStack.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.vStackUniversalOffset).isActive = true
 		} else {
-			if #available(iOS 13.0, *) {
+			if #available(iOS 14.0, *) {
 				wrapperMessageLabelStack.backgroundColor = Constants.outputMessageBackgroundColor
 			} else {
 				messageLabel.backgroundColor = Constants.outputMessageBackgroundColor
