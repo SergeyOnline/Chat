@@ -67,17 +67,27 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 											bottom: Constants.vStackUniversalOffset,
 											right: Constants.vStackUniversalOffset)
 		wrapperMessageLabelStack.isLayoutMarginsRelativeArrangement = true
-		wrapperMessageLabelStack.layer.cornerRadius = Constants.vStackCornerRadius
+		if #available(iOS 13.0, *) {
+			wrapperMessageLabelStack.layer.cornerRadius = Constants.vStackCornerRadius
+		}
 		
 		self.contentView.addSubview(wrapperMessageLabelStack)
 		wrapperMessageLabelStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.vStackUniversalOffset).isActive = true
 		wrapperMessageLabelStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 		
 		if reuseIdentifier == Constants.InputReuseIdentifier {
-			wrapperMessageLabelStack.backgroundColor = Constants.inputMessageBackgroundColor
+			if #available(iOS 13.0, *) {
+				wrapperMessageLabelStack.backgroundColor = Constants.inputMessageBackgroundColor
+			} else {
+				messageLabel.backgroundColor = Constants.inputMessageBackgroundColor
+			}
 			wrapperMessageLabelStack.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.vStackUniversalOffset).isActive = true
 		} else {
-			wrapperMessageLabelStack.backgroundColor = Constants.outputMessageBackgroundColor
+			if #available(iOS 13.0, *) {
+				wrapperMessageLabelStack.backgroundColor = Constants.outputMessageBackgroundColor
+			} else {
+				messageLabel.backgroundColor = Constants.outputMessageBackgroundColor
+			}
 			wrapperMessageLabelStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 		}
 	}
