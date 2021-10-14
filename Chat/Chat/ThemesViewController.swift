@@ -63,7 +63,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	var completion: (()-> Void)!
+	var completion: (()-> Void) = {}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
