@@ -60,7 +60,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		
 		let wrapperMessageLabelStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
 		wrapperMessageLabelStack.addArrangedSubview(messageLabel)
-		messageLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width * 0.75).isActive = true
+		messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: contentView.frame.width * 0.75).isActive = true
 		wrapperMessageLabelStack.translatesAutoresizingMaskIntoConstraints = false
 		wrapperMessageLabelStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
 											left: Constants.vStackUniversalOffset,
