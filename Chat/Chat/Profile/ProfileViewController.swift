@@ -15,8 +15,8 @@ final class ProfileViewController: UIViewController {
 		static let deleteAction = "deleteAction"
 		static let profileLabel = "profileLabel"
 		static let closeButtonTitle = "closeButtonTitle"
-		static let saveButtonTitle = "saveButtonTitle"
 		static let editButtonTitle = "editButtonTitle"
+		static let editImageButtonTitle = "editImageButtonTitle"
 	}
 	
 	//MARK: - Model
@@ -33,16 +33,16 @@ final class ProfileViewController: UIViewController {
 	private var infoLabel: ProfileLabel
 	
 	var saveButton: UIButton = {
-		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.saveButtonTitle, comment: ""), fontSize: 19)
+		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 19)
 		button.layer.cornerRadius = 14
 		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		button.addTarget(self, action: #selector(saveButtonAction), for: .touchUpInside)
+		button.addTarget(self, action: #selector(editButtonAction), for: .touchUpInside)
 		return button
 	}()
 	
 	private var editButton: UIButton = {
-		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 16)
-		button.addTarget(self, action: #selector(editButtonAction), for: .touchUpInside)
+		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editImageButtonTitle, comment: ""), fontSize: 16)
+		button.addTarget(self, action: #selector(editImageButtonAction), for: .touchUpInside)
 		return button
 	}()
 	
@@ -87,11 +87,11 @@ final class ProfileViewController: UIViewController {
 		dismiss(animated: true, completion: nil)
 	}
 	
-	@objc func saveButtonAction(_ sender: UIButton) {
+	@objc func editButtonAction(_ sender: UIButton) {
 		print("Save button tapped")
 	}
 	
-	@objc func editButtonAction(_ sender: UIButton) {
+	@objc func editImageButtonAction(_ sender: UIButton) {
 		
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 		let cameraAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.cameraAction, comment: ""), style: .default) { _ in
