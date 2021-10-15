@@ -15,6 +15,7 @@
 "profileLabel" = "My Profile";
 "closeButtonTitle" = "Close";
 "editButtonTitle" = "Edit";
+"cancelButtonTitle" = "Cancel";
 "editImageButtonTitle" = "Edit";
 "cameraAction" = "Camera";
 "gallaryAction" = "Gallery";

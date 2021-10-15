@@ -17,6 +17,7 @@ final class ProfileViewController: UIViewController {
 		static let closeButtonTitle = "closeButtonTitle"
 		static let editButtonTitle = "editButtonTitle"
 		static let editImageButtonTitle = "editImageButtonTitle"
+		static let cancelButtonTitle = "cancelButtonTitle"
 	}
 	
 	//MARK: - Model
@@ -32,7 +33,7 @@ final class ProfileViewController: UIViewController {
 	private var imageView: UIImageView
 	private var infoLabel: ProfileLabel
 	
-	var saveButton: UIButton = {
+	var editButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 19)
 		button.layer.cornerRadius = 14
 		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
@@ -40,9 +41,36 @@ final class ProfileViewController: UIViewController {
 		return button
 	}()
 	
-	private var editButton: UIButton = {
+	private var editImageButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editImageButtonTitle, comment: ""), fontSize: 16)
 		button.addTarget(self, action: #selector(editImageButtonAction), for: .touchUpInside)
+		return button
+	}()
+	
+	private var cancelButton: UIButton = {
+		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.cancelButtonTitle, comment: ""), fontSize: 16)
+		button.layer.cornerRadius = 14
+		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		button.addTarget(self, action: #selector(cancelButtonAction(_:)), for: .touchUpInside)
+		button.isHidden = true
+		return button
+	}()
+	
+	private var saveGCDButton: UIButton = {
+		let button = ProfileButton(title: "Save GCD", fontSize: 14)
+		button.layer.cornerRadius = 14
+		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		
+		button.isHidden = true
+		return button
+	}()
+	
+	private var saveOperationsButton: UIButton = {
+		let button = ProfileButton(title: "Save Operations", fontSize: 14)
+		button.layer.cornerRadius = 14
+		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		
+		button.isHidden = true
 		return button
 	}()
 	
@@ -88,7 +116,11 @@ final class ProfileViewController: UIViewController {
 	}
 	
 	@objc func editButtonAction(_ sender: UIButton) {
-		print("Save button tapped")
+		sender.isHidden = true
+		cancelButton.isHidden = false
+		saveGCDButton.isHidden = false
+		saveOperationsButton.isHidden = false
+		print("Edit button tapped")
 	}
 	
 	@objc func editImageButtonAction(_ sender: UIButton) {
@@ -113,6 +145,14 @@ final class ProfileViewController: UIViewController {
 		alert.addAction(gallaryAction)
 		alert.addAction(deleteAction)
 		present(alert, animated: true, completion: nil)
+	}
+	
+	@objc func cancelButtonAction(_ sender: UIButton) {
+		sender.isHidden = true
+		editButton.isHidden = false
+		saveGCDButton.isHidden = true
+		saveOperationsButton.isHidden = true
+		print("Cancel button tapped")
 	}
 	
 	
@@ -164,11 +204,20 @@ final class ProfileViewController: UIViewController {
 		infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		infoLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 32).isActive = true
 		
-		view.addSubview(saveButton)
-		setupSaveButtonConstraints()
-		
 		view.addSubview(editButton)
 		setupEditButtonConstraints()
+		
+		view.addSubview(cancelButton)
+		setupCancelButtonConctraints()
+		
+		view.addSubview(saveGCDButton)
+		setupSaveGCDButtonConctraints()
+		
+		view.addSubview(saveOperationsButton)
+		setupSaveOperationsButtonConctraints()
+		
+		view.addSubview(editImageButton)
+		setupEditImageButtonConstraints()
 		
 	}
 	
@@ -192,19 +241,44 @@ final class ProfileViewController: UIViewController {
 		imageView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 7).isActive = true
 	}
 	
-	private func setupSaveButtonConstraints() {
-		saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-		saveButton.widthAnchor.constraint(equalToConstant: 263).isActive = true
-		saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
-		saveButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
-		saveButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+	private func setupEditButtonConstraints() {
+		editButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		editButton.widthAnchor.constraint(equalToConstant: 263).isActive = true
+		editButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
+		editButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
+		editButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
 	}
 	
-	private func setupEditButtonConstraints() {
-		editButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
-		editButton.heightAnchor.constraint(equalToConstant: 40).isActive =  true
-		editButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -22).isActive = true
-		editButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
+	private func setupCancelButtonConctraints() {
+		cancelButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		cancelButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+		cancelButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+		cancelButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
+		cancelButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
+		cancelButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+	}
+	
+	private func setupSaveGCDButtonConctraints() {
+		saveGCDButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+		saveGCDButton.rightAnchor.constraint(equalTo: view.centerXAnchor, constant: -5).isActive = true
+		saveGCDButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
+		saveGCDButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
+		saveGCDButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+	}
+	
+	private func setupSaveOperationsButtonConctraints() {
+		saveOperationsButton.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 5).isActive = true
+		saveOperationsButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+		saveOperationsButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
+//		saveOperationsButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
+		saveOperationsButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+	}
+	
+	private func setupEditImageButtonConstraints() {
+		editImageButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+		editImageButton.heightAnchor.constraint(equalToConstant: 40).isActive =  true
+		editImageButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -22).isActive = true
+		editImageButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
 	}
 }
 

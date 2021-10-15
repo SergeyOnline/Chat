@@ -15,6 +15,7 @@
 "profileLabel" = "Мой Профиль";
 "closeButtonTitle" = "Закрыть";
 "editButtonTitle" = "Редактировать";
+"cancelButtonTitle" = "Отмена";
 "editImageButtonTitle" = "Править";
 "cameraAction" = "Камера";
 "gallaryAction" = "Галерея";
