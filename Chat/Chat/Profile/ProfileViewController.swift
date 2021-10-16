@@ -18,11 +18,13 @@ final class ProfileViewController: UIViewController {
 		static let editButtonTitle = "editButtonTitle"
 		static let editImageButtonTitle = "editImageButtonTitle"
 		static let cancelButtonTitle = "cancelButtonTitle"
+		static let nameTextFieldPlaceholder = "nameTextFieldPlaceholder"
 	}
 	
 	private enum Constants {
 		static let saveGCDButtonTag = 1
 		static let saveOperationsButtonTag = 2
+		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
 	}
 	
 	//MARK: - Model
@@ -36,7 +38,16 @@ final class ProfileViewController: UIViewController {
 	}()
 	
 	private var imageView: UIImageView
-	private var infoLabel: ProfileLabel
+	private var infoTextView: UITextView = {
+		let textView = UITextView()
+		textView.isScrollEnabled = false
+		textView.textContainer.maximumNumberOfLines = 2
+		textView.textColor = NavigationBarAppearance.elementsColor.uiColor()
+		textView.font = UIFont.systemFont(ofSize: 16)
+		textView.translatesAutoresizingMaskIntoConstraints = false
+		textView.isUserInteractionEnabled = false
+		return textView
+	}()
 	
 	var editButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 19)
@@ -85,6 +96,19 @@ final class ProfileViewController: UIViewController {
 		return button
 	}()
 	
+	private var nameTextField: UITextField = {
+		let textField = UITextField()
+		textField.textColor = NavigationBarAppearance.elementsColor.uiColor()
+		textField.font = UIFont.boldSystemFont(ofSize: 20)
+		textField.translatesAutoresizingMaskIntoConstraints = false
+		let placeholder = NSLocalizedString(LocalizeKeys.nameTextFieldPlaceholder, comment: "")
+		textField.attributedPlaceholder = NSAttributedString(string: placeholder,
+															 attributes: [NSAttributedString.Key.foregroundColor: UIColor.systemGray])
+		textField.isEnabled = false
+		textField.addTarget(self, action: #selector(nameTextFieldEditing(_:)), for: .editingChanged)
+		return textField
+	}()
+	
 	private var headerView: UIView = {
 		let view = UIView()
 		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
@@ -95,6 +119,7 @@ final class ProfileViewController: UIViewController {
 	var completion: (()-> Void)!
 	
 	private var picker = UIImagePickerController()
+	private var isKeyboardHidden = true
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -110,7 +135,7 @@ final class ProfileViewController: UIViewController {
 	
 	init() {
 		imageView = UserImageView(labelTitle: user.initials, labelfontSize: 120)
-		infoLabel = ProfileLabel(text: user.info, font: UIFont.systemFont(ofSize: 16))
+		infoTextView.text = user.info
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -133,6 +158,9 @@ final class ProfileViewController: UIViewController {
 		saveOperationsButton.isHidden = false
 		saveGCDButton.isEnabled = false
 		saveOperationsButton.isEnabled = false
+		infoTextView.isUserInteractionEnabled = true
+		nameTextField.isEnabled = true
+		nameTextField.becomeFirstResponder()
 		print("Edit button tapped")
 	}
 	
@@ -165,6 +193,8 @@ final class ProfileViewController: UIViewController {
 		editButton.isHidden = false
 		saveGCDButton.isHidden = true
 		saveOperationsButton.isHidden = true
+		nameTextField.isEnabled = false
+		infoTextView.isUserInteractionEnabled = false
 		print("Cancel button tapped")
 	}
 	
@@ -175,6 +205,57 @@ final class ProfileViewController: UIViewController {
 		case Constants.saveOperationsButtonTag:
 			print("saveOperationsButton tapped")
 		default: break
+		}
+	}
+	
+	@objc func nameTextFieldEditing(_ sender: UITextField) {
+		guard let text = sender.text else { return }
+		if text.isEmpty {
+			saveGCDButton.isEnabled = false
+			saveOperationsButton.isEnabled = false
+		} else {
+			saveGCDButton.isEnabled = true
+			saveOperationsButton.isEnabled = true
+		}
+		if (sender.text?.count ?? 0) > 28 {
+			sender.text?.removeLast()
+		}
+	}
+	
+	@objc func keyboardWillShow(_ sender: NSNotification) {
+		if isKeyboardHidden {
+			isKeyboardHidden = false
+			guard let info = sender.userInfo else { return }
+			guard let rect = info[Constants.keyboardNotificatoinKey] as? CGRect else { return }
+			let height = rect.height
+			let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - height)
+			view.frame = frame
+			imageView.isHidden = true
+			for constraint in imageView.constraints {
+				if constraint.firstAttribute == .height {
+					constraint.constant = 1
+				}
+			}
+			
+			editImageButton.isHidden = true
+		}
+	}
+	
+	@objc func keyboardWillHide(_ sender: NSNotification) {
+		if !isKeyboardHidden {
+			isKeyboardHidden = true
+			guard let info = sender.userInfo else { return }
+			guard let rect = info[Constants.keyboardNotificatoinKey] as? CGRect else { return }
+			let height = rect.height
+			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
+			self.view.frame = frame
+			imageView.isHidden = false
+			for constraint in imageView.constraints {
+				if constraint.firstAttribute == .height {
+					constraint.constant = 240
+				}
+			}
+			editImageButton.isHidden = false
 		}
 	}
 	
@@ -199,6 +280,9 @@ final class ProfileViewController: UIViewController {
 		view.addSubview(headerView)
 		setupHeaderViewConstraints()
 		
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
+		
 		let profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
 		profileLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		headerView.addSubview(profileLabel)
@@ -216,16 +300,13 @@ final class ProfileViewController: UIViewController {
 		view.addSubview(imageView)
 		setupImageViewConstraints()
 		
-		let nameLabel = ProfileLabel(text: user.fullName, font: UIFont.boldSystemFont(ofSize: 24))
-		nameLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
-		view.addSubview(nameLabel)
-		nameLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-		nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 32).isActive = true
+		nameTextField.text = user.fullName
+		nameTextField.delegate = self
+		view.addSubview(nameTextField)
+		setupNameTextFieldConstraints()
 		
-		setupInfoLabel()
-		view.addSubview(infoLabel)
-		infoLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-		infoLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 32).isActive = true
+		view.addSubview(infoTextView)
+		setupInfoTextViewConstraints()
 		
 		view.addSubview(editButton)
 		setupEditButtonConstraints()
@@ -244,10 +325,9 @@ final class ProfileViewController: UIViewController {
 		
 	}
 	
-	private func setupInfoLabel() {
-		infoLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
-		infoLabel.numberOfLines = 0
-		infoLabel.lineBreakMode = .byWordWrapping
+	private func setupInfoTextViewConstraints() {
+		infoTextView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		infoTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 5).isActive = true
 	}
 	
 	private func setupHeaderViewConstraints() {
@@ -268,33 +348,31 @@ final class ProfileViewController: UIViewController {
 		editButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		editButton.widthAnchor.constraint(equalToConstant: 263).isActive = true
 		editButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
-		editButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
-		editButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		editButton.topAnchor.constraint(greaterThanOrEqualTo: infoTextView.bottomAnchor).isActive = true
+		editButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
 	}
 	
 	private func setupCancelButtonConctraints() {
 		cancelButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		cancelButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
 		cancelButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-		cancelButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
-		cancelButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
-		cancelButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		cancelButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -72).isActive = true
+//		cancelButton.topAnchor.constraint(greaterThanOrEqualTo: infoTextView.bottomAnchor).isActive = true
+		cancelButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
 	}
 	
 	private func setupSaveGCDButtonConctraints() {
 		saveGCDButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
 		saveGCDButton.rightAnchor.constraint(equalTo: view.centerXAnchor, constant: -5).isActive = true
-		saveGCDButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
-		saveGCDButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
-		saveGCDButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		saveGCDButton.topAnchor.constraint(greaterThanOrEqualTo: cancelButton.bottomAnchor, constant: 5).isActive = true
+		saveGCDButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
 	}
 	
 	private func setupSaveOperationsButtonConctraints() {
 		saveOperationsButton.leftAnchor.constraint(equalTo: view.centerXAnchor, constant: 5).isActive = true
 		saveOperationsButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-		saveOperationsButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
-//		saveOperationsButton.topAnchor.constraint(greaterThanOrEqualTo: infoLabel.bottomAnchor).isActive = true
-		saveOperationsButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		saveOperationsButton.topAnchor.constraint(greaterThanOrEqualTo: cancelButton.bottomAnchor, constant: 5).isActive = true
+		saveOperationsButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
 	}
 	
 	private func setupEditImageButtonConstraints() {
@@ -302,6 +380,16 @@ final class ProfileViewController: UIViewController {
 		editImageButton.heightAnchor.constraint(equalToConstant: 40).isActive =  true
 		editImageButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -22).isActive = true
 		editImageButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
+	}
+	
+	private func setupNameTextFieldConstraints() {
+		nameTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		nameTextField.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10).isActive = true
+		nameTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
+	}
+	
+	deinit {
+		NotificationCenter.default.removeObserver(self)
 	}
 }
 
@@ -321,5 +409,30 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
 		picker.dismiss(animated: true, completion: nil)
+	}
+}
+
+extension ProfileViewController: UITextFieldDelegate {
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		textField.resignFirstResponder()
+		infoTextView.becomeFirstResponder()
+		let insertionPoint = NSMakeRange(infoTextView.text.count, 0);
+		infoTextView.selectedRange = insertionPoint;
+		return true
+	}
+	
+}
+
+extension ProfileViewController: UITextViewDelegate {
+	func textViewDidChange(_ textView: UITextView) {
+		guard let text = textView.text else { return }
+		if text.isEmpty {
+			saveGCDButton.isEnabled = false
+			saveOperationsButton.isEnabled = false
+		} else {
+			saveGCDButton.isEnabled = true
+			saveOperationsButton.isEnabled = true
+		}
 	}
 }

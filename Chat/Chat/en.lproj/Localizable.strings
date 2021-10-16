@@ -20,6 +20,7 @@
 "cameraAction" = "Camera";
 "gallaryAction" = "Gallery";
 "deleteAction" = "Delete";
+"nameTextFieldPlaceholder" = "Your name";
 
 //MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Message...";
