@@ -20,6 +20,11 @@ final class ProfileViewController: UIViewController {
 		static let cancelButtonTitle = "cancelButtonTitle"
 	}
 	
+	private enum Constants {
+		static let saveGCDButtonTag = 1
+		static let saveOperationsButtonTag = 2
+	}
+	
 	//MARK: - Model
 	var user = Owner()
 	
@@ -58,18 +63,24 @@ final class ProfileViewController: UIViewController {
 	
 	private var saveGCDButton: UIButton = {
 		let button = ProfileButton(title: "Save GCD", fontSize: 14)
+		button.tag = Constants.saveGCDButtonTag
 		button.layer.cornerRadius = 14
 		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		
+		button.setTitleColor(.systemBlue, for: .normal)
+		button.setTitleColor(.systemGray, for: .disabled)
+		button.addTarget(self, action: #selector(saveButtonsAction(_:)), for: .touchUpInside)
 		button.isHidden = true
 		return button
 	}()
 	
 	private var saveOperationsButton: UIButton = {
 		let button = ProfileButton(title: "Save Operations", fontSize: 14)
+		button.tag = Constants.saveOperationsButtonTag
 		button.layer.cornerRadius = 14
 		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		
+		button.setTitleColor(.systemBlue, for: .normal)
+		button.setTitleColor(.systemGray, for: .disabled)
+		button.addTarget(self, action: #selector(saveButtonsAction(_:)), for: .touchUpInside)
 		button.isHidden = true
 		return button
 	}()
@@ -120,6 +131,8 @@ final class ProfileViewController: UIViewController {
 		cancelButton.isHidden = false
 		saveGCDButton.isHidden = false
 		saveOperationsButton.isHidden = false
+		saveGCDButton.isEnabled = false
+		saveOperationsButton.isEnabled = false
 		print("Edit button tapped")
 	}
 	
@@ -153,6 +166,16 @@ final class ProfileViewController: UIViewController {
 		saveGCDButton.isHidden = true
 		saveOperationsButton.isHidden = true
 		print("Cancel button tapped")
+	}
+	
+	@objc func saveButtonsAction(_ sender: UIButton) {
+		switch sender.tag {
+		case Constants.saveGCDButtonTag:
+			print("saveGCDButton tapped")
+		case Constants.saveOperationsButtonTag:
+			print("saveOperationsButton tapped")
+		default: break
+		}
 	}
 	
 	
