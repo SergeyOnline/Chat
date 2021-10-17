@@ -19,6 +19,11 @@ final class ProfileViewController: UIViewController {
 		static let editImageButtonTitle = "editImageButtonTitle"
 		static let cancelButtonTitle = "cancelButtonTitle"
 		static let nameTextFieldPlaceholder = "nameTextFieldPlaceholder"
+		static let alertOkActionTitle = "alertOkActionTitle"
+		static let alertRepeatSaveAction = "alertRepeatSaveAction"
+		static let successAlertTitle = "successAlertTitle"
+		static let failureAlertTitle = "failureAlertTitle"
+		static let failureAlertMessage = "failureAlertMessage"
 	}
 	
 	private enum Constants {
@@ -27,8 +32,13 @@ final class ProfileViewController: UIViewController {
 		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
 	}
 	
+	private enum SaveButtonStatus {
+		case enable
+		case disable
+	}
+	
 	//MARK: - Model
-	var user = Owner()
+	var owner = Owner()
 	
 	//MARK: - UI
 	private var closeButton: UIButton = {
@@ -37,12 +47,13 @@ final class ProfileViewController: UIViewController {
 		return button
 	}()
 	
-	private var imageView: UIImageView
+	private var imageView: UserImageView
 	private var infoTextView: UITextView = {
 		let textView = UITextView()
 		textView.isScrollEnabled = false
 		textView.textContainer.maximumNumberOfLines = 2
 		textView.textColor = NavigationBarAppearance.elementsColor.uiColor()
+		textView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		textView.font = UIFont.systemFont(ofSize: 16)
 		textView.translatesAutoresizingMaskIntoConstraints = false
 		textView.isUserInteractionEnabled = false
@@ -59,6 +70,8 @@ final class ProfileViewController: UIViewController {
 	
 	private var editImageButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editImageButtonTitle, comment: ""), fontSize: 16)
+		button.setTitleColor(.systemBlue, for: .normal)
+		button.setTitleColor(.systemGray, for: .disabled)
 		button.addTarget(self, action: #selector(editImageButtonAction), for: .touchUpInside)
 		return button
 	}()
@@ -67,6 +80,8 @@ final class ProfileViewController: UIViewController {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.cancelButtonTitle, comment: ""), fontSize: 16)
 		button.layer.cornerRadius = 14
 		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		button.setTitleColor(.systemBlue, for: .normal)
+		button.setTitleColor(.systemGray, for: .disabled)
 		button.addTarget(self, action: #selector(cancelButtonAction(_:)), for: .touchUpInside)
 		button.isHidden = true
 		return button
@@ -116,6 +131,14 @@ final class ProfileViewController: UIViewController {
 		return view
 	}()
 	
+	private var activityIndicator: UIActivityIndicatorView = {
+		let indicator = UIActivityIndicatorView()
+		indicator.translatesAutoresizingMaskIntoConstraints = false
+		return indicator
+	}()
+	
+	private let userProfileHandler = GCDUserProfileInfoHandler()
+	
 	var completion: (()-> Void)!
 	
 	private var picker = UIImagePickerController()
@@ -134,8 +157,8 @@ final class ProfileViewController: UIViewController {
 	//MARK: - Init
 	
 	init() {
-		imageView = UserImageView(labelTitle: user.initials, labelfontSize: 120)
-		infoTextView.text = user.info
+		imageView = UserImageView(labelTitle: owner.initials, labelfontSize: 120)
+		infoTextView.text = owner.info
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -149,19 +172,12 @@ final class ProfileViewController: UIViewController {
 	@objc func closeButtonAction(_ sender: UIButton) {
 		navigationController?.popViewController(animated: true)
 		dismiss(animated: true, completion: nil)
+		completion()
 	}
 	
 	@objc func editButtonAction(_ sender: UIButton) {
-		sender.isHidden = true
-		cancelButton.isHidden = false
-		saveGCDButton.isHidden = false
-		saveOperationsButton.isHidden = false
-		saveGCDButton.isEnabled = false
-		saveOperationsButton.isEnabled = false
-		infoTextView.isUserInteractionEnabled = true
-		nameTextField.isEnabled = true
-		nameTextField.becomeFirstResponder()
-		print("Edit button tapped")
+		editImageButton.isHidden = true
+		showSaveButtons()
 	}
 	
 	@objc func editImageButtonAction(_ sender: UIButton) {
@@ -177,8 +193,15 @@ final class ProfileViewController: UIViewController {
 		
 		let deleteAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.deleteAction, comment: ""), style: .destructive) { _ in
 			self.imageView.image = nil
-			UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.userImage)
-			self.completion()
+			
+			self.userProfileHandler.saveOwnerImage(image: nil) { error in
+				DispatchQueue.main.async {
+					self.completion()
+				}
+			}
+			//TODO: User Default
+//			UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.userImage)
+//			self.completion()
 		}
 		
 		picker.delegate = self
@@ -189,19 +212,48 @@ final class ProfileViewController: UIViewController {
 	}
 	
 	@objc func cancelButtonAction(_ sender: UIButton) {
-		sender.isHidden = true
-		editButton.isHidden = false
-		saveGCDButton.isHidden = true
-		saveOperationsButton.isHidden = true
-		nameTextField.isEnabled = false
-		infoTextView.isUserInteractionEnabled = false
-		print("Cancel button tapped")
+		hideSaveButtons()
+		textFieldsResignFirstResponder()
+		userProfileHandler.loadOwnerInfo { [weak self] in
+			switch $0 {
+			case .success(let owner):
+				self?.owner = owner
+				self?.infoTextView.text = owner.info
+				self?.nameTextField.text = owner.fullName
+				self?.imageView.setInitials(initials: owner.initials)
+			case .failure:
+				self?.owner = Owner()
+			}
+		}
+		editImageButton.isHidden = false
 	}
 	
 	@objc func saveButtonsAction(_ sender: UIButton) {
+		
+		textFieldsResignFirstResponder()
+		activityIndicator.startAnimating()
+		changeSaveButtonsStatusTo(.disable)
+		cancelButton.isEnabled = false
+		
 		switch sender.tag {
 		case Constants.saveGCDButtonTag:
-			print("saveGCDButton tapped")
+			owner.fullName = nameTextField.text ?? ""
+			owner.info = infoTextView.text
+			userProfileHandler.saveOwnerInfo(owner: owner) { error in
+				DispatchQueue.main.async {
+					if let _ = error {
+						self.showFailureAlert(sender: sender)
+					} else {
+						self.imageView.setInitials(initials: self.owner.initials)
+						self.showSuccessAlert()
+					}
+					self.activityIndicator.stopAnimating()
+					self.changeSaveButtonsStatusTo(.enable)
+					self.cancelButton.isEnabled = true
+					self.hideSaveButtons()
+					self.editImageButton.isHidden = true
+				}
+			}
 		case Constants.saveOperationsButtonTag:
 			print("saveOperationsButton tapped")
 		default: break
@@ -211,11 +263,9 @@ final class ProfileViewController: UIViewController {
 	@objc func nameTextFieldEditing(_ sender: UITextField) {
 		guard let text = sender.text else { return }
 		if text.isEmpty {
-			saveGCDButton.isEnabled = false
-			saveOperationsButton.isEnabled = false
+			changeSaveButtonsStatusTo(.disable)
 		} else {
-			saveGCDButton.isEnabled = true
-			saveOperationsButton.isEnabled = true
+			changeSaveButtonsStatusTo(.enable)
 		}
 		if (sender.text?.count ?? 0) > 28 {
 			sender.text?.removeLast()
@@ -280,6 +330,27 @@ final class ProfileViewController: UIViewController {
 		view.addSubview(headerView)
 		setupHeaderViewConstraints()
 		
+		userProfileHandler.loadOwnerInfo { [weak self] in
+			switch $0 {
+			case .success(let owner):
+				self?.owner = owner
+				self?.infoTextView.text = owner.info
+				self?.nameTextField.text = owner.fullName
+				self?.imageView.setInitials(initials: owner.initials)
+			case .failure:
+				self?.owner = Owner()
+			}
+		}
+		
+		userProfileHandler.loadOwnerImage { [weak self] in
+			switch $0 {
+			case .success(let image):
+				self?.imageView.image = image
+			case .failure:
+				break
+			}
+		}
+		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
 		
@@ -300,13 +371,18 @@ final class ProfileViewController: UIViewController {
 		view.addSubview(imageView)
 		setupImageViewConstraints()
 		
-		nameTextField.text = user.fullName
+		nameTextField.text = owner.fullName
 		nameTextField.delegate = self
 		view.addSubview(nameTextField)
 		setupNameTextFieldConstraints()
 		
+		infoTextView.delegate = self
 		view.addSubview(infoTextView)
 		setupInfoTextViewConstraints()
+		
+		view.addSubview(activityIndicator)
+		activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		activityIndicator.centerYAnchor.constraint(equalTo: infoTextView.centerYAnchor, constant: 50).isActive = true
 		
 		view.addSubview(editButton)
 		setupEditButtonConstraints()
@@ -323,6 +399,58 @@ final class ProfileViewController: UIViewController {
 		view.addSubview(editImageButton)
 		setupEditImageButtonConstraints()
 		
+	}
+	
+	private func showSuccessAlert() {
+		let alertController = UIAlertController(title: NSLocalizedString(LocalizeKeys.successAlertTitle, comment: ""),
+												message: "", preferredStyle: .alert)
+		let okAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.alertOkActionTitle, comment: ""), style: .default, handler: nil)
+		alertController.addAction(okAction)
+		self.present(alertController, animated: true, completion: nil)
+	}
+	
+	private func showFailureAlert(sender: UIButton) {
+		let alertController = UIAlertController(title: NSLocalizedString(LocalizeKeys.failureAlertTitle, comment: ""),
+												message: NSLocalizedString(LocalizeKeys.failureAlertMessage, comment: ""), preferredStyle: .alert)
+		let okAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.alertOkActionTitle, comment: ""), style: .default, handler: nil)
+		let repeatSaveAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.alertRepeatSaveAction, comment: ""), style: .default) { _ in
+			self.saveButtonsAction(sender)
+		}
+		alertController.addAction(okAction)
+		alertController.addAction(repeatSaveAction)
+		self.present(alertController, animated: true, completion: nil)
+	}
+	
+	private func changeSaveButtonsStatusTo(_ status: SaveButtonStatus) {
+		switch status {
+		case .enable:
+			saveGCDButton.isEnabled = true
+			saveOperationsButton.isEnabled = true
+		case .disable:
+			saveGCDButton.isEnabled = false
+			saveOperationsButton.isEnabled = false
+		}
+	}
+	
+	private func hideSaveButtons() {
+		saveGCDButton.isHidden = true
+		saveOperationsButton.isHidden = true
+		cancelButton.isHidden = true
+		nameTextField.isEnabled = false
+		infoTextView.isUserInteractionEnabled = false
+		editButton.isHidden = false
+	}
+	
+	private func showSaveButtons() {
+		editButton.isHidden = true
+		cancelButton.isHidden = false
+		saveGCDButton.isHidden = false
+		saveOperationsButton.isHidden = false
+		saveGCDButton.isEnabled = false
+		saveOperationsButton.isEnabled = false
+		infoTextView.isUserInteractionEnabled = true
+		nameTextField.isEnabled = true
+		nameTextField.becomeFirstResponder()
 	}
 	
 	private func setupInfoTextViewConstraints() {
@@ -388,6 +516,15 @@ final class ProfileViewController: UIViewController {
 		nameTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
 	}
 	
+	private func textFieldsResignFirstResponder() {
+		if nameTextField.isFirstResponder {
+			nameTextField.resignFirstResponder()
+		}
+		if infoTextView.isFirstResponder {
+			infoTextView.resignFirstResponder()
+		}
+	}
+	
 	deinit {
 		NotificationCenter.default.removeObserver(self)
 	}
@@ -402,9 +539,20 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
 		
 		guard let image = imageView.image else { return }
-		let imageData = image.jpegData(compressionQuality: 0.3)
-		UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.userImage)
-		completion()
+		userProfileHandler.saveOwnerImage(image: image) { error in
+			DispatchQueue.main.async {
+				if let error = error {
+					print("ERROR: \(error.localizedDescription)")
+				} else {
+					self.completion()
+				}
+			}
+		}
+		
+		//TODO: - User defaults
+//		let imageData = image.jpegData(compressionQuality: 0.3)
+//		UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.userImage)
+//		completion()
 	}
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -428,11 +576,9 @@ extension ProfileViewController: UITextViewDelegate {
 	func textViewDidChange(_ textView: UITextView) {
 		guard let text = textView.text else { return }
 		if text.isEmpty {
-			saveGCDButton.isEnabled = false
-			saveOperationsButton.isEnabled = false
+			changeSaveButtonsStatusTo(.disable)
 		} else {
-			saveGCDButton.isEnabled = true
-			saveOperationsButton.isEnabled = true
+			changeSaveButtonsStatusTo(.enable)
 		}
 	}
 }

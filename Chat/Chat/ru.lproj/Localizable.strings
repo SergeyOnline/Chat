@@ -21,6 +21,11 @@
 "gallaryAction" = "Галерея";
 "deleteAction" = "Удалить";
 "nameTextFieldPlaceholder" = "Ваше имя";
+"alertOkActionTitle" = "Ок";
+"alertRepeatSaveAction" = "Повторить";
+"successAlertTitle" = "Данные сохранены";
+"failureAlertTitle" = "Ошибка";
+"failureAlertMessage" = "Не удалось сохранить данные";
 
 //MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Сообщение...";
