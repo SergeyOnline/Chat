@@ -115,10 +115,8 @@
 				8768BDEF270C419C0078C271 /* ConversationMessages */,
 				878182BF271C6E93008077DF /* UserProfileInfoHandlers */,
 				87750AB0271D96A800B84A9C /* Themes */,
-				8774D33A2709BB00007D359C /* CustomStackView.swift */,
-				87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */,
-				87750AB3271E014900B84A9C /* FileKeys.swift */,
-				876BAC1426FF39D500D5BF31 /* UserImageView.swift */,
+				87750AB7271E1AA100B84A9C /* Utils */,
+				87750AB8271E1AD400B84A9C /* KeyConstants */,
 				876BABF926FF38E800D5BF31 /* AppDelegate.swift */,
 				876BAC2F26FF460F00D5BF31 /* Assets.xcassets */,
 				876BABFD26FF38E800D5BF31 /* ViewController.swift */,
@@ -168,6 +166,24 @@
 				8781CC132713191000566A90 /* ThemesViewController.swift */,
 			);
 			path = Themes;
+			sourceTree = "<group>";
+		};
+		87750AB7271E1AA100B84A9C /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				8774D33A2709BB00007D359C /* CustomStackView.swift */,
+				876BAC1426FF39D500D5BF31 /* UserImageView.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		87750AB8271E1AD400B84A9C /* KeyConstants */ = {
+			isa = PBXGroup;
+			children = (
+				87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */,
+				87750AB3271E014900B84A9C /* FileKeys.swift */,
+			);
+			path = KeyConstants;
 			sourceTree = "<group>";
 		};
 		878182BF271C6E93008077DF /* UserProfileInfoHandlers */ = {

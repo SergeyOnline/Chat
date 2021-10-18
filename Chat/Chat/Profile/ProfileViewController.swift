@@ -200,7 +200,7 @@ final class ProfileViewController: UIViewController {
 					self.completion()
 				}
 			}
-			//TODO: User Default
+//		MARK: - User defaults
 //			UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.userImage)
 //			self.completion()
 		}
@@ -243,35 +243,13 @@ final class ProfileViewController: UIViewController {
 		case Constants.saveGCDButtonTag:
 			userProfileHandlerGCD.saveOwnerInfo(owner: owner) { error in
 				DispatchQueue.main.async {
-					if let _ = error {
-						self.showFailureAlert(sender: sender)
-					} else {
-						self.imageView.setInitials(initials: self.owner.initials)
-						self.showSuccessAlert()
-					}
-					self.activityIndicator.stopAnimating()
-					self.changeSaveButtonsStatusTo(.enable)
-					self.cancelButton.isEnabled = true
-					self.hideSaveButtons()
-					self.editImageButton.isHidden = true
+					self.setupAfterSaveOperation(sender: sender, error: error)
 				}
 			}
 		case Constants.saveOperationsButtonTag:
 			userProfileHandlerOperation.saveOwnerInfo(owner: owner) { error in
-				if let _ = error {
-					self.showFailureAlert(sender: sender)
-				} else {
-					self.imageView.setInitials(initials: self.owner.initials)
-					self.showSuccessAlert()
-				}
-				self.activityIndicator.stopAnimating()
-				self.changeSaveButtonsStatusTo(.enable)
-				self.cancelButton.isEnabled = true
-				self.hideSaveButtons()
-				self.editImageButton.isHidden = true
+				self.setupAfterSaveOperation(sender: sender, error: error)
 			}
-			
-			print("saveOperationsButton tapped")
 		default: break
 		}
 	}
@@ -346,17 +324,18 @@ final class ProfileViewController: UIViewController {
 		view.addSubview(headerView)
 		setupHeaderViewConstraints()
 		
-//		userProfileHandlerGCD.loadOwnerInfo { [weak self] in
-//			switch $0 {
-//			case .success(let owner):
-//				self?.owner = owner
-//				self?.infoTextView.text = owner.info
-//				self?.nameTextField.text = owner.fullName
-//				self?.imageView.setInitials(initials: owner.initials)
-//			case .failure:
-//				self?.owner = Owner()
-//			}
-//		}
+		//		MARK: - GCD or Operation handler
+		//		userProfileHandlerGCD.loadOwnerInfo { [weak self] in
+		//			switch $0 {
+		//			case .success(let owner):
+		//				self?.owner = owner
+		//				self?.infoTextView.text = owner.info
+		//				self?.nameTextField.text = owner.fullName
+		//				self?.imageView.setInitials(initials: owner.initials)
+		//			case .failure:
+		//				self?.owner = Owner()
+		//			}
+		//		}
 		
 		userProfileHandlerOperation.loadOwnerInfo { [weak self] in
 			switch $0 {
@@ -370,14 +349,15 @@ final class ProfileViewController: UIViewController {
 			}
 		}
 		
-//		userProfileHandlerGCD.loadOwnerImage { [weak self] in
-//			switch $0 {
-//			case .success(let image):
-//				self?.imageView.image = image
-//			case .failure:
-//				break
-//			}
-//		}
+		//		MARK: - GCD or Operation handler
+		//		userProfileHandlerGCD.loadOwnerImage { [weak self] in
+		//			switch $0 {
+		//			case .success(let image):
+		//				self?.imageView.image = image
+		//			case .failure:
+		//				break
+		//			}
+		//		}
 		
 		userProfileHandlerOperation.loadOwnerImage { [weak self] in
 			switch $0 {
@@ -522,7 +502,7 @@ final class ProfileViewController: UIViewController {
 		cancelButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
 		cancelButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
 		cancelButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -72).isActive = true
-//		cancelButton.topAnchor.constraint(greaterThanOrEqualTo: infoTextView.bottomAnchor).isActive = true
+		//		cancelButton.topAnchor.constraint(greaterThanOrEqualTo: infoTextView.bottomAnchor).isActive = true
 		cancelButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
 	}
 	
@@ -553,6 +533,20 @@ final class ProfileViewController: UIViewController {
 		nameTextField.heightAnchor.constraint(equalToConstant: 36).isActive = true
 	}
 	
+	private func setupAfterSaveOperation(sender: UIButton, error: Error?) {
+		if let _ = error {
+			self.showFailureAlert(sender: sender)
+		} else {
+			self.imageView.setInitials(initials: self.owner.initials)
+			self.showSuccessAlert()
+		}
+		self.activityIndicator.stopAnimating()
+		self.changeSaveButtonsStatusTo(.enable)
+		self.cancelButton.isEnabled = true
+		self.hideSaveButtons()
+		self.editImageButton.isHidden = true
+	}
+	
 	private func textFieldsResignFirstResponder() {
 		if nameTextField.isFirstResponder {
 			nameTextField.resignFirstResponder()
@@ -576,15 +570,17 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
 		
 		guard let image = imageView.image else { return }
-//		userProfileHandlerGCD.saveOwnerImage(image: image) { error in
-//			DispatchQueue.main.async {
-//				if let error = error {
-//					print("ERROR: \(error.localizedDescription)")
-//				} else {
-//					self.completion()
-//				}
-//			}
-//		}
+		
+		//		MARK: - GCD or Operation handler
+		//		userProfileHandlerGCD.saveOwnerImage(image: image) { error in
+		//			DispatchQueue.main.async {
+		//				if let error = error {
+		//					print("ERROR: \(error.localizedDescription)")
+		//				} else {
+		//					self.completion()
+		//				}
+		//			}
+		//		}
 		
 		userProfileHandlerGCD.saveOwnerImage(image: image) { error in
 			if let error = error {
@@ -594,10 +590,10 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 			}
 		}
 		
-		//TODO: - User defaults
-//		let imageData = image.jpegData(compressionQuality: 0.3)
-//		UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.userImage)
-//		completion()
+		//		MARK: - User defaults
+		//		let imageData = image.jpegData(compressionQuality: 0.3)
+		//		UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.userImage)
+		//		completion()
 	}
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
