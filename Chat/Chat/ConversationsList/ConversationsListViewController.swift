@@ -72,7 +72,7 @@ final class ConversationsListViewController: UIViewController {
 		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
-		
+		tableView.reloadData()
 	}
 
 	//MARK: - Actions
@@ -114,7 +114,7 @@ final class ConversationsListViewController: UIViewController {
 		themesVC.completion = {
 			self.tableView.reloadData()
 			self.viewWillAppear(false)
-			self.logThemeChanging()
+//			self.logThemeChanging()
 		}
 		present(themesVC, animated: true, completion: nil)
 	}

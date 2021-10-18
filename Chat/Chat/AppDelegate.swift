@@ -32,19 +32,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window?.makeKeyAndVisible()
 		PrintStateTransitionFrom(.suspended, to: .inactive)
 		
-		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
-		case 0:
-			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
-			Theme.theme = .light
-		case 1:
-			Theme.theme = .light
-		case 2:
-			Theme.theme = .dark
-		case 3:
-			Theme.theme = .darkBlue
-		default:
-			break
+		let userProfileInfoHandler = GCDUserProfileInfoHandler()
+		userProfileInfoHandler.loadTheme { result in
+			switch result {
+			case .success(let themeId):
+				DispatchQueue.main.async {
+					self.setApplicationThemeForId(themeId)
+					conversationsListVC.viewWillAppear(false)
+				}
+			case .failure:
+				Theme.theme = .light
+			}
 		}
+		
+		//TODO: - User Defaults
+//		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
+//		case 0:
+//			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
+//			Theme.theme = .light
+//		case 1:
+//			Theme.theme = .light
+//		case 2:
+//			Theme.theme = .dark
+//		case 3:
+//			Theme.theme = .darkBlue
+//		default:
+//			break
+//		}
 		
 		return true
 	}
@@ -93,6 +107,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			print("Application moved from \"\(from.rawValue)\" to \"\(to.rawValue)\": \(sender)")
 		}
 		#endif
+	}
+	
+	private func setApplicationThemeForId(_ id: Int) {
+		switch id {
+		case 1:
+			Theme.theme = .light
+		case 2:
+			Theme.theme = .dark
+		case 3:
+			Theme.theme = .darkBlue
+		default:
+			Theme.theme = .light
+		}
 	}
 
 }

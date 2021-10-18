@@ -8,33 +8,21 @@
 import Foundation
 import UIKit
 
-/*
-public enum ImageOperationError: Error {
-	case badOperationFinnished
-	case badLoading
-	case badRotation
-}
-
-public func syncImageLoad(imageURL: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
-	if let data = try? Data(contentsOf: imageURL),
-	   let image = UIImage(data: data) {
-		sleep(2)
-		completion(.success(image))
-	} else {
-		completion(.failure(ImageOperationError.badLoading))
-	}
-}
- */
-
-
 class GCDUserProfileInfoHandler {
+	
+	private enum FileKeys {
+		static let userInfo = "userInfo.json"
+		static let userImage = "userImage.jpg"
+		static let theme = "theme.txt"
+	}
+	
 	private let queue = DispatchQueue.global(qos: .utility)
 	
 	func saveOwnerInfo(owner: Owner, complition: @escaping (Error?) -> Void) {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
-				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("userSittings.json")
+				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userInfo)
 				try JSONEncoder().encode(owner).write(to: fileUrl)
 				sleep(4)
 				DispatchQueue.main.async {
@@ -53,7 +41,7 @@ class GCDUserProfileInfoHandler {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
-				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("userSittings.json")
+				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userInfo)
 				let data = try Data(contentsOf: fileUrl)
 				let owner = try JSONDecoder().decode(Owner.self, from: data)
 				DispatchQueue.main.async {
@@ -72,7 +60,7 @@ class GCDUserProfileInfoHandler {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
-				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("userImage.jpg")
+				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userImage)
 				if let image = image {
 					let imageData = image.jpegData(compressionQuality: 0.3)
 					try imageData?.write(to: fileUrl)
@@ -94,7 +82,7 @@ class GCDUserProfileInfoHandler {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
-				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("userImage.jpg")
+				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userImage)
 				let data = try Data(contentsOf: fileUrl)
 				let image = UIImage(data: data)
 				DispatchQueue.main.async {
@@ -108,11 +96,42 @@ class GCDUserProfileInfoHandler {
 		}
 	}
 	
-//	func loadImage(imageURL: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
-//		queue.async {
-//			syncImageLoad(imageURL: imageURL) { result in
-//				DispatchQueue.main.async { completion(result) }
-//			}
-//		}
-//	}
+	func saveTheme(themeId: Int, complition: @escaping (Error?) -> Void) {
+		queue.async {
+			do {
+				let fileManager = FileManager.default
+				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.theme)
+				let stringThemeId = String(themeId)
+				if let data = stringThemeId.data(using: .utf8) {
+					try data.write(to: fileUrl)
+				}
+				DispatchQueue.main.async {
+					complition(nil)
+				}
+			} catch {
+				DispatchQueue.main.async {
+					complition(error)
+				}
+			}
+		}
+	}
+	
+	func loadTheme(complition: @escaping (Result<Int, Error>) -> Void) {
+		queue.async {
+			do {
+				let fileManager = FileManager.default
+				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.theme)
+				let data = try Data(contentsOf: fileUrl)
+				let stringThemeId: String = String(data: data, encoding: .utf8) ?? "0"
+				let themeId: Int = Int(stringThemeId) ?? 0
+				DispatchQueue.main.async {
+					complition(.success(themeId))
+				}
+			} catch {
+				DispatchQueue.main.async {
+					complition(.failure(error))
+				}
+			}
+		}
+	}
 }

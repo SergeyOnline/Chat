@@ -108,7 +108,7 @@
 				8774D3372709B2EB007D359C /* ConversationsList */,
 				8768BDEF270C419C0078C271 /* ConversationMessages */,
 				878182BF271C6E93008077DF /* UserProfileInfoHandlers */,
-				8781CC132713191000566A90 /* ThemesViewController.swift */,
+				87750AB0271D96A800B84A9C /* Themes */,
 				8774D33A2709BB00007D359C /* CustomStackView.swift */,
 				87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */,
 				876BAC1426FF39D500D5BF31 /* UserImageView.swift */,
@@ -153,6 +153,14 @@
 				8774D3382709B32B007D359C /* ConversationListCell.swift */,
 			);
 			path = ConversationsList;
+			sourceTree = "<group>";
+		};
+		87750AB0271D96A800B84A9C /* Themes */ = {
+			isa = PBXGroup;
+			children = (
+				8781CC132713191000566A90 /* ThemesViewController.swift */,
+			);
+			path = Themes;
 			sourceTree = "<group>";
 		};
 		878182BF271C6E93008077DF /* UserProfileInfoHandlers */ = {
