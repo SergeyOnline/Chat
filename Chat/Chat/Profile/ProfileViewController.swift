@@ -137,7 +137,8 @@ final class ProfileViewController: UIViewController {
 		return indicator
 	}()
 	
-	private let userProfileHandler = GCDUserProfileInfoHandler()
+	private let userProfileHandlerGCD = GCDUserProfileInfoHandler()
+	private let userProfileHandlerOperation = OperationUserProfileInfoHandler()
 	
 	var completion: (()-> Void)!
 	
@@ -194,7 +195,7 @@ final class ProfileViewController: UIViewController {
 		let deleteAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.deleteAction, comment: ""), style: .destructive) { _ in
 			self.imageView.image = nil
 			
-			self.userProfileHandler.saveOwnerImage(image: nil) { error in
+			self.userProfileHandlerGCD.saveOwnerImage(image: nil) { error in
 				DispatchQueue.main.async {
 					self.completion()
 				}
@@ -214,7 +215,7 @@ final class ProfileViewController: UIViewController {
 	@objc func cancelButtonAction(_ sender: UIButton) {
 		hideSaveButtons()
 		textFieldsResignFirstResponder()
-		userProfileHandler.loadOwnerInfo { [weak self] in
+		userProfileHandlerGCD.loadOwnerInfo { [weak self] in
 			switch $0 {
 			case .success(let owner):
 				self?.owner = owner
@@ -235,11 +236,12 @@ final class ProfileViewController: UIViewController {
 		changeSaveButtonsStatusTo(.disable)
 		cancelButton.isEnabled = false
 		
+		owner.fullName = nameTextField.text ?? ""
+		owner.info = infoTextView.text
+		
 		switch sender.tag {
 		case Constants.saveGCDButtonTag:
-			owner.fullName = nameTextField.text ?? ""
-			owner.info = infoTextView.text
-			userProfileHandler.saveOwnerInfo(owner: owner) { error in
+			userProfileHandlerGCD.saveOwnerInfo(owner: owner) { error in
 				DispatchQueue.main.async {
 					if let _ = error {
 						self.showFailureAlert(sender: sender)
@@ -255,6 +257,20 @@ final class ProfileViewController: UIViewController {
 				}
 			}
 		case Constants.saveOperationsButtonTag:
+			userProfileHandlerOperation.saveOwnerInfo(owner: owner) { error in
+				if let _ = error {
+					self.showFailureAlert(sender: sender)
+				} else {
+					self.imageView.setInitials(initials: self.owner.initials)
+					self.showSuccessAlert()
+				}
+				self.activityIndicator.stopAnimating()
+				self.changeSaveButtonsStatusTo(.enable)
+				self.cancelButton.isEnabled = true
+				self.hideSaveButtons()
+				self.editImageButton.isHidden = true
+			}
+			
 			print("saveOperationsButton tapped")
 		default: break
 		}
@@ -330,7 +346,19 @@ final class ProfileViewController: UIViewController {
 		view.addSubview(headerView)
 		setupHeaderViewConstraints()
 		
-		userProfileHandler.loadOwnerInfo { [weak self] in
+//		userProfileHandlerGCD.loadOwnerInfo { [weak self] in
+//			switch $0 {
+//			case .success(let owner):
+//				self?.owner = owner
+//				self?.infoTextView.text = owner.info
+//				self?.nameTextField.text = owner.fullName
+//				self?.imageView.setInitials(initials: owner.initials)
+//			case .failure:
+//				self?.owner = Owner()
+//			}
+//		}
+		
+		userProfileHandlerOperation.loadOwnerInfo { [weak self] in
 			switch $0 {
 			case .success(let owner):
 				self?.owner = owner
@@ -342,7 +370,16 @@ final class ProfileViewController: UIViewController {
 			}
 		}
 		
-		userProfileHandler.loadOwnerImage { [weak self] in
+//		userProfileHandlerGCD.loadOwnerImage { [weak self] in
+//			switch $0 {
+//			case .success(let image):
+//				self?.imageView.image = image
+//			case .failure:
+//				break
+//			}
+//		}
+		
+		userProfileHandlerOperation.loadOwnerImage { [weak self] in
 			switch $0 {
 			case .success(let image):
 				self?.imageView.image = image
@@ -539,13 +576,21 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
 		
 		guard let image = imageView.image else { return }
-		userProfileHandler.saveOwnerImage(image: image) { error in
-			DispatchQueue.main.async {
-				if let error = error {
-					print("ERROR: \(error.localizedDescription)")
-				} else {
-					self.completion()
-				}
+//		userProfileHandlerGCD.saveOwnerImage(image: image) { error in
+//			DispatchQueue.main.async {
+//				if let error = error {
+//					print("ERROR: \(error.localizedDescription)")
+//				} else {
+//					self.completion()
+//				}
+//			}
+//		}
+		
+		userProfileHandlerGCD.saveOwnerImage(image: image) { error in
+			if let error = error {
+				print("ERROR: \(error.localizedDescription)")
+			} else {
+				self.completion()
 			}
 		}
 		

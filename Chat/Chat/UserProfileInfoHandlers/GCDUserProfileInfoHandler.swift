@@ -8,36 +8,29 @@
 import Foundation
 import UIKit
 
-class GCDUserProfileInfoHandler {
-	
-	private enum FileKeys {
-		static let userInfo = "userInfo.json"
-		static let userImage = "userImage.jpg"
-		static let theme = "theme.txt"
-	}
+final class GCDUserProfileInfoHandler: UserProfileInfoHandlerProtocol {
 	
 	private let queue = DispatchQueue.global(qos: .utility)
 	
-	func saveOwnerInfo(owner: Owner, complition: @escaping (Error?) -> Void) {
+	func saveOwnerInfo(owner: Owner, completion: @escaping (Error?) -> Void) {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
 				let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userInfo)
 				try JSONEncoder().encode(owner).write(to: fileUrl)
-				sleep(4)
 				DispatchQueue.main.async {
-					complition(nil)
+					completion(nil)
 				}
 			} catch {
 				DispatchQueue.main.async {
 					print(error)
-					complition(error)
+					completion(error)
 				}
 			}
 		}
 	}
 	
-	func loadOwnerInfo(complition: @escaping (Result<Owner, Error>) -> Void) {
+	func loadOwnerInfo(completion: @escaping (Result<Owner, Error>) -> Void) {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
@@ -45,18 +38,18 @@ class GCDUserProfileInfoHandler {
 				let data = try Data(contentsOf: fileUrl)
 				let owner = try JSONDecoder().decode(Owner.self, from: data)
 				DispatchQueue.main.async {
-					complition(.success(owner))
+					completion(.success(owner))
 				}
 			} catch {
 				DispatchQueue.main.async {
 					print(error)
-					complition(.failure(error))
+					completion(.failure(error))
 				}
 			}
 		}
 	}
 	
-	func saveOwnerImage(image: UIImage?, complition: @escaping (Error?) -> Void) {
+	func saveOwnerImage(image: UIImage?, completion: @escaping (Error?) -> Void) {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
@@ -68,17 +61,17 @@ class GCDUserProfileInfoHandler {
 					try fileManager.removeItem(at: fileUrl)
 				}
 				DispatchQueue.main.async {
-					complition(nil)
+					completion(nil)
 				}
 			} catch {
 				DispatchQueue.main.async {
-					complition(error)
+					completion(error)
 				}
 			}
 		}
 	}
 	
-	func loadOwnerImage(complition: @escaping (Result<UIImage?, Error>) -> Void) {
+	func loadOwnerImage(completion: @escaping (Result<UIImage?, Error>) -> Void) {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
@@ -86,17 +79,17 @@ class GCDUserProfileInfoHandler {
 				let data = try Data(contentsOf: fileUrl)
 				let image = UIImage(data: data)
 				DispatchQueue.main.async {
-					complition(.success(image))
+					completion(.success(image))
 				}
 			} catch {
 				DispatchQueue.main.async {
-					complition(.failure(error))
+					completion(.failure(error))
 				}
 			}
 		}
 	}
 	
-	func saveTheme(themeId: Int, complition: @escaping (Error?) -> Void) {
+	func saveTheme(themeId: Int, completion: @escaping (Error?) -> Void) {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
@@ -106,17 +99,17 @@ class GCDUserProfileInfoHandler {
 					try data.write(to: fileUrl)
 				}
 				DispatchQueue.main.async {
-					complition(nil)
+					completion(nil)
 				}
 			} catch {
 				DispatchQueue.main.async {
-					complition(error)
+					completion(error)
 				}
 			}
 		}
 	}
 	
-	func loadTheme(complition: @escaping (Result<Int, Error>) -> Void) {
+	func loadTheme(completion: @escaping (Result<Int, Error>) -> Void) {
 		queue.async {
 			do {
 				let fileManager = FileManager.default
@@ -125,11 +118,11 @@ class GCDUserProfileInfoHandler {
 				let stringThemeId: String = String(data: data, encoding: .utf8) ?? "0"
 				let themeId: Int = Int(stringThemeId) ?? 0
 				DispatchQueue.main.async {
-					complition(.success(themeId))
+					completion(.success(themeId))
 				}
 			} catch {
 				DispatchQueue.main.async {
-					complition(.failure(error))
+					completion(.failure(error))
 				}
 			}
 		}

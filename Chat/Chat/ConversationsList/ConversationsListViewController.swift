@@ -58,7 +58,11 @@ final class ConversationsListViewController: UIViewController {
 		}
 	}
 	
-	private let userProfileHandler = GCDUserProfileInfoHandler()
+	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
+		//MARK: - GCD or Operation handler
+		return OperationUserProfileInfoHandler()
+//		return GCDUserProfileInfoHandler()
+	}()
 
 	override func viewDidLoad() {
         super.viewDidLoad()
@@ -132,6 +136,15 @@ final class ConversationsListViewController: UIViewController {
 				self.userImageView.image = image
 			case .failure:
 				self.userImageView.image = nil
+			}
+		}
+		
+		userProfileHandler.loadOwnerInfo { [weak self] in
+			switch $0 {
+			case .success(let owner):
+				self?.userImageView.setInitials(initials: owner.initials)
+			case .failure:
+				self?.userImageView.setInitials(initials: Owner().initials)
 			}
 		}
 		

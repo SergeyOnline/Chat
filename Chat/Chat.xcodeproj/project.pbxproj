@@ -26,6 +26,9 @@
 		8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33A2709BB00007D359C /* CustomStackView.swift */; };
 		8774D33D2709CB6A007D359C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33C2709CB6A007D359C /* User.swift */; };
 		8774D33F270A024D007D359C /* TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33E270A024C007D359C /* TestData.swift */; };
+		87750AB2271DA95C00B84A9C /* OperationUserProfileInfoHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750AB1271DA95C00B84A9C /* OperationUserProfileInfoHandler.swift */; };
+		87750AB4271E014900B84A9C /* FileKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750AB3271E014900B84A9C /* FileKeys.swift */; };
+		87750AB6271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750AB5271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift */; };
 		878182BE271C6E89008077DF /* GCDUserProfileInfoHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878182BD271C6E89008077DF /* GCDUserProfileInfoHandler.swift */; };
 		8781CC142713191000566A90 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC132713191000566A90 /* ThemesViewController.swift */; };
 		8781CC16271324BE00566A90 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC15271324BE00566A90 /* Themes.swift */; };
@@ -57,6 +60,9 @@
 		8774D33A2709BB00007D359C /* CustomStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStackView.swift; sourceTree = "<group>"; };
 		8774D33C2709CB6A007D359C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		8774D33E270A024C007D359C /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
+		87750AB1271DA95C00B84A9C /* OperationUserProfileInfoHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationUserProfileInfoHandler.swift; sourceTree = "<group>"; };
+		87750AB3271E014900B84A9C /* FileKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileKeys.swift; sourceTree = "<group>"; };
+		87750AB5271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileInfoHandlerProtocol.swift; sourceTree = "<group>"; };
 		878182BD271C6E89008077DF /* GCDUserProfileInfoHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDUserProfileInfoHandler.swift; sourceTree = "<group>"; };
 		8781CC132713191000566A90 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		8781CC15271324BE00566A90 /* Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
@@ -111,6 +117,7 @@
 				87750AB0271D96A800B84A9C /* Themes */,
 				8774D33A2709BB00007D359C /* CustomStackView.swift */,
 				87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */,
+				87750AB3271E014900B84A9C /* FileKeys.swift */,
 				876BAC1426FF39D500D5BF31 /* UserImageView.swift */,
 				876BABF926FF38E800D5BF31 /* AppDelegate.swift */,
 				876BAC2F26FF460F00D5BF31 /* Assets.xcassets */,
@@ -167,6 +174,8 @@
 			isa = PBXGroup;
 			children = (
 				878182BD271C6E89008077DF /* GCDUserProfileInfoHandler.swift */,
+				87750AB1271DA95C00B84A9C /* OperationUserProfileInfoHandler.swift */,
+				87750AB5271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift */,
 			);
 			path = UserProfileInfoHandlers;
 			sourceTree = "<group>";
@@ -251,11 +260,14 @@
 				876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */,
 				87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */,
 				876BAC1126FF39C300D5BF31 /* ProfileButton.swift in Sources */,
+				87750AB4271E014900B84A9C /* FileKeys.swift in Sources */,
 				8774D33F270A024D007D359C /* TestData.swift in Sources */,
 				876BABFE26FF38E800D5BF31 /* ViewController.swift in Sources */,
 				876BAC1326FF39C300D5BF31 /* ProfileLabel.swift in Sources */,
 				878182BE271C6E89008077DF /* GCDUserProfileInfoHandler.swift in Sources */,
+				87750AB6271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift in Sources */,
 				876BAC1A26FF39E000D5BF31 /* Owner.swift in Sources */,
+				87750AB2271DA95C00B84A9C /* OperationUserProfileInfoHandler.swift in Sources */,
 				876BAC1626FF39D600D5BF31 /* UserImageView.swift in Sources */,
 				876BAC1226FF39C300D5BF31 /* ProfileViewController.swift in Sources */,
 				8781CC142713191000566A90 /* ThemesViewController.swift in Sources */,
