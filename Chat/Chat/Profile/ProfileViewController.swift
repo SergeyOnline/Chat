@@ -264,6 +264,9 @@ final class ProfileViewController: UIViewController {
 		if (sender.text?.count ?? 0) > 28 {
 			sender.text?.removeLast()
 		}
+		if text.numberOfWords == 2 && text.last == " " {
+			sender.text?.removeLast()
+		}
 	}
 	
 	@objc func keyboardWillShow(_ sender: NSNotification) {
@@ -594,6 +597,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 		//		let imageData = image.jpegData(compressionQuality: 0.3)
 		//		UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.userImage)
 		//		completion()
+		
 	}
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -621,5 +625,16 @@ extension ProfileViewController: UITextViewDelegate {
 		} else {
 			changeSaveButtonsStatusTo(.enable)
 		}
+	}
+}
+
+extension String {
+	var numberOfWords: Int {
+		var count = 0
+		let range = startIndex..<endIndex
+		enumerateSubstrings(in: range, options: [.byWords, .substringNotRequired, .localized], { _, _, _, _ -> () in
+			count += 1
+		})
+		return count
 	}
 }
