@@ -241,14 +241,14 @@ final class ProfileViewController: UIViewController {
 		
 		switch sender.tag {
 		case Constants.saveGCDButtonTag:
-			userProfileHandlerGCD.saveOwnerInfo(owner: owner) { error in
+			userProfileHandlerGCD.saveOwnerInfo(owner: owner) { [weak self] error in
 				DispatchQueue.main.async {
-					self.setupAfterSaveOperation(sender: sender, error: error)
+					self?.setupAfterSaveOperation(sender: sender, error: error)
 				}
 			}
 		case Constants.saveOperationsButtonTag:
-			userProfileHandlerOperation.saveOwnerInfo(owner: owner) { error in
-				self.setupAfterSaveOperation(sender: sender, error: error)
+			userProfileHandlerOperation.saveOwnerInfo(owner: owner) { [weak self] error in
+				self?.setupAfterSaveOperation(sender: sender, error: error)
 			}
 		default: break
 		}
