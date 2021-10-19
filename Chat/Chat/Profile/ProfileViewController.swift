@@ -140,7 +140,7 @@ final class ProfileViewController: UIViewController {
 	private let userProfileHandlerGCD = GCDUserProfileInfoHandler()
 	private let userProfileHandlerOperation = OperationUserProfileInfoHandler()
 	
-	var completion: (()-> Void)!
+	var completion: (()-> Void) = {}
 	
 	private var picker = UIImagePickerController()
 	private var isKeyboardHidden = true

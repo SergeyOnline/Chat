@@ -23,7 +23,6 @@ final class GCDUserProfileInfoHandler: UserProfileInfoHandlerProtocol {
 				}
 			} catch {
 				DispatchQueue.main.async {
-					print(error)
 					completion(error)
 				}
 			}
@@ -42,7 +41,6 @@ final class GCDUserProfileInfoHandler: UserProfileInfoHandlerProtocol {
 				}
 			} catch {
 				DispatchQueue.main.async {
-					print(error)
 					completion(.failure(error))
 				}
 			}

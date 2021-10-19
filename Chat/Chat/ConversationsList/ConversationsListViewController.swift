@@ -89,7 +89,8 @@ final class ConversationsListViewController: UIViewController {
 				case .success(let owner):
 					self.userImageView.setInitials(initials: owner.initials)
 				case .failure:
-					print("Error: load info error")
+					break
+//					print("Error: load info error")
 				}
 			}
 			
