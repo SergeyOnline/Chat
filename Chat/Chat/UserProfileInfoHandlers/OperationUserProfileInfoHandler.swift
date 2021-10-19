@@ -127,7 +127,6 @@ fileprivate func syncSaveOwnerInfo(owner: Owner, completion: @escaping (Error?) 
 		try JSONEncoder().encode(owner).write(to: fileUrl)
 		completion(nil)
 	} catch {
-		print(error)
 		completion(error)
 	}
 }
@@ -140,7 +139,6 @@ fileprivate func syncLoadOwnerInfo(completion: @escaping (Result<Owner, Error>) 
 		let owner = try JSONDecoder().decode(Owner.self, from: data)
 		completion(.success(owner))
 	} catch {
-		print(error)
 		completion(.failure(error))
 	}
 	

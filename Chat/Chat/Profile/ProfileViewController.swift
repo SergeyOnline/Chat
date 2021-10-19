@@ -547,7 +547,7 @@ final class ProfileViewController: UIViewController {
 		self.changeSaveButtonsStatusTo(.enable)
 		self.cancelButton.isEnabled = true
 		self.hideSaveButtons()
-		self.editImageButton.isHidden = true
+		self.editImageButton.isHidden = false
 	}
 	
 	private func textFieldsResignFirstResponder() {

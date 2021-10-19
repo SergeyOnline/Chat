@@ -5,6 +5,8 @@
 //  Created by Сергей on 25.09.2021.
 //
 
+import UIKit
+
 struct Owner: Codable {
 	var firstName = "Sergei"
 	var lastName = "Gryaznov"
@@ -29,4 +31,10 @@ struct Owner: Codable {
 			}
 		}
 	}
+	
+	//MARK: - default owner name
+//	init() {
+//		fullName = UIDevice.current.name
+//	}
+	
 }
