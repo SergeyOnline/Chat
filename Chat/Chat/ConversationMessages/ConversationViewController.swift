@@ -23,6 +23,7 @@ final class ConversationViewController: UIViewController {
 	
 	var messageInputField: UITextView = {
 		let textView = UITextView()
+		textView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		return textView
 	}()
 	
