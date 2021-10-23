@@ -23,25 +23,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		window = UIWindow()
 		
-		let conversationsListVC = ConversationsListViewController()
-		let navViewController = UINavigationController(rootViewController: conversationsListVC)
+//		let conversationsListVC = ConversationsListViewController()
+//		let navViewController = UINavigationController(rootViewController: conversationsListVC)
+		
+		let tabBarController = TabBarController()
+		let navViewController = UINavigationController(rootViewController: tabBarController)
 		
 		window?.rootViewController = navViewController
 		window?.makeKeyAndVisible()
 		PrintStateTransitionFrom(.suspended, to: .inactive)
 		
-		let userProfileInfoHandler = GCDUserProfileInfoHandler()
-		userProfileInfoHandler.loadTheme { result in
-			switch result {
-			case .success(let themeId):
-				DispatchQueue.main.async {
-					self.setApplicationThemeForId(themeId)
-					conversationsListVC.viewWillAppear(false)
-				}
-			case .failure:
-				Theme.theme = .light
-			}
-		}
+//		let userProfileInfoHandler = GCDUserProfileInfoHandler()
+//		userProfileInfoHandler.loadTheme { result in
+//			switch result {
+//			case .success(let themeId):
+//				DispatchQueue.main.async {
+//					self.setApplicationThemeForId(themeId)
+//					conversationsListVC.viewWillAppear(false)
+//				}
+//			case .failure:
+//				Theme.theme = .light
+//			}
+//		}
 		
 		// TODO: - User Defaults
 //		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {

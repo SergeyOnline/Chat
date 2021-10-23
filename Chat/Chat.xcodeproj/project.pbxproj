@@ -35,6 +35,7 @@
 		8781CC16271324BE00566A90 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC15271324BE00566A90 /* Themes.swift */; };
 		8783FD03270BCB8400C21A66 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8783FD02270BCB8400C21A66 /* Message.swift */; };
 		878BFE1827241CD900DCC092 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 878BFE1727241CD900DCC092 /* GoogleService-Info.plist */; };
+		878BFE1A27243C6000DCC092 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878BFE1927243C6000DCC092 /* TabBarController.swift */; };
 		87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +71,7 @@
 		8781CC15271324BE00566A90 /* Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
 		8783FD02270BCB8400C21A66 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		878BFE1727241CD900DCC092 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Chat/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		878BFE1927243C6000DCC092 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
 		9DD2E2A840343F2A30F4AA76 /* Pods-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.debug.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.debug.xcconfig"; sourceTree = "<group>"; };
 		D3A6243B839F498151EF9319 /* Pods-Chat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.release.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.release.xcconfig"; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				87750AB7271E1AA100B84A9C /* Utils */,
 				87750AB8271E1AD400B84A9C /* KeyConstants */,
 				876BABF926FF38E800D5BF31 /* AppDelegate.swift */,
+				878BFE1927243C6000DCC092 /* TabBarController.swift */,
 				876BAC2F26FF460F00D5BF31 /* Assets.xcassets */,
 				876BABFD26FF38E800D5BF31 /* ViewController.swift */,
 				876BABFF26FF38E800D5BF31 /* Main.storyboard */,
@@ -365,6 +368,7 @@
 				8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */,
 				876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */,
 				87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */,
+				878BFE1A27243C6000DCC092 /* TabBarController.swift in Sources */,
 				876BAC1126FF39C300D5BF31 /* ProfileButton.swift in Sources */,
 				87750AB4271E014900B84A9C /* FileKeys.swift in Sources */,
 				8774D33F270A024D007D359C /* TestData.swift in Sources */,
