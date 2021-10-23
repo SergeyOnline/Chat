@@ -20,11 +20,10 @@ final class ConversationsListViewController: UIViewController {
 		static let userImageViewHeight = 40.0
 		static let userImageViewLabelfontSize = 20.0
 		static let tableViewRowHeight = 80.0
-		static let settingsButtonImageName = "Gear"
+//		static let settingsButtonImageName = "Gear"
 	}
 	
 	private enum LocalizeKeys {
-		static let navigationItemTitle = "navigationItemTitle"
 		static let onlineHeaderTitle = "onlineHeaderTitle"
 		static let offlineHeaderTitle = "offlineHeaderTitle"
 	}
@@ -111,22 +110,20 @@ final class ConversationsListViewController: UIViewController {
 		present(profileViewController, animated: true, completion: nil)
 	}
 	
-	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
-		let themesVC = ThemesViewController()
-		themesVC.modalPresentationStyle = .fullScreen
-		themesVC.completion = {
-			self.tableView.reloadData()
-			self.viewWillAppear(false)
-			//			self.logThemeChanging()
-		}
-		present(themesVC, animated: true, completion: nil)
-	}
+//	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
+//		let themesVC = ThemesViewController()
+//		themesVC.modalPresentationStyle = .fullScreen
+//		themesVC.completion = {
+//			self.tableView.reloadData()
+//			self.viewWillAppear(false)
+//			//			self.logThemeChanging()
+//		}
+//		present(themesVC, animated: true, completion: nil)
+//	}
 	
 	// MARK: - Private functions
 	
 	private func setup() {
-		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
-		navigationItem.backButtonTitle = ""
 		
 		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
 		userProfileHandler.loadOwnerImage { result in
@@ -152,16 +149,8 @@ final class ConversationsListViewController: UIViewController {
 		//			userImageView.image = UIImage(data: imageData)
 		//		}
 		
-		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
-		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))
 		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
 		userImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
-		
-		let image = UIImage(named: Constants.settingsButtonImageName)
-		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
-		
-		navigationItem.rightBarButtonItem = profileBarButtonItem
-		navigationItem.leftBarButtonItem = settingsBarButtonItem
 		
 		setupTableView()
 		view.addSubview(tableView)

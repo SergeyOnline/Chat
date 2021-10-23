@@ -37,18 +37,11 @@ final class ProfileViewController: UIViewController {
 	var owner = Owner()
 	
 	// MARK: - UI
-	private lazy var closeButton: UIButton = {
-		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), fontSize: 17)
-		button.addTarget(self, action: #selector(closeButtonAction), for: .touchUpInside)
-		return button
-	}()
 	private var imageView: UserImageView
 	private var infoTextView: UITextView = {
 		let textView = UITextView()
 		textView.isScrollEnabled = false
 		textView.textContainer.maximumNumberOfLines = 2
-		textView.textColor = NavigationBarAppearance.elementsColor.uiColor()
-		textView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		textView.font = UIFont.systemFont(ofSize: 16)
 		textView.translatesAutoresizingMaskIntoConstraints = false
 		textView.isUserInteractionEnabled = false
@@ -57,7 +50,6 @@ final class ProfileViewController: UIViewController {
 	lazy var editButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 19)
 		button.layer.cornerRadius = 14
-		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		button.addTarget(self, action: #selector(editButtonAction), for: .touchUpInside)
 		return button
 	}()
@@ -71,7 +63,6 @@ final class ProfileViewController: UIViewController {
 	private lazy var cancelButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.cancelButtonTitle, comment: ""), fontSize: 16)
 		button.layer.cornerRadius = 14
-		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		button.setTitleColor(.systemBlue, for: .normal)
 		button.setTitleColor(.systemGray, for: .disabled)
 		button.addTarget(self, action: #selector(cancelButtonAction(_:)), for: .touchUpInside)
@@ -81,7 +72,6 @@ final class ProfileViewController: UIViewController {
 	private lazy var saveButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.saveButtonTitle, comment: ""), fontSize: 14)
 		button.layer.cornerRadius = 14
-		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		button.setTitleColor(.systemBlue, for: .normal)
 		button.setTitleColor(.systemGray, for: .disabled)
 		button.addTarget(self, action: #selector(saveButtonAction(_:)), for: .touchUpInside)
@@ -90,7 +80,6 @@ final class ProfileViewController: UIViewController {
 	}()
 	private lazy var nameTextField: UITextField = {
 		let textField = UITextField()
-		textField.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		textField.font = UIFont.boldSystemFont(ofSize: 20)
 		textField.translatesAutoresizingMaskIntoConstraints = false
 		let placeholder = NSLocalizedString(LocalizeKeys.nameTextFieldPlaceholder, comment: "")
@@ -100,9 +89,10 @@ final class ProfileViewController: UIViewController {
 		textField.addTarget(self, action: #selector(nameTextFieldEditing(_:)), for: .editingChanged)
 		return textField
 	}()
+	private var profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
+	
 	private var headerView: UIView = {
 		let view = UIView()
-		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		view.translatesAutoresizingMaskIntoConstraints = false
 		return view
 	}()
@@ -118,12 +108,12 @@ final class ProfileViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		setup()
 	}
 	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		updateTheme()
 	}
 	
 	// MARK: - Init
@@ -137,13 +127,9 @@ final class ProfileViewController: UIViewController {
 	}
 	
 	// MARK: - Actions
-	@objc func closeButtonAction(_ sender: UIButton) {
-		navigationController?.popViewController(animated: true)
-		dismiss(animated: true, completion: nil)
-		completion()
-	}
 	@objc func editButtonAction(_ sender: UIButton) {
 		editImageButton.isHidden = true
+		tabBarController?.tabBar.isHidden = true
 		showSaveButtons()
 	}
 	@objc func editImageButtonAction(_ sender: UIButton) {
@@ -245,6 +231,18 @@ final class ProfileViewController: UIViewController {
 		}
 	}
 	
+	func updateTheme() {
+		view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+		infoTextView.textColor = NavigationBarAppearance.elementsColor.uiColor()
+		infoTextView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+		editButton.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		cancelButton.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		saveButton.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		nameTextField.textColor = NavigationBarAppearance.elementsColor.uiColor()
+		headerView.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		profileLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
+	}
+	
 	// MARK: - Private functions
 	private func openCamera() {
 		if UIImagePickerController .isSourceTypeAvailable(.camera) {
@@ -283,14 +281,9 @@ final class ProfileViewController: UIViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
-		let profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
-		profileLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		headerView.addSubview(profileLabel)
-		headerView.addSubview(closeButton)
 		profileLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 16).isActive = true
-		profileLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor).isActive = true
-		closeButton.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -16).isActive = true
-		closeButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor).isActive = true
+		profileLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 20).isActive = true
 		
 		imageView.layer.cornerRadius = 120
 		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
@@ -356,6 +349,7 @@ final class ProfileViewController: UIViewController {
 		nameTextField.isEnabled = false
 		infoTextView.isUserInteractionEnabled = false
 		editButton.isHidden = false
+		tabBarController?.tabBar.isHidden = false
 	}
 	private func showSaveButtons() {
 		editButton.isHidden = true
@@ -385,7 +379,7 @@ final class ProfileViewController: UIViewController {
 	private func setupEditButtonConstraints() {
 		editButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 		editButton.widthAnchor.constraint(equalToConstant: 263).isActive = true
-		editButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
+		editButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30).isActive = true
 		editButton.topAnchor.constraint(greaterThanOrEqualTo: infoTextView.bottomAnchor).isActive = true
 		editButton.heightAnchor.constraint(equalToConstant: 36).isActive = true
 	}
@@ -425,6 +419,7 @@ final class ProfileViewController: UIViewController {
 		self.cancelButton.isEnabled = true
 		self.hideSaveButtons()
 		self.editImageButton.isHidden = false
+		completion()
 	}
 	private func textFieldsResignFirstResponder() {
 		if nameTextField.isFirstResponder {
