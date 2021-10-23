@@ -26,6 +26,7 @@
 "successAlertTitle" = "Данные сохранены";
 "failureAlertTitle" = "Ошибка";
 "failureAlertMessage" = "Не удалось сохранить данные";
+"saveButtonTitle" = "Сохранить";
 
 //MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Сообщение...";

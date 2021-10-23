@@ -26,6 +26,7 @@
 "successAlertTitle" = "Data saved";
 "failureAlertTitle" = "Error";
 "failureAlertMessage" = "Failed to save data";
+"saveButtonTitle" = "Save";
 
 //MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Message...";
