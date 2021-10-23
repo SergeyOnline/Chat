@@ -21,12 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
-		
 		window = UIWindow()
 		
 		let conversationsListVC = ConversationsListViewController()
 		let navViewController = UINavigationController(rootViewController: conversationsListVC)
-		
 		
 		window?.rootViewController = navViewController
 		window?.makeKeyAndVisible()
@@ -45,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			}
 		}
 		
-		//TODO: - User Defaults
+		// TODO: - User Defaults
 //		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
 //		case 0:
 //			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
@@ -83,12 +81,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		PrintStateTransitionFrom(.background, to: .inactive)
 	}
 
-
 	func applicationWillTerminate(_ application: UIApplication) {
 
 		PrintStateTransitionFrom(.background, to: .suspended)
 	}
-	
 	
 	/**
 	Prints the transition state of the application lifecycle

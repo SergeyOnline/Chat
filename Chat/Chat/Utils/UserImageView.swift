@@ -57,7 +57,7 @@ extension UserImageView {
 		case offline
 	}
 	
-	func changeUserStatusTo(_ status : Status) {
+	func changeUserStatusTo(_ status: Status) {
 		switch status {
 		case .online:
 			statusView.isHidden = false

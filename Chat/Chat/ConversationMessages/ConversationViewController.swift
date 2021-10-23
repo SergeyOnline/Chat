@@ -9,13 +9,13 @@ import UIKit
 
 final class ConversationViewController: UIViewController {
 	
-	//MARK: - Model
+	// MARK: - Model
 	var user: User
 	
-	//MARK: - Dependencies
+	// MARK: - Dependencies
 	weak var delegate: ConversationsListViewControllerDelegate?
 	
-	//MARK: - UI
+	// MARK: - UI
 	var tableView: UITableView = {
 		let table = UITableView(frame: CGRect.zero, style: .plain)
 		return table
@@ -53,12 +53,12 @@ final class ConversationViewController: UIViewController {
 	
 	private var isKeyboardHidden = true
 	
-	private var tapGesture: UITapGestureRecognizer = {
-		let gesture =  UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
+	private lazy var tapGesture: UITapGestureRecognizer = {
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
 		return gesture
 	}()
 	
-	private let addButton: UIButton = {
+	private lazy var addButton: UIButton = {
 		let button = UIButton(type: .contactAdd)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.addTarget(self, action: #selector(addButtonAction(_:)), for: .touchUpInside)
@@ -66,7 +66,7 @@ final class ConversationViewController: UIViewController {
 		return button
 	}()
 	
-	private let sendButton: UIButton = {
+	private lazy var sendButton: UIButton = {
 		let button = UIButton(type: .roundedRect)
 		let image = UIImage(named: Constants.sendButtonImageName)
 		button.setImage(image, for: .normal)
@@ -81,9 +81,9 @@ final class ConversationViewController: UIViewController {
 		setup()
 	}
 	
-	//MARK: - Actions
+	// MARK: - Actions
 	@objc func addButtonAction(_ sender: UIButton) {
-		//TODO: - Add
+		// TODO: - Add
 		print("TO DO")
 	}
 	
@@ -105,7 +105,7 @@ final class ConversationViewController: UIViewController {
 			let indexPath = IndexPath(row: cellNumber, section: 0)
 			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 		}
-		//TODO: - Send request to server!
+		// TODO: - Send request to server!
 	}
 	
 	@objc func tapGestureAction(_ sender: UITapGestureRecognizer) {
@@ -165,7 +165,7 @@ final class ConversationViewController: UIViewController {
 			let height = rect.height
 			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
 			self.view.frame = frame
-			guard let messages = user.messages else  { return }
+			guard let messages = user.messages else { return }
 			DispatchQueue.main.async {
 				let cellNumber = messages.count - 1
 				let indexPath = IndexPath(row: cellNumber, section: 0)
@@ -178,14 +178,12 @@ final class ConversationViewController: UIViewController {
 		NotificationCenter.default.removeObserver(self)
 	}
 	
-	//MARK: - Private functions
+	// MARK: - Private functions
 	private func resizeTextViewToFitText() {
 		let size = CGSize(width: messageInputField.frame.width, height: .infinity)
 		let expectedSize = messageInputField.sizeThatFits(size)
-		for constraint in messageInputField.constraints {
-			if constraint.firstAttribute == .height {
-				constraint.constant = max(min(expectedSize.height, Constants.maxHeightMessageInput), Constants.minHeightMessageInput)
-			}
+		for constraint in messageInputField.constraints where constraint.firstAttribute == .height {
+			constraint.constant = max(min(expectedSize.height, Constants.maxHeightMessageInput), Constants.minHeightMessageInput)
 		}
 		if expectedSize.height > Constants.maxHeightMessageInput {
 			messageInputField.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.maxHeightMessageInput).isActive = true
@@ -204,8 +202,8 @@ final class ConversationViewController: UIViewController {
 		
 		setupNavigationBar()
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
 		view.addGestureRecognizer(tapGesture)
 		
@@ -237,7 +235,9 @@ final class ConversationViewController: UIViewController {
 		
 		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
 		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
-		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue:
+																							NSAttributedString.Key.foregroundColor.rawValue):
+																	NavigationBarAppearance.elementsColor.uiColor()]
 		
 		let navigationTitleView = UIView()
 		if let frame = navigationController?.navigationBar.frame {

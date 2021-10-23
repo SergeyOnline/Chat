@@ -50,7 +50,7 @@ enum TableViewAppearance {
 	static let headerTitleColor = ThemeColor(dark: Dark.headerTitleColor, light: Light.headerTitleColor, darkBlue: DarkBlue.headerTitleColor)
 	
 	private enum Light {
-		static let backgroundColor =  UIColor(red: 242/255, green: 242/255, blue: 243/255, alpha: 1)
+		static let backgroundColor = UIColor(red: 242 / 255, green: 242 / 255, blue: 243 / 255, alpha: 1)
 		static let headerTitleColor = UIColor.darkGray
 	}
 	
@@ -60,7 +60,7 @@ enum TableViewAppearance {
 	}
 	
 	private enum DarkBlue {
-		static let backgroundColor = UIColor(red: 25/255, green: 35/255, blue: 49/255, alpha: 1)
+		static let backgroundColor = UIColor(red: 25 / 255, green: 35 / 255, blue: 49 / 255, alpha: 1)
 		static let headerTitleColor = UIColor.lightGray
 	}
 	
@@ -83,7 +83,7 @@ enum TableViewCellAppearance {
 	}
 	
 	private enum DarkBlue {
-		static let backgroundColor = UIColor(red: 19/255, green: 25/255, blue: 34/255, alpha: 1.0)
+		static let backgroundColor = UIColor(red: 19 / 255, green: 25 / 255, blue: 34 / 255, alpha: 1.0)
 		static let textColor = UIColor.white
 	}
 	
@@ -96,7 +96,7 @@ enum NavigationBarAppearance {
 	static let elementsColor = ThemeColor(dark: Dark.elementsColor, light: Light.elementsColor, darkBlue: DarkBlue.elementsColor)
 	
 	private enum Light {
-		static let backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 243/255, alpha: 1)
+		static let backgroundColor = UIColor(red: 242 / 255, green: 242 / 255, blue: 243 / 255, alpha: 1)
 		static let elementsColor = UIColor.black
 	}
 	
@@ -106,10 +106,8 @@ enum NavigationBarAppearance {
 	}
 	
 	private enum DarkBlue {
-		static let backgroundColor = UIColor(red: 25/255, green: 35/255, blue: 49/255, alpha: 1)
+		static let backgroundColor = UIColor(red: 25 / 255, green: 35 / 255, blue: 49 / 255, alpha: 1)
 		static let elementsColor = UIColor.white
 	}
 	
 }
-
-

@@ -17,15 +17,11 @@ class User {
 	var messages: [Message]?
 	var online: Bool
 	var hasUnreadMessages: Bool {
-		get {
-			guard let allMessages = messages else { return false }
-			for message in allMessages {
-				if message.unread {
-					return true
-				}
-			}
-			return false
+		guard let allMessages = messages else { return false }
+		for message in allMessages where message.unread {
+			return true
 		}
+		return false
 	}
 	
 	var imageView: UIImageView?
@@ -46,9 +42,7 @@ class User {
 	}
 	
 	var initials: String {
-		get {
-			return (firstName.first?.uppercased() ?? "") + (lastName?.first?.uppercased() ?? "")
-		}
+		return (firstName.first?.uppercased() ?? "") + (lastName?.first?.uppercased() ?? "")
 	}
 	
 	init(firstName: String, lastName: String?, messages: [Message]? = nil, online: Bool) {
@@ -61,4 +55,3 @@ class User {
 		imageView = UserImageView(labelTitle: initials, labelfontSize: 20)
 	}
 }
-

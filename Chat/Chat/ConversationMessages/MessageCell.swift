@@ -51,8 +51,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
-	
-	//MARK: - Private functions
+	// MARK: - Private functions
 	private func setup() {
 		
 		selectionStyle = .none
@@ -93,4 +92,3 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	}
 	
 }
-

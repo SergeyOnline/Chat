@@ -17,7 +17,6 @@ protocol ConversationCellConfiguration: AnyObject {
 
 final class ConversationsListCell: UITableViewCell, ConversationCellConfiguration {
 	
-	
 	private enum Constants {
 		static let headerFontSize = 15.0
 		static let bodyFontSize = 13.0
@@ -78,7 +77,7 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		}
 	}
 	
-	//MARK: - UI
+	// MARK: - UI
 	private var nameLabel: UILabel = {
 		let label = UILabel()
 		return label
@@ -119,7 +118,7 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		nameLabel.textColor = TableViewCellAppearance.textColor.uiColor()
 	}
 	
-	//MARK: - Private finctions
+	// MARK: - Private finctions
 	private func setup() {
 		
 		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
@@ -167,7 +166,7 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		contentVerticalStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20).isActive = true
 	}
 	
-	private func stringFromDate(_ date : Date?) -> String {
+	private func stringFromDate(_ date: Date?) -> String {
 		guard let d = date else { return "" }
 		let calendar = Calendar(identifier: .gregorian)
 		let beginningDay = calendar.startOfDay(for: Date())

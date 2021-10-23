@@ -37,11 +37,11 @@ final class ProfileViewController: UIViewController {
 		case disable
 	}
 	
-	//MARK: - Model
+	// MARK: - Model
 	var owner = Owner()
 	
-	//MARK: - UI
-	private var closeButton: UIButton = {
+	// MARK: - UI
+	private lazy var closeButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), fontSize: 17)
 		button.addTarget(self, action: #selector(closeButtonAction), for: .touchUpInside)
 		return button
@@ -60,7 +60,7 @@ final class ProfileViewController: UIViewController {
 		return textView
 	}()
 	
-	var editButton: UIButton = {
+	lazy var editButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editButtonTitle, comment: ""), fontSize: 19)
 		button.layer.cornerRadius = 14
 		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
@@ -68,7 +68,7 @@ final class ProfileViewController: UIViewController {
 		return button
 	}()
 	
-	private var editImageButton: UIButton = {
+	private lazy var editImageButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.editImageButtonTitle, comment: ""), fontSize: 16)
 		button.setTitleColor(.systemBlue, for: .normal)
 		button.setTitleColor(.systemGray, for: .disabled)
@@ -76,7 +76,7 @@ final class ProfileViewController: UIViewController {
 		return button
 	}()
 	
-	private var cancelButton: UIButton = {
+	private lazy var cancelButton: UIButton = {
 		let button = ProfileButton(title: NSLocalizedString(LocalizeKeys.cancelButtonTitle, comment: ""), fontSize: 16)
 		button.layer.cornerRadius = 14
 		button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
@@ -87,7 +87,7 @@ final class ProfileViewController: UIViewController {
 		return button
 	}()
 	
-	private var saveGCDButton: UIButton = {
+	private lazy var saveGCDButton: UIButton = {
 		let button = ProfileButton(title: "Save GCD", fontSize: 14)
 		button.tag = Constants.saveGCDButtonTag
 		button.layer.cornerRadius = 14
@@ -99,7 +99,7 @@ final class ProfileViewController: UIViewController {
 		return button
 	}()
 	
-	private var saveOperationsButton: UIButton = {
+	private lazy var saveOperationsButton: UIButton = {
 		let button = ProfileButton(title: "Save Operations", fontSize: 14)
 		button.tag = Constants.saveOperationsButtonTag
 		button.layer.cornerRadius = 14
@@ -111,7 +111,7 @@ final class ProfileViewController: UIViewController {
 		return button
 	}()
 	
-	private var nameTextField: UITextField = {
+	private lazy var nameTextField: UITextField = {
 		let textField = UITextField()
 		textField.textColor = NavigationBarAppearance.elementsColor.uiColor()
 		textField.font = UIFont.boldSystemFont(ofSize: 20)
@@ -140,7 +140,7 @@ final class ProfileViewController: UIViewController {
 	private let userProfileHandlerGCD = GCDUserProfileInfoHandler()
 	private let userProfileHandlerOperation = OperationUserProfileInfoHandler()
 	
-	var completion: (()-> Void) = {}
+	var completion: (() -> Void) = {}
 	
 	private var picker = UIImagePickerController()
 	private var isKeyboardHidden = true
@@ -155,7 +155,7 @@ final class ProfileViewController: UIViewController {
 		super.viewDidAppear(animated)
 	}
 	
-	//MARK: - Init
+	// MARK: - Init
 	
 	init() {
 		imageView = UserImageView(labelTitle: owner.initials, labelfontSize: 120)
@@ -167,8 +167,7 @@ final class ProfileViewController: UIViewController {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
-	
-	//MARK: - Actions
+	// MARK: - Actions
 	
 	@objc func closeButtonAction(_ sender: UIButton) {
 		navigationController?.popViewController(animated: true)
@@ -195,12 +194,12 @@ final class ProfileViewController: UIViewController {
 		let deleteAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.deleteAction, comment: ""), style: .destructive) { _ in
 			self.imageView.image = nil
 			
-			self.userProfileHandlerGCD.saveOwnerImage(image: nil) { error in
+			self.userProfileHandlerGCD.saveOwnerImage(image: nil) { _ in
 				DispatchQueue.main.async {
 					self.completion()
 				}
 			}
-//		MARK: - User defaults
+		// MARK: - User defaults
 //			UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.userImage)
 //			self.completion()
 		}
@@ -278,10 +277,8 @@ final class ProfileViewController: UIViewController {
 			let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - height)
 			view.frame = frame
 			imageView.isHidden = true
-			for constraint in imageView.constraints {
-				if constraint.firstAttribute == .height {
+			for constraint in imageView.constraints where constraint.firstAttribute == .height {
 					constraint.constant = 1
-				}
 			}
 			
 			editImageButton.isHidden = true
@@ -297,20 +294,17 @@ final class ProfileViewController: UIViewController {
 			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
 			self.view.frame = frame
 			imageView.isHidden = false
-			for constraint in imageView.constraints {
-				if constraint.firstAttribute == .height {
+			for constraint in imageView.constraints where constraint.firstAttribute == .height {
 					constraint.constant = 240
-				}
 			}
 			editImageButton.isHidden = false
 		}
 	}
 	
-	
-	//MARK: - Private functions
+	// MARK: - Private functions
 	
 	private func openCamera() {
-		if (UIImagePickerController .isSourceTypeAvailable(.camera)){
+		if UIImagePickerController .isSourceTypeAvailable(.camera) {
 			picker.sourceType = .camera
 			present(picker, animated: true, completion: nil)
 		} else {
@@ -327,7 +321,7 @@ final class ProfileViewController: UIViewController {
 		view.addSubview(headerView)
 		setupHeaderViewConstraints()
 		
-		//		MARK: - GCD or Operation handler
+				// MARK: - GCD or Operation handler
 		//		userProfileHandlerGCD.loadOwnerInfo { [weak self] in
 		//			switch $0 {
 		//			case .success(let owner):
@@ -352,7 +346,7 @@ final class ProfileViewController: UIViewController {
 			}
 		}
 		
-		//		MARK: - GCD or Operation handler
+				// MARK: - GCD or Operation handler
 		//		userProfileHandlerGCD.loadOwnerImage { [weak self] in
 		//			switch $0 {
 		//			case .success(let image):
@@ -371,8 +365,8 @@ final class ProfileViewController: UIViewController {
 			}
 		}
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil);
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil);
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
 		
 		let profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
 		profileLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
@@ -525,7 +519,7 @@ final class ProfileViewController: UIViewController {
 	
 	private func setupEditImageButtonConstraints() {
 		editImageButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
-		editImageButton.heightAnchor.constraint(equalToConstant: 40).isActive =  true
+		editImageButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		editImageButton.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -22).isActive = true
 		editImageButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
 	}
@@ -537,7 +531,7 @@ final class ProfileViewController: UIViewController {
 	}
 	
 	private func setupAfterSaveOperation(sender: UIButton, error: Error?) {
-		if let _ = error {
+		if error != nil {
 			self.showFailureAlert(sender: sender)
 		} else {
 			self.imageView.setInitials(initials: self.owner.initials)
@@ -566,15 +560,15 @@ final class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
 	
-	//MARK: - Image Picker Controller Delegate
+	// MARK: - Image Picker Controller Delegate
 	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
 		picker.dismiss(animated: true, completion: nil)
 		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
 		
 		guard let image = imageView.image else { return }
 		
-		//		MARK: - GCD or Operation handler
+				// MARK: - GCD or Operation handler
 		//		userProfileHandlerGCD.saveOwnerImage(image: image) { error in
 		//			DispatchQueue.main.async {
 		//				if let error = error {
@@ -593,7 +587,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 			}
 		}
 		
-		//		MARK: - User defaults
+				// MARK: - User defaults
 		//		let imageData = image.jpegData(compressionQuality: 0.3)
 		//		UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.userImage)
 		//		completion()
@@ -610,8 +604,8 @@ extension ProfileViewController: UITextFieldDelegate {
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		textField.resignFirstResponder()
 		infoTextView.becomeFirstResponder()
-		let insertionPoint = NSMakeRange(infoTextView.text.count, 0);
-		infoTextView.selectedRange = insertionPoint;
+		let insertionPoint = NSRange(location: infoTextView.text.count, length: 0)
+		infoTextView.selectedRange = insertionPoint
 		return true
 	}
 	
@@ -632,7 +626,7 @@ extension String {
 	var numberOfWords: Int {
 		var count = 0
 		let range = startIndex..<endIndex
-		enumerateSubstrings(in: range, options: [.byWords, .substringNotRequired, .localized], { _, _, _, _ -> () in
+		enumerateSubstrings(in: range, options: [.byWords, .substringNotRequired, .localized], { _, _, _, _ -> Void in
 			count += 1
 		})
 		return count

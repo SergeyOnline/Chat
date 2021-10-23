@@ -25,7 +25,7 @@ class ThemesViewController: UIViewController {
 		return view
 	}()
 	
-	private var theme1Button: UIButton = {
+	private lazy var theme1Button: UIButton = {
 		let button = UIButton(type: .system)
 		button.layer.cornerRadius = Constants.buttonsCornerRadius
 		button.tag = 1
@@ -35,7 +35,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	private var theme2Button: UIButton = {
+	private lazy var theme2Button: UIButton = {
 		let button = UIButton(type: .system)
 		button.layer.cornerRadius = Constants.buttonsCornerRadius
 		button.tag = 2
@@ -45,7 +45,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	private var theme3Button: UIButton = {
+	private lazy var theme3Button: UIButton = {
 		let button = UIButton(type: .system)
 		button.layer.cornerRadius = Constants.buttonsCornerRadius
 		button.tag = 3
@@ -55,7 +55,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	private var closeButton: UIButton = {
+	private lazy var closeButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setTitle(NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), for: .normal)
 		button.addTarget(self, action: #selector(closeButtonAction(_:)), for: .touchUpInside)
@@ -63,7 +63,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	var completion: (()-> Void) = {}
+	var completion: (() -> Void) = {}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,7 +87,7 @@ class ThemesViewController: UIViewController {
 		
 	}
 	
-	//MARK: - Actions
+	// MARK: - Actions
 	
 	@objc func closeButtonAction(_ sender: UIButton) {
 		dismiss(animated: true, completion: nil)
@@ -113,7 +113,7 @@ class ThemesViewController: UIViewController {
 		completion()
 	}
 	
-	//MARK: - Private functions
+	// MARK: - Private functions
 	private func setup() {
 		
 		headerView.translatesAutoresizingMaskIntoConstraints = false

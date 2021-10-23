@@ -25,11 +25,11 @@ final class ConversationsListViewController: UIViewController {
 	
 	private enum LocalizeKeys {
 		static let navigationItemTitle = "navigationItemTitle"
-		static let onlineHeaderTitle = "onlineHeaderTitle";
-		static let offlineHeaderTitle = "offlineHeaderTitle";
+		static let onlineHeaderTitle = "onlineHeaderTitle"
+		static let offlineHeaderTitle = "offlineHeaderTitle"
 	}
 	
-	//MARK: - UI
+	// MARK: - UI
 	var tableView: UITableView = {
 		let table = UITableView(frame: CGRect.zero, style: .grouped)
 		return table
@@ -40,57 +40,55 @@ final class ConversationsListViewController: UIViewController {
 		return imageView
 	}()
 	
-	//MARK: - Model
+	// MARK: - Model
 	private let users = TestData.users
 	private var onlineUsers: [User] {
-		get {
-			var users = users.filter({ $0.online == true})
-			users = sortUsers(users: users)
-			return users
-		}
+		var users = users.filter({ $0.online == true})
+		users = sortUsers(users: users)
+		return users
 	}
 	
 	private var offlineUsers: [User] {
-		get {
-			var users = users.filter({ $0.online == false})
-			users = sortUsers(users: users)
-			return users
-		}
+		var users = users.filter({ $0.online == false})
+		users = sortUsers(users: users)
+		return users
 	}
 	
 	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
-		//MARK: - GCD or Operation handler
+		// MARK: - GCD or Operation handler
 		return OperationUserProfileInfoHandler()
-//		return GCDUserProfileInfoHandler()
+		//		return GCDUserProfileInfoHandler()
 	}()
-
+	
 	override func viewDidLoad() {
-        super.viewDidLoad()
+		super.viewDidLoad()
 		setup()
-    }
+	}
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
 		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
-		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue:
+																							NSAttributedString.Key.foregroundColor.rawValue):
+																	NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
 		tableView.reloadData()
 	}
-
-	//MARK: - Actions
+	
+	// MARK: - Actions
 	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
 		let profileViewController = ProfileViewController()
 		profileViewController.completion = {
-	
+			
 			self.userProfileHandler.loadOwnerInfo { result in
 				switch result {
 				case .success(let owner):
 					self.userImageView.setInitials(initials: owner.initials)
 				case .failure:
 					break
-//					print("Error: load info error")
+					//					print("Error: load info error")
 				}
 			}
 			
@@ -103,12 +101,12 @@ final class ConversationsListViewController: UIViewController {
 				}
 			}
 			
-			//TODO: - User defaults
-//			if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-//				self.userImageView.image = UIImage(data: imageData)
-//			} else {
-//				self.userImageView.image = nil
-//			}
+			// TODO: - User defaults
+			//			if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+			//				self.userImageView.image = UIImage(data: imageData)
+			//			} else {
+			//				self.userImageView.image = nil
+			//			}
 		}
 		present(profileViewController, animated: true, completion: nil)
 	}
@@ -119,12 +117,12 @@ final class ConversationsListViewController: UIViewController {
 		themesVC.completion = {
 			self.tableView.reloadData()
 			self.viewWillAppear(false)
-//			self.logThemeChanging()
+			//			self.logThemeChanging()
 		}
 		present(themesVC, animated: true, completion: nil)
 	}
 	
-	//MARK: -- Private functions
+	// MARK: - Private functions
 	
 	private func setup() {
 		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
@@ -149,10 +147,10 @@ final class ConversationsListViewController: UIViewController {
 			}
 		}
 		
-		//TODO: - User defaults
-//		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-//			userImageView.image = UIImage(data: imageData)
-//		}
+		// TODO: - User defaults
+		//		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+		//			userImageView.image = UIImage(data: imageData)
+		//		}
 		
 		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
 		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))
@@ -161,16 +159,16 @@ final class ConversationsListViewController: UIViewController {
 		
 		let image = UIImage(named: Constants.settingsButtonImageName)
 		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
-	
+		
 		navigationItem.rightBarButtonItem = profileBarButtonItem
 		navigationItem.leftBarButtonItem = settingsBarButtonItem
-
+		
 		setupTableView()
 		view.addSubview(tableView)
 		setupTableViewConstraints()
 	}
 	
-	//MARK: - setup Table View and Constraints
+	// MARK: - setup Table View and Constraints
 	
 	private func setupTableView() {
 		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
@@ -178,7 +176,7 @@ final class ConversationsListViewController: UIViewController {
 		tableView.dataSource = self
 		tableView.rowHeight = Constants.tableViewRowHeight
 		tableView.translatesAutoresizingMaskIntoConstraints = false
-//		tableView.rowHeight = UITableView.automaticDimension
+		//		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 80
 	}
 	
@@ -186,7 +184,7 @@ final class ConversationsListViewController: UIViewController {
 		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
 		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
 		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		tableView.bottomAnchor.constraint(equalTo:  view.bottomAnchor).isActive = true
+		tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 	}
 	
 	private func sortUsers(users: [User]) -> [User] {
@@ -197,7 +195,7 @@ final class ConversationsListViewController: UIViewController {
 			
 			guard let lastU1Date = u1.messages?.last?.date else { return false }
 			guard let lastU2Date = u2.messages?.last?.date else { return false }
-
+			
 			return lastU1Date > lastU2Date
 		})
 		otheUsers = otheUsers.sorted(by: { u1, u2 in
@@ -222,19 +220,19 @@ final class ConversationsListViewController: UIViewController {
 }
 
 extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
-
+	
 	// MARK: - Table view delegate, data source
 	func numberOfSections(in tableView: UITableView) -> Int {
 		return 2
 	}
-
+	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if section == 1 {
 			return offlineUsers.count
 		}
 		return onlineUsers.count
 	}
-
+	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as? ConversationsListCell else {
 			return UITableViewCell()
@@ -291,11 +289,9 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 
 extension ConversationsListViewController: ConversationsListViewControllerDelegate {
 	func changeMessagesForUserWhithID(_ id: Int, to messages: [Message]?) {
-		for user in users {
-			if user.id == id {
-				user.messages = messages
-				break
-			}
+		for user in users where user.id == id {
+			user.messages = messages
+			break
 		}
 		self.tableView.reloadData()
 	}

@@ -13,9 +13,7 @@ struct Owner: Codable {
 	var info = "iOS Developer, humble genius\nKazan, Russia"
 	
 	var initials: String {
-		get {
-			return (firstName.first?.uppercased() ?? "") + (lastName.first?.uppercased() ?? "")
-		}
+		return (firstName.first?.uppercased() ?? "") + (lastName.first?.uppercased() ?? "")
 	}
 	
 	var fullName: String {
@@ -32,7 +30,7 @@ struct Owner: Codable {
 		}
 	}
 	
-	//MARK: - default owner name
+	// MARK: - default owner name
 //	init() {
 //		fullName = UIDevice.current.name
 //	}
