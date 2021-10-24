@@ -105,11 +105,6 @@ class TabBarController: UITabBarController {
 		]) { err in
 			if let err = err {
 				print("Error adding document: \(err)")
-			} else {
-				DispatchQueue.main.async {
-					self.conversationsListVC.getChannels()
-					self.conversationsListVC.tableView.reloadData()
-				}
 			}
 		}
 	}
@@ -121,7 +116,7 @@ class TabBarController: UITabBarController {
 		themesVC.completion = {
 			self.conversationsListVC.tableView.reloadData()
 			self.viewWillAppear(false)
-			//			self.logThemeChanging()
+//			self.logThemeChanging()
 		}
 		present(themesVC, animated: true, completion: nil)
 	}

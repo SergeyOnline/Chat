@@ -8,11 +8,6 @@
 import UIKit
 import Firebase
 
-protocol ConversationsListViewControllerDelegate: AnyObject {
-//	func changeMessagesForUserWhithID(_ id: Int, to: [Message]?)
-	func updateChannels()
-}
-
 final class ConversationsListViewController: UIViewController {
 	
 	private enum Constants {
@@ -162,6 +157,30 @@ final class ConversationsListViewController: UIViewController {
 				self.channels = channels
 			}
 		}
+		
+		referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
+			var channels: [Channel] = []
+			if let error = error {
+				print("Error getting documents: \(error)")
+				return
+			}
+			if let documents = querySnapshot?.documents {
+				for document in documents {
+					let data = document.data()
+					let id: String = document.documentID
+					let name: String = (data["name"] as? String) ?? ""
+					let lastMessage: String? = data["lastMessage"] as? String
+					let lastActivity: Date? = data["lastActivity"] as? Date
+					let channel = Channel(identifier: id, name: name, lastMessage: lastMessage, lastActivity: lastActivity)
+					channels.append(channel)
+				}
+			}
+			DispatchQueue.main.async {
+				self?.channels = channels
+				self?.tableView.reloadData()
+			}
+		}
+		
 	}
 	
 	// MARK: - Private functions
@@ -252,28 +271,11 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		var conversationVC: ConversationViewController
 		conversationVC = ConversationViewController(channel: channels[indexPath.row])
-		conversationVC.delegate = self
 		self.navigationController?.pushViewController(conversationVC, animated: true)
 	}
 	
 	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 		guard let header = view as? UITableViewHeaderFooterView else { return }
 		header.textLabel?.textColor = TableViewAppearance.headerTitleColor.uiColor()
-	}
-}
-
-extension ConversationsListViewController: ConversationsListViewControllerDelegate {
-//	func changeMessagesForUserWhithID(_ id: Int, to messages: [Message]?) {
-//		for user in users where user.id == id {
-//			user.messages = messages
-//			break
-//		}
-//		self.tableView.reloadData()
-//	}
-	func updateChannels() {
-		DispatchQueue.main.async {
-			self.getChannels()
-			self.tableView.reloadData()
-		}
 	}
 }

@@ -45,9 +45,6 @@ final class ConversationViewController: UIViewController {
 	var channel: Channel?
 	var messages: [ChannelMessage]?
 	
-	// MARK: - Dependencies
-	weak var delegate: ConversationsListViewControllerDelegate?
-	
 	// MARK: - UI
 	var tableView: UITableView = {
 		let table = UITableView(frame: CGRect.zero, style: .plain)
@@ -107,21 +104,9 @@ final class ConversationViewController: UIViewController {
 		}
 		let newMessage = ChannelMessage(content: messageInputField.text, created: Date(), senderId: ownerID, senderName: Owner().fullName)
 		referenceMessages.addDocument(data: newMessage.toDict)
-		if messages == nil {
-			messages = [newMessage]
-		} else {
-			messages!.append(newMessage)
-		}
 		
 		messageInputField.text = ""
 		resizeTextViewToFitText()
-		DispatchQueue.main.async {
-			self.tableView.reloadData()
-			let cellNumber = self.messages!.count - 1
-			let indexPath = IndexPath(row: cellNumber, section: 0)
-			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-			self.delegate?.updateChannels()
-		}
 	}
 	
 	@objc func tapGestureAction(_ sender: UITapGestureRecognizer) {
@@ -131,12 +116,6 @@ final class ConversationViewController: UIViewController {
 				messageInputField.resignFirstResponder()
 			}
 		}
-	}
-	
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-//		delegate?.changeMessagesForUserWhithID(user.id, to: user.messages)
-		delegate?.updateChannels()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -202,8 +181,8 @@ final class ConversationViewController: UIViewController {
 	
 	// MARK: - Private functions
 	func getMessage() {
-		var messages: [ChannelMessage] = []
-		referenceMessages.getDocuments { querySnapshot, error in
+		referenceMessages.addSnapshotListener { [weak self] querySnapshot, error in
+			var messages: [ChannelMessage] = []
 			if let error = error {
 				print("Error getting documents: \(error)")
 				return
@@ -220,9 +199,9 @@ final class ConversationViewController: UIViewController {
 				}
 			}
 			DispatchQueue.main.async {
-				self.messages = messages.sorted(by: { $0.created < $1.created })
-				self.tableView.reloadData()
-				self.scrollTableViewToEnd()
+				self?.messages = messages.sorted(by: { $0.created < $1.created })
+				self?.tableView.reloadData()
+				self?.scrollTableViewToEnd()
 			}
 		}
 	}
