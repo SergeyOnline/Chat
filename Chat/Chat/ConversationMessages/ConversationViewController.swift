@@ -6,11 +6,44 @@
 //
 
 import UIKit
+import Firebase
 
 final class ConversationViewController: UIViewController {
 	
+	private enum Constants {
+		static let inputID = "input"
+		static let outputID = "output"
+		static let maxHeightMessageInput = 120.0
+		static let minHeightMessageInput = 32.0
+		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
+		static let messageInputFieldCornerRadius = 8.0
+		static let sendButtonImageName = "Send"
+		static let userImageViewCornerRadius = 18.0
+		static let userImageViewWidth = 36.0
+		static let userImageViewHeight = 36.0
+		static let userImageViewLabelfontSize = 18.0
+		static let titleFont = UIFont.boldSystemFont(ofSize: 16)
+		static let channelsDBCollection = "channels"
+		static let messagessDBCollection = "messages"
+	}
+	
+	private enum LocalizeKeys {
+		static let messageInputFieldPlaceholder = "messageInputFieldPlaceholder"
+	}
+	
+	private let ownerID = UIDevice.current.identifierForVendor?.uuidString ?? ""
+	
+	private lazy var db = Firestore.firestore()
+	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
+	private lazy var referenceMessages: CollectionReference = {
+		guard let channelIdentifier = channel?.identifier else { fatalError() }
+		return referenceChannel.document(channelIdentifier).collection(Constants.messagessDBCollection)
+	}()
+	
 	// MARK: - Model
-	var user: User
+//	var user: User
+	var channel: Channel?
+	var messages: [ChannelMessage]?
 	
 	// MARK: - Dependencies
 	weak var delegate: ConversationsListViewControllerDelegate?
@@ -31,25 +64,6 @@ final class ConversationViewController: UIViewController {
 		let view = UIView()
 		return view
 	}()
-	
-	private enum Constants {
-		static let inputID = "input"
-		static let outputID = "output"
-		static let maxHeightMessageInput = 120.0
-		static let minHeightMessageInput = 32.0
-		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
-		static let messageInputFieldCornerRadius = 8.0
-		static let sendButtonImageName = "Send"
-		static let userImageViewCornerRadius = 18.0
-		static let userImageViewWidth = 36.0
-		static let userImageViewHeight = 36.0
-		static let userImageViewLabelfontSize = 18.0
-		static let titleFont = UIFont.boldSystemFont(ofSize: 16)
-	}
-	
-	private enum LocalizeKeys {
-		static let messageInputFieldPlaceholder = "messageInputFieldPlaceholder"
-	}
 	
 	private var isKeyboardHidden = true
 	
@@ -91,21 +105,23 @@ final class ConversationViewController: UIViewController {
 		if messageInputField.text.isEmpty {
 			return
 		}
-		let newMessage = Message(body: messageInputField.text, date: Date(), unread: false, ownerID: 0)
-		if user.messages == nil {
-			user.messages = [newMessage]
+		let newMessage = ChannelMessage(content: messageInputField.text, created: Date(), senderId: ownerID, senderName: Owner().fullName)
+		referenceMessages.addDocument(data: newMessage.toDict)
+		if messages == nil {
+			messages = [newMessage]
 		} else {
-			user.messages!.append(newMessage)
+			messages!.append(newMessage)
 		}
+		
 		messageInputField.text = ""
 		resizeTextViewToFitText()
-		self.tableView.reloadData()
 		DispatchQueue.main.async {
-			let cellNumber = self.user.messages!.count - 1
+			self.tableView.reloadData()
+			let cellNumber = self.messages!.count - 1
 			let indexPath = IndexPath(row: cellNumber, section: 0)
 			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+			self.delegate?.updateChannels()
 		}
-		// TODO: - Send request to server!
 	}
 	
 	@objc func tapGestureAction(_ sender: UITapGestureRecognizer) {
@@ -119,20 +135,26 @@ final class ConversationViewController: UIViewController {
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		delegate?.changeMessagesForUserWhithID(user.id, to: user.messages)
+//		delegate?.changeMessagesForUserWhithID(user.id, to: user.messages)
+		delegate?.updateChannels()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		if user.messages != nil {
-			for i in 0..<user.messages!.count {
-				user.messages![i].unread = false
-			}
-		}
+//		if user.messages != nil {
+//			for i in 0..<user.messages!.count {
+//				user.messages![i].unread = false
+//			}
+//		}
 	}
 	
-	init(user: User) {
-		self.user = user
+//	init(user: User) {
+//		self.user = user
+//		super.init(nibName: nil, bundle: nil)
+//	}
+	
+	init(channel: Channel) {
+		self.channel = channel
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -149,7 +171,7 @@ final class ConversationViewController: UIViewController {
 			let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - height)
 			view.frame = frame
 		}
-		guard let messages = user.messages else { return }
+		guard let messages = messages else { return }
 		DispatchQueue.main.async {
 			let cellNumber = messages.count - 1
 			let indexPath = IndexPath(row: cellNumber, section: 0)
@@ -165,7 +187,7 @@ final class ConversationViewController: UIViewController {
 			let height = rect.height
 			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
 			self.view.frame = frame
-			guard let messages = user.messages else { return }
+			guard let messages = messages else { return }
 			DispatchQueue.main.async {
 				let cellNumber = messages.count - 1
 				let indexPath = IndexPath(row: cellNumber, section: 0)
@@ -179,6 +201,32 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	// MARK: - Private functions
+	func getMessage() {
+		var messages: [ChannelMessage] = []
+		referenceMessages.getDocuments { querySnapshot, error in
+			if let error = error {
+				print("Error getting documents: \(error)")
+				return
+			}
+			if let documents = querySnapshot?.documents {
+				for document in documents {
+					let data = document.data()
+					let content: String = (data["content"] as? String) ?? ""
+					let created: Date = (data["created"] as? Timestamp)?.dateValue() ?? Date()
+					let senderId: String = (data["senderId"] as? String) ?? ""
+					let senderName: String = (data["senderName"] as? String) ?? ""
+					let message = ChannelMessage(content: content, created: created, senderId: senderId, senderName: senderName)
+					messages.append(message)
+				}
+			}
+			DispatchQueue.main.async {
+				self.messages = messages.sorted(by: { $0.created < $1.created })
+				self.tableView.reloadData()
+				self.scrollTableViewToEnd()
+			}
+		}
+	}
+	
 	private func resizeTextViewToFitText() {
 		let size = CGSize(width: messageInputField.frame.width, height: .infinity)
 		let expectedSize = messageInputField.sizeThatFits(size)
@@ -192,13 +240,13 @@ final class ConversationViewController: UIViewController {
 		} else {
 			messageInputField.isScrollEnabled = false
 		}
-		
 		view.layoutIfNeeded()
-		
 	}
 	
 	private func setup() {
 		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		
+		getMessage()
 		
 		setupNavigationBar()
 		
@@ -245,25 +293,26 @@ final class ConversationViewController: UIViewController {
 		}
 		let titleLabel = UILabel()
 		titleLabel.font = Constants.titleFont
-		titleLabel.text = user.fullName
+		titleLabel.text = channel?.name
 		titleLabel.sizeToFit()
 		titleLabel.textAlignment = .center
 		titleLabel.translatesAutoresizingMaskIntoConstraints = false
 		titleLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
-		let userImageView = UserImageView(labelTitle: user.initials, labelfontSize: Constants.userImageViewLabelfontSize)
-		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
-		userImageView.translatesAutoresizingMaskIntoConstraints = false
-		navigationTitleView.addSubview(userImageView)
+//		let userImageView = UserImageView(labelTitle: user.initials, labelfontSize: Constants.userImageViewLabelfontSize)
+		let channelImageView = UserImageView(labelTitle: "7", labelfontSize: Constants.userImageViewLabelfontSize)
+		channelImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
+		channelImageView.translatesAutoresizingMaskIntoConstraints = false
+		navigationTitleView.addSubview(channelImageView)
 		navigationTitleView.addSubview(titleLabel)
 		
 		navigationItem.titleView = navigationTitleView
 		
 		titleLabel.centerYAnchor.constraint(equalTo: navigationTitleView.centerYAnchor).isActive = true
 		titleLabel.centerXAnchor.constraint(equalTo: navigationTitleView.centerXAnchor).isActive = true
-		userImageView.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
-		userImageView.rightAnchor.constraint(equalTo: titleLabel.leftAnchor, constant: -10).isActive = true
-		userImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
-		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
+		channelImageView.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
+		channelImageView.rightAnchor.constraint(equalTo: titleLabel.leftAnchor, constant: -10).isActive = true
+		channelImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
+		channelImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
 	}
 	
 	private func setupMessageInputField() {
@@ -320,11 +369,13 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	private func scrollTableViewToEnd() {
-		guard let messages = user.messages else { return }
+		guard let messages = messages else { return }
 		let cellNumber = messages.count - 1
 		let indexPath = IndexPath(row: cellNumber, section: 0)
 		DispatchQueue.main.async {
-			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+			if !messages.isEmpty {
+				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+			}
 		}
 	}
 	
@@ -333,18 +384,17 @@ final class ConversationViewController: UIViewController {
 extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return user.messages?.count ?? 0
+		return messages?.count ?? 0
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
-		let id = (user.messages?[indexPath.row].ownerID != 0) ? Constants.inputID : Constants.outputID
+		let id = (messages?[indexPath.row].senderId != ownerID) ? Constants.inputID : Constants.outputID
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath) as? MessageCell else {
 			return UITableViewCell()
 		}
-		
-		cell.messageText = user.messages?[indexPath.row].body ?? ""
-		cell.owherID = user.messages?[indexPath.row].ownerID ?? 0
+		cell.nameLebel.text = messages?[indexPath.row].senderName ?? ""
+		cell.messageText = messages?[indexPath.row].content ?? ""
 		return cell
 	}
 	
@@ -358,7 +408,7 @@ extension ConversationViewController: UITextViewDelegate {
 	func textViewDidBeginEditing(_ textView: UITextView) {
 		if textView.textColor == .lightGray {
 			textView.text = nil
-			textView.textColor = (traitCollection.userInterfaceStyle == .dark) ? .white : .black
+			textView.textColor = TableViewCellAppearance.textColor.uiColor()
 		}
 	}
 	

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 enum State: String {
 	case active = "active"
@@ -16,13 +17,15 @@ enum State: String {
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+	
 	var window: UIWindow?
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
 		window = UIWindow()
 			
+		FirebaseApp.configure()
+		
 		let tabBarController = TabBarController()
 		let navViewController = UINavigationController(rootViewController: tabBarController)
 		

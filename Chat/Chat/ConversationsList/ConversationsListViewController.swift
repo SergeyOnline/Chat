@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import Firebase
 
 protocol ConversationsListViewControllerDelegate: AnyObject {
-	func changeMessagesForUserWhithID(_ id: Int, to: [Message]?)
+//	func changeMessagesForUserWhithID(_ id: Int, to: [Message]?)
+	func updateChannels()
 }
 
 final class ConversationsListViewController: UIViewController {
@@ -20,12 +22,19 @@ final class ConversationsListViewController: UIViewController {
 		static let userImageViewHeight = 40.0
 		static let userImageViewLabelfontSize = 20.0
 		static let tableViewRowHeight = 80.0
-//		static let settingsButtonImageName = "Gear"
+		static let channelsDBCollection = "channels"
 	}
 	
 	private enum LocalizeKeys {
-		static let onlineHeaderTitle = "onlineHeaderTitle"
-		static let offlineHeaderTitle = "offlineHeaderTitle"
+		static let headerTitle = "headerTitle"
+	}
+	
+	private lazy var db = Firestore.firestore()
+	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
+	private lazy var channels: [Channel] = [] {
+		didSet {
+			tableView.reloadData()
+		}
 	}
 	
 	// MARK: - UI
@@ -40,23 +49,9 @@ final class ConversationsListViewController: UIViewController {
 	}()
 	
 	// MARK: - Model
-	private let users = TestData.users
-	private var onlineUsers: [User] {
-		var users = users.filter({ $0.online == true})
-		users = sortUsers(users: users)
-		return users
-	}
-	
-	private var offlineUsers: [User] {
-		var users = users.filter({ $0.online == false})
-		users = sortUsers(users: users)
-		return users
-	}
 	
 	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
-		// MARK: - GCD or Operation handler
-		return OperationUserProfileInfoHandler()
-		//		return GCDUserProfileInfoHandler()
+		return GCDUserProfileInfoHandler()
 	}()
 	
 	override func viewDidLoad() {
@@ -87,7 +82,6 @@ final class ConversationsListViewController: UIViewController {
 					self.userImageView.setInitials(initials: owner.initials)
 				case .failure:
 					break
-					//					print("Error: load info error")
 				}
 			}
 			
@@ -110,21 +104,10 @@ final class ConversationsListViewController: UIViewController {
 		present(profileViewController, animated: true, completion: nil)
 	}
 	
-//	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
-//		let themesVC = ThemesViewController()
-//		themesVC.modalPresentationStyle = .fullScreen
-//		themesVC.completion = {
-//			self.tableView.reloadData()
-//			self.viewWillAppear(false)
-//			//			self.logThemeChanging()
-//		}
-//		present(themesVC, animated: true, completion: nil)
-//	}
-	
 	// MARK: - Private functions
 	
 	private func setup() {
-		
+		getChannels()
 		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
 		userProfileHandler.loadOwnerImage { result in
 			switch result {
@@ -157,6 +140,35 @@ final class ConversationsListViewController: UIViewController {
 		setupTableViewConstraints()
 	}
 	
+	func getChannels() {
+		var channels: [Channel] = []
+		referenceChannel.getDocuments { querySnapshot, error in
+			if let error = error {
+				print("Error getting documents: \(error)")
+				return
+			}
+			if let documents = querySnapshot?.documents {
+				for document in documents {
+					let data = document.data()
+					let id: String = document.documentID
+					let name: String = (data["name"] as? String) ?? ""
+					let lastMessage: String? = data["lastMessage"] as? String
+					let lastActivity: Date? = data["lastActivity"] as? Date
+					let channel = Channel(identifier: id, name: name, lastMessage: lastMessage, lastActivity: lastActivity)
+					channels.append(channel)
+				}
+			}
+			DispatchQueue.main.async {
+				self.channels = channels
+			}
+		}
+	}
+	
+	// MARK: - Private functions
+	private func logThemeChanging() {
+		print(Theme.theme)
+	}
+	
 	// MARK: - setup Table View and Constraints
 	
 	private func setupTableView() {
@@ -165,7 +177,7 @@ final class ConversationsListViewController: UIViewController {
 		tableView.dataSource = self
 		tableView.rowHeight = Constants.tableViewRowHeight
 		tableView.translatesAutoresizingMaskIntoConstraints = false
-		//		tableView.rowHeight = UITableView.automaticDimension
+//		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 80
 	}
 	
@@ -202,24 +214,17 @@ final class ConversationsListViewController: UIViewController {
 		})
 		return hasUnreadMassageUsers + otheUsers
 	}
-	
-	private func logThemeChanging() {
-		print(Theme.theme)
-	}
 }
 
 extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
 	
 	// MARK: - Table view delegate, data source
 	func numberOfSections(in tableView: UITableView) -> Int {
-		return 2
+		return 1
 	}
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if section == 1 {
-			return offlineUsers.count
-		}
-		return onlineUsers.count
+		return channels.count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -227,32 +232,17 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 			return UITableViewCell()
 		}
 		
-		var currentUsers: [User] = []
-		if indexPath.section == 0 {
-			currentUsers = onlineUsers
-		} else {
-			currentUsers = offlineUsers
-		}
+		cell.name = channels[indexPath.row].name
+		cell.message = channels[indexPath.row].lastMessage
+		cell.date = channels[indexPath.row].lastActivity
+		cell.online = true
+//		cell.hasUnreadMessages = false
 		
-		cell.name = currentUsers[indexPath.row].fullName
-		if let message = currentUsers[indexPath.row].messages?.last {
-			cell.message = message.body
-			cell.date = message.date
-		} else {
-			cell.message = nil
-			cell.date = nil
-		}
-		cell.online = currentUsers[indexPath.row].online
-		cell.hasUnreadMessages = currentUsers[indexPath.row].hasUnreadMessages
 		return cell
 	}
 	
 	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		switch section {
-		case 0: return NSLocalizedString(LocalizeKeys.onlineHeaderTitle, comment: "")
-		case 1: return NSLocalizedString(LocalizeKeys.offlineHeaderTitle, comment: "")
-		default: return ""
-		}
+		return NSLocalizedString(LocalizeKeys.headerTitle, comment: "")
 	}
 	
 	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -261,11 +251,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		var conversationVC: ConversationViewController
-		if indexPath.section == 0 {
-			conversationVC = ConversationViewController(user: onlineUsers[indexPath.row])
-		} else {
-			conversationVC = ConversationViewController(user: offlineUsers[indexPath.row])
-		}
+		conversationVC = ConversationViewController(channel: channels[indexPath.row])
 		conversationVC.delegate = self
 		self.navigationController?.pushViewController(conversationVC, animated: true)
 	}
@@ -277,11 +263,17 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 }
 
 extension ConversationsListViewController: ConversationsListViewControllerDelegate {
-	func changeMessagesForUserWhithID(_ id: Int, to messages: [Message]?) {
-		for user in users where user.id == id {
-			user.messages = messages
-			break
+//	func changeMessagesForUserWhithID(_ id: Int, to messages: [Message]?) {
+//		for user in users where user.id == id {
+//			user.messages = messages
+//			break
+//		}
+//		self.tableView.reloadData()
+//	}
+	func updateChannels() {
+		DispatchQueue.main.async {
+			self.getChannels()
+			self.tableView.reloadData()
 		}
-		self.tableView.reloadData()
 	}
 }

@@ -36,11 +36,17 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		label.textColor = .black
 		label.numberOfLines = 0
 		label.lineBreakMode = .byWordWrapping
-		label.translatesAutoresizingMaskIntoConstraints = false
+//		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
 	
-	var owherID: Int = 0
+	var nameLebel: UILabel = {
+		let label = UILabel()
+		label.font = UIFont.boldSystemFont(ofSize: 12)
+		label.textColor = .black
+		label.numberOfLines = 1
+		return label
+	}()
 
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -58,6 +64,11 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		
 		let wrapperMessageLabelStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
+		
+		if reuseIdentifier == Constants.InputReuseIdentifier {
+			wrapperMessageLabelStack.addArrangedSubview(nameLebel)
+		}
+		
 		wrapperMessageLabelStack.addArrangedSubview(messageLabel)
 		messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: contentView.frame.width * 0.75).isActive = true
 		wrapperMessageLabelStack.translatesAutoresizingMaskIntoConstraints = false
