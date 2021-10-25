@@ -18,6 +18,7 @@ final class ConversationViewController: UIViewController {
 		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
 		static let messageInputFieldCornerRadius = 8.0
 		static let sendButtonImageName = "Send"
+		static let sendButtonSystemImageName = "paperplane.fill"
 		static let userImageViewCornerRadius = 18.0
 		static let userImageViewWidth = 36.0
 		static let userImageViewHeight = 36.0
@@ -84,7 +85,12 @@ final class ConversationViewController: UIViewController {
 	
 	private lazy var sendButton: UIButton = {
 		let button = UIButton(type: .roundedRect)
-		let image = UIImage(named: Constants.sendButtonImageName)
+		var image: UIImage?
+		if #available(iOS 13.0, *) {
+			image = UIImage(systemName: Constants.sendButtonSystemImageName)
+		} else {
+			image = UIImage(named: Constants.sendButtonImageName)
+		}
 		button.setImage(image, for: .normal)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.addTarget(self, action: #selector(sendButtonAction(_:)), for: .touchUpInside)
