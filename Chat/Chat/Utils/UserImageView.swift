@@ -67,6 +67,6 @@ extension UserImageView {
 	}
 	
 	func setInitials(initials: String) {
-		initialLabel.text = initials
+		initialLabel.text = initials.uppercased()
 	}
 }
