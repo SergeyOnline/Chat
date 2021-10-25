@@ -32,11 +32,7 @@ class TabBarController: UITabBarController {
 	private lazy var db = Firestore.firestore()
 	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
 	
-	private lazy var alertTextField: UITextField = {
-		let textField = UITextField()
-		textField.text = ""
-		return textField
-	}()
+	private var alertTextMessage = ""
 	
 	private lazy var settingsBarButtonItem: UIBarButtonItem = {
 		var image: UIImage?
@@ -135,16 +131,14 @@ class TabBarController: UITabBarController {
 		alert.addTextField { textField in
 			textField.placeholder = "name"
 			textField.addTarget(self, action: #selector(self.textFieldEditing(_:)), for: .editingChanged)
-			self.alertTextField = textField
 		}
 		
 		let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
-			let text = self.alertTextField.text ?? ""
-			if text.isEmpty {
+			if self.alertTextMessage.isEmpty {
 				self.addChannelBarButtonAction(self.addChannelBarButtonItem)
 			} else {
-				self.alertTextField.text = ""
-				self.addChannelWhithName(text)
+				self.addChannelWhithName(self.alertTextMessage)
+				self.alertTextMessage = ""
 			}
 		}
 		
@@ -159,6 +153,7 @@ class TabBarController: UITabBarController {
 		if (sender.text?.count ?? 0) > 30 {
 			sender.text?.removeLast()
 		}
+		self.alertTextMessage = sender.text ?? ""
 	}
 
 }
