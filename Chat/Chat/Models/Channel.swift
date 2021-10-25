@@ -8,7 +8,7 @@
 import Foundation
 
 struct Channel: Codable {
-	var identifier: String
+	let identifier: String
 	let name: String
 	let lastMessage: String?
 	let lastActivity: Date?

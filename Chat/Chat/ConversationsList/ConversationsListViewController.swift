@@ -158,7 +158,6 @@ final class ConversationsListViewController: UIViewController {
 			}
 			DispatchQueue.main.async {
 				self?.channels = channels
-				self?.tableView.reloadData()
 			}
 		}
 	}
@@ -236,6 +235,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 		cell.message = channels[indexPath.row].lastMessage
 		cell.date = channels[indexPath.row].lastActivity
 		cell.online = true
+		// TODO: - use unread message
 //		cell.hasUnreadMessages = false
 		
 		return cell
