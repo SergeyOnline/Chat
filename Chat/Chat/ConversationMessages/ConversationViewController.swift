@@ -36,6 +36,7 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	private let ownerID = UIDevice.current.identifierForVendor?.uuidString ?? ""
+	private var ownerName = Owner().fullName
 	
 	private lazy var db = Firestore.firestore()
 	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
@@ -106,7 +107,7 @@ final class ConversationViewController: UIViewController {
 		if messageInputField.text.isEmpty {
 			return
 		}
-		let newMessage = ChannelMessage(content: messageInputField.text, created: Date(), senderId: ownerID, senderName: Owner().fullName)
+		let newMessage = ChannelMessage(content: messageInputField.text, created: Date(), senderId: ownerID, senderName: ownerName)
 		referenceMessages.addDocument(data: newMessage.toDict)
 		
 		messageInputField.text = ""
@@ -227,6 +228,17 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	private func setup() {
+		
+		let userProfileHandler = GCDUserProfileInfoHandler()
+		userProfileHandler.loadOwnerInfo { [weak self] in
+			switch $0 {
+			case .success(let owner):
+				self?.ownerName = owner.fullName
+			case .failure:
+				self?.ownerName = Owner().fullName
+			}
+		}
+		
 		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		
 		getMessage()
