@@ -7,11 +7,9 @@
 */
 
 // MARK: - MainViewController
-
 "navigationItemTitle" = "Тинькофф Чат";
 
 // MARK:  - ProfileViewController
-
 "profileLabel" = "Мой Профиль";
 "closeButtonTitle" = "Закрыть";
 "editButtonTitle" = "Редактировать";
@@ -31,6 +29,9 @@
 // MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Сообщение...";
 "headerTitle" = "Каналы";
+
+// MARK: - ConversationsListCell
+"noMessages" = "Сообщений пока нет";
 
 // MARK: - ThemesViewController
 "closeButtonTitle" = "Закрыть";

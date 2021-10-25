@@ -7,11 +7,9 @@
 */
 
 // MARK: - MainViewController
-
 "navigationItemTitle" = "Tinkoff Chat";
 
 // MARK: - ProfileViewController
-
 "profileLabel" = "My Profile";
 "closeButtonTitle" = "Close";
 "editButtonTitle" = "Edit";
@@ -31,6 +29,9 @@
 // MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Message...";
 "headerTitle" = "Channels";
+
+// MARK: - ConversationsListCell
+"noMessages" = "No messages yet";
 
 // MARK: - ThemesViewController
 "closeButtonTitle" = "Close";

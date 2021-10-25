@@ -23,6 +23,10 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		static let imageHeight = 44.0
 	}
 	
+	private enum LocalizeKeys {
+		static let noMessages = "noMessages"
+	}
+	
 	var name: String? {
 		willSet {
 			nameLabel.text = newValue ?? ""
@@ -46,7 +50,7 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 				messageLabel.text = value + "\n"
 			} else {
 				messageLabel.font = UIFont.italicSystemFont(ofSize: Constants.bodyFontSize)
-				messageLabel.text = "No messages yet" + "\n"
+				messageLabel.text = NSLocalizedString(LocalizeKeys.noMessages, comment: "") + "\n"
 			}
 		}
 	}
