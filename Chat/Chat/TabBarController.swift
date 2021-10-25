@@ -12,6 +12,7 @@ class TabBarController: UITabBarController {
 
 	private enum Constants {
 		static let settingsButtonImageName = "Gear"
+		static let settingsButtonSystemImageName = "gearshape"
 		static let profileItemImage = "person"
 		static let profileItemImageFill = "person.fill"
 		static let channelsItemImage = "message"
@@ -38,7 +39,13 @@ class TabBarController: UITabBarController {
 	}()
 	
 	private lazy var settingsBarButtonItem: UIBarButtonItem = {
-		let image = UIImage(named: Constants.settingsButtonImageName)
+		var image: UIImage?
+		if #available(iOS 13.0, *) {
+			image = UIImage(systemName: Constants.settingsButtonSystemImageName)
+		} else {
+			image = UIImage(named: Constants.settingsButtonImageName)
+		}
+		
 		let item = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
 		return item
 	}()

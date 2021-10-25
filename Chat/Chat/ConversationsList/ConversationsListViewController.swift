@@ -161,7 +161,6 @@ final class ConversationsListViewController: UIViewController {
 				self?.tableView.reloadData()
 			}
 		}
-		
 	}
 	
 	// MARK: - Private functions
@@ -188,32 +187,33 @@ final class ConversationsListViewController: UIViewController {
 		tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 	}
 	
-	private func sortUsers(users: [User]) -> [User] {
-		
-		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true }
-		var otheUsers = users.filter { $0.hasUnreadMessages == false }
-		hasUnreadMassageUsers = hasUnreadMassageUsers.sorted(by: { u1, u2 in
-			
-			guard let lastU1Date = u1.messages?.last?.date else { return false }
-			guard let lastU2Date = u2.messages?.last?.date else { return false }
-			
-			return lastU1Date > lastU2Date
-		})
-		otheUsers = otheUsers.sorted(by: { u1, u2 in
-			if u1.messages == nil && u2.messages == nil {
-				return false
-			} else if u1.messages == nil {
-				return false
-			} else if u2.messages == nil {
-				return true
-			} else {
-				guard let lastU1Date = u1.messages?.last?.date else { return false }
-				guard let lastU2Date = u2.messages?.last?.date else { return false }
-				return lastU1Date > lastU2Date
-			}
-		})
-		return hasUnreadMassageUsers + otheUsers
-	}
+	// TODO: - The function is not used in the current version, but left for further modifications of the project
+//	private func sortUsers(users: [User]) -> [User] {
+//
+//		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true }
+//		var otheUsers = users.filter { $0.hasUnreadMessages == false }
+//		hasUnreadMassageUsers = hasUnreadMassageUsers.sorted(by: { u1, u2 in
+//
+//			guard let lastU1Date = u1.messages?.last?.date else { return false }
+//			guard let lastU2Date = u2.messages?.last?.date else { return false }
+//
+//			return lastU1Date > lastU2Date
+//		})
+//		otheUsers = otheUsers.sorted(by: { u1, u2 in
+//			if u1.messages == nil && u2.messages == nil {
+//				return false
+//			} else if u1.messages == nil {
+//				return false
+//			} else if u2.messages == nil {
+//				return true
+//			} else {
+//				guard let lastU1Date = u1.messages?.last?.date else { return false }
+//				guard let lastU2Date = u2.messages?.last?.date else { return false }
+//				return lastU1Date > lastU2Date
+//			}
+//		})
+//		return hasUnreadMassageUsers + otheUsers
+//	}
 }
 
 extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
