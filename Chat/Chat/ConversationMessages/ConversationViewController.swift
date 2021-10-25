@@ -69,6 +69,7 @@ final class ConversationViewController: UIViewController {
 	}()
 	
 	private var isKeyboardHidden = true
+	private var tailsArray: [Bool] = []
 	
 	private lazy var tapGesture: UITapGestureRecognizer = {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
@@ -214,7 +215,16 @@ final class ConversationViewController: UIViewController {
 				}
 			}
 			DispatchQueue.main.async {
-				self?.messages = messages.sorted(by: { $0.created < $1.created })
+				self?.tailsArray = [true]
+				messages = messages.sorted(by: { $0.created < $1.created })
+				self?.messages = messages
+				for i in 1..<messages.count {
+					if i == 0 {	continue }
+					self?.tailsArray.append(true)
+					if messages[i].senderId == messages[i - 1].senderId {
+						self?.tailsArray[i - 1] = false
+					}
+				}
 				self?.tableView.reloadData()
 				self?.scrollTableViewToEnd()
 			}
@@ -410,6 +420,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath) as? MessageCell else {
 			return UITableViewCell()
 		}
+		cell.isTailNeed = tailsArray[indexPath.row]
 		cell.nameLebel.text = messages?[indexPath.row].senderName ?? ""
 		cell.messageText = messages?[indexPath.row].content ?? ""
 		return cell

@@ -49,6 +49,12 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		return label
 	}()
 	
+	var isTailNeed = false {
+		didSet {
+			setup()
+		}
+	}
+	
 	private var tailImageView: UIImageView
 		
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -66,12 +72,16 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		tailImageView.removeFromSuperview()
+	}
+	
 	// MARK: - Private functions
 	private func setup() {
 		
 		selectionStyle = .none
 		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
-		
 		tailImageView.translatesAutoresizingMaskIntoConstraints = false
 		
 		let wrapperMessageLabelStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
@@ -95,15 +105,16 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		self.contentView.addSubview(wrapperMessageLabelStack)
 		wrapperMessageLabelStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.vStackUniversalOffset).isActive = true
 		wrapperMessageLabelStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
-		
 		if reuseIdentifier == Constants.InputReuseIdentifier {
 			if #available(iOS 14.0, *) {
 				wrapperMessageLabelStack.backgroundColor = Constants.inputMessageBackgroundColor
-				tailImageView.transform = CGAffineTransform(scaleX: -1, y: 1)
-				tailImageView.tintColor = Constants.inputMessageBackgroundColor
-				wrapperMessageLabelStack.addSubview(tailImageView)
-				tailImageView.leftAnchor.constraint(equalTo: wrapperMessageLabelStack.leftAnchor, constant: -8).isActive = true
-				tailImageView.bottomAnchor.constraint(equalTo: wrapperMessageLabelStack.bottomAnchor, constant: -4).isActive = true
+				if self.isTailNeed {
+					tailImageView.transform = CGAffineTransform(scaleX: -1, y: 1)
+					tailImageView.tintColor = Constants.inputMessageBackgroundColor
+					wrapperMessageLabelStack.addSubview(tailImageView)
+					tailImageView.leftAnchor.constraint(equalTo: wrapperMessageLabelStack.leftAnchor, constant: -8).isActive = true
+					tailImageView.bottomAnchor.constraint(equalTo: wrapperMessageLabelStack.bottomAnchor, constant: -4).isActive = true
+				}
 			} else {
 				messageLabel.backgroundColor = Constants.inputMessageBackgroundColor
 			}
@@ -111,10 +122,12 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		} else {
 			if #available(iOS 14.0, *) {
 				wrapperMessageLabelStack.backgroundColor = Constants.outputMessageBackgroundColor
-				tailImageView.tintColor = Constants.outputMessageBackgroundColor
-				wrapperMessageLabelStack.addSubview(tailImageView)
-				tailImageView.rightAnchor.constraint(equalTo: wrapperMessageLabelStack.rightAnchor, constant: 8).isActive = true
-				tailImageView.bottomAnchor.constraint(equalTo: wrapperMessageLabelStack.bottomAnchor, constant: -4).isActive = true
+				if self.isTailNeed {
+					tailImageView.tintColor = Constants.outputMessageBackgroundColor
+					wrapperMessageLabelStack.addSubview(tailImageView)
+					tailImageView.rightAnchor.constraint(equalTo: wrapperMessageLabelStack.rightAnchor, constant: 8).isActive = true
+					tailImageView.bottomAnchor.constraint(equalTo: wrapperMessageLabelStack.bottomAnchor, constant: -4).isActive = true
+				}
 			} else {
 				messageLabel.backgroundColor = Constants.outputMessageBackgroundColor
 			}
