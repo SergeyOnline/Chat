@@ -24,7 +24,11 @@ final class ConversationViewController: UIViewController {
 		static let userImageViewLabelfontSize = 18.0
 		static let titleFont = UIFont.boldSystemFont(ofSize: 16)
 		static let channelsDBCollection = "channels"
-		static let messagessDBCollection = "messages"
+		static let messagesDBCollection = "messages"
+		static let messageKeyContent = "content"
+		static let messageKeyCreated = "created"
+		static let messageKeySenderId = "senderId"
+		static let messageKeySenderName = "senderName"
 	}
 	
 	private enum LocalizeKeys {
@@ -37,7 +41,7 @@ final class ConversationViewController: UIViewController {
 	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
 	private lazy var referenceMessages: CollectionReference = {
 		guard let channelIdentifier = channel?.identifier else { fatalError() }
-		return referenceChannel.document(channelIdentifier).collection(Constants.messagessDBCollection)
+		return referenceChannel.document(channelIdentifier).collection(Constants.messagesDBCollection)
 	}()
 	
 	// MARK: - Model
@@ -190,10 +194,10 @@ final class ConversationViewController: UIViewController {
 			if let documents = querySnapshot?.documents {
 				for document in documents {
 					let data = document.data()
-					let content: String = (data["content"] as? String) ?? ""
-					let created: Date = (data["created"] as? Timestamp)?.dateValue() ?? Date()
-					let senderId: String = (data["senderId"] as? String) ?? ""
-					let senderName: String = (data["senderName"] as? String) ?? ""
+					let content: String = (data[Constants.messageKeyContent] as? String) ?? ""
+					let created: Date = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date()
+					let senderId: String = (data[Constants.messageKeySenderId] as? String) ?? ""
+					let senderName: String = (data[Constants.messageKeySenderName] as? String) ?? ""
 					let message = ChannelMessage(content: content, created: created, senderId: senderId, senderName: senderName)
 					messages.append(message)
 				}
@@ -277,8 +281,7 @@ final class ConversationViewController: UIViewController {
 		titleLabel.textAlignment = .center
 		titleLabel.translatesAutoresizingMaskIntoConstraints = false
 		titleLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
-//		let userImageView = UserImageView(labelTitle: user.initials, labelfontSize: Constants.userImageViewLabelfontSize)
-		let channelImageView = UserImageView(labelTitle: "7", labelfontSize: Constants.userImageViewLabelfontSize)
+		let channelImageView = UserImageView(labelTitle: getChannelTitleForName(channel?.name), labelfontSize: Constants.userImageViewLabelfontSize)
 		channelImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
 		channelImageView.translatesAutoresizingMaskIntoConstraints = false
 		navigationTitleView.addSubview(channelImageView)
@@ -292,6 +295,18 @@ final class ConversationViewController: UIViewController {
 		channelImageView.rightAnchor.constraint(equalTo: titleLabel.leftAnchor, constant: -10).isActive = true
 		channelImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
 		channelImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
+	}
+	
+	private func getChannelTitleForName(_ name: String?) -> String {
+		var result = ""
+		guard let channelName = name else {return result}
+		if channelName.isEmpty { return result }
+		let arr = channelName.components(separatedBy: " ")
+		result.append(arr[0].first ?? " ")
+		if arr.count > 1 {
+			result.append(arr[1].first ?? " ")
+		}
+		return result.uppercased()
 	}
 	
 	private func setupMessageInputField() {

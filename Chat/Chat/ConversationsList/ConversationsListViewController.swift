@@ -18,6 +18,9 @@ final class ConversationsListViewController: UIViewController {
 		static let userImageViewLabelfontSize = 20.0
 		static let tableViewRowHeight = 80.0
 		static let channelsDBCollection = "channels"
+		static let channelKeyName = "name"
+		static let channelKeyLastMessage = "lastMessage"
+		static let channelKeyLastActivity = "lastActivity"
 	}
 	
 	private enum LocalizeKeys {
@@ -136,28 +139,6 @@ final class ConversationsListViewController: UIViewController {
 	}
 	
 	func getChannels() {
-		var channels: [Channel] = []
-		referenceChannel.getDocuments { querySnapshot, error in
-			if let error = error {
-				print("Error getting documents: \(error)")
-				return
-			}
-			if let documents = querySnapshot?.documents {
-				for document in documents {
-					let data = document.data()
-					let id: String = document.documentID
-					let name: String = (data["name"] as? String) ?? ""
-					let lastMessage: String? = data["lastMessage"] as? String
-					let lastActivity: Date? = data["lastActivity"] as? Date
-					let channel = Channel(identifier: id, name: name, lastMessage: lastMessage, lastActivity: lastActivity)
-					channels.append(channel)
-				}
-			}
-			DispatchQueue.main.async {
-				self.channels = channels
-			}
-		}
-		
 		referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
 			var channels: [Channel] = []
 			if let error = error {
@@ -168,9 +149,9 @@ final class ConversationsListViewController: UIViewController {
 				for document in documents {
 					let data = document.data()
 					let id: String = document.documentID
-					let name: String = (data["name"] as? String) ?? ""
-					let lastMessage: String? = data["lastMessage"] as? String
-					let lastActivity: Date? = data["lastActivity"] as? Date
+					let name: String = (data[Constants.channelKeyName] as? String) ?? ""
+					let lastMessage: String? = data[Constants.channelKeyLastMessage] as? String
+					let lastActivity: Date? = (data[Constants.channelKeyLastActivity] as? Timestamp)?.dateValue()
 					let channel = Channel(identifier: id, name: name, lastMessage: lastMessage, lastActivity: lastActivity)
 					channels.append(channel)
 				}
