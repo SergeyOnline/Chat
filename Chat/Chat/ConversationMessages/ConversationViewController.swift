@@ -180,6 +180,10 @@ final class ConversationViewController: UIViewController {
 		}
 	}
 	
+	@objc func appWillResignActive(_ sender: NSNotification) {
+		messageInputField.endEditing(true)
+	}
+	
 	deinit {
 		NotificationCenter.default.removeObserver(self)
 	}
@@ -247,6 +251,7 @@ final class ConversationViewController: UIViewController {
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
 		
 		view.addGestureRecognizer(tapGesture)
 		
