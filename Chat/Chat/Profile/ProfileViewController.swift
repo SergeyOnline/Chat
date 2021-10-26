@@ -202,6 +202,7 @@ final class ProfileViewController: UIViewController {
 	}
 	@objc func keyboardWillShow(_ sender: NSNotification) {
 		if isKeyboardHidden {
+			tabBarController?.tabBar.isHidden = true
 			isKeyboardHidden = false
 			guard let info = sender.userInfo else { return }
 			guard let rect = info[Constants.keyboardNotificatoinKey] as? CGRect else { return }
@@ -217,6 +218,7 @@ final class ProfileViewController: UIViewController {
 	}
 	@objc func keyboardWillHide(_ sender: NSNotification) {
 		if !isKeyboardHidden {
+			tabBarController?.tabBar.isHidden = false
 			isKeyboardHidden = true
 			guard let info = sender.userInfo else { return }
 			guard let rect = info[Constants.keyboardNotificatoinKey] as? CGRect else { return }
@@ -257,6 +259,7 @@ final class ProfileViewController: UIViewController {
 		present(picker, animated: true, completion: nil)
 	}
 	private func setup() {
+		navigationController?.navigationBar.isHidden = true
 		view.addSubview(headerView)
 		setupHeaderViewConstraints()
 		userProfileHandlerGCD.loadOwnerInfo { [weak self] in
