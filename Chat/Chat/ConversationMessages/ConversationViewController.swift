@@ -218,11 +218,13 @@ final class ConversationViewController: UIViewController {
 				self?.tailsArray = [true]
 				messages = messages.sorted(by: { $0.created < $1.created })
 				self?.messages = messages
-				for i in 1..<messages.count {
-					if i == 0 {	continue }
-					self?.tailsArray.append(true)
-					if messages[i].senderId == messages[i - 1].senderId {
-						self?.tailsArray[i - 1] = false
+				if messages.count >= 1 {
+					for i in 1..<messages.count {
+						if i == 0 {	continue }
+						self?.tailsArray.append(true)
+						if messages[i].senderId == messages[i - 1].senderId {
+							self?.tailsArray[i - 1] = false
+						}
 					}
 				}
 				self?.tableView.reloadData()

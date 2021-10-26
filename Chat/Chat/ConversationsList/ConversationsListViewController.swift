@@ -106,6 +106,9 @@ final class ConversationsListViewController: UIViewController {
 	
 	private func setup() {
 		getChannels()
+		Timer.scheduledTimer(withTimeInterval: 540, repeats: true) { _ in
+				self.tableView.reloadData()
+		}
 		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
 		userProfileHandler.loadOwnerImage { result in
 			switch result {
@@ -246,7 +249,11 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 		cell.name = channels[indexPath.row].name
 		cell.message = channels[indexPath.row].lastMessage
 		cell.date = channels[indexPath.row].lastActivity
-		cell.online = true
+		if let timeInterval = channels[indexPath.row].lastActivity?.timeIntervalSince(Date()) {
+			cell.online = -timeInterval <= 600
+		} else {
+			cell.online = false
+		}
 		// TODO: - use unread message
 //		cell.hasUnreadMessages = false
 		return cell
