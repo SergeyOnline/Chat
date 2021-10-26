@@ -157,7 +157,19 @@ final class ConversationsListViewController: UIViewController {
 				}
 			}
 			DispatchQueue.main.async {
-				self?.channels = channels
+				self?.channels = channels.sorted(by: { ch1, ch2 in
+					if ch1.lastActivity == nil && ch2.lastActivity == nil {
+						return false
+					} else if ch1.lastActivity == nil {
+						return false
+					} else if ch2.lastActivity == nil {
+						return true
+					} else {
+						guard let lastU1Date = ch1.lastActivity else { return false }
+						guard let lastU2Date = ch2.lastActivity else { return false }
+						return lastU1Date > lastU2Date
+					}
+				})
 			}
 		}
 	}
@@ -237,7 +249,6 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 		cell.online = true
 		// TODO: - use unread message
 //		cell.hasUnreadMessages = false
-		
 		return cell
 	}
 	
