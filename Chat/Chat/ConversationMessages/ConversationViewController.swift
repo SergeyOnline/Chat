@@ -166,6 +166,7 @@ final class ConversationViewController: UIViewController {
 		guard let messages = messages else { return }
 		DispatchQueue.main.async {
 			let cellNumber = messages.count - 1
+			if cellNumber <= 0 { return }
 			let indexPath = IndexPath(row: cellNumber, section: 0)
 			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 		}
@@ -182,6 +183,7 @@ final class ConversationViewController: UIViewController {
 			guard let messages = messages else { return }
 			DispatchQueue.main.async {
 				let cellNumber = messages.count - 1
+				if cellNumber <= 0 { return }
 				let indexPath = IndexPath(row: cellNumber, section: 0)
 				self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 			}
