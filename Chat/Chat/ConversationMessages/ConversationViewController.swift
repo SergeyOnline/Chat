@@ -70,6 +70,7 @@ final class ConversationViewController: UIViewController {
 	
 	private var isKeyboardHidden = true
 	private var tailsArray: [Bool] = []
+	private var isPlaceholderShown = true
 	
 	private lazy var tapGesture: UITapGestureRecognizer = {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
@@ -111,7 +112,7 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	@objc func sendButtonAction(_ sender: UIButton) {
-		if messageInputField.text.isEmpty {
+		if messageInputField.text.isEmpty || isPlaceholderShown {
 			return
 		}
 		let newMessage = ChannelMessage(content: messageInputField.text, created: Date(), senderId: ownerID, senderName: ownerName)
@@ -438,6 +439,7 @@ extension ConversationViewController: UITextViewDelegate {
 	func textViewDidBeginEditing(_ textView: UITextView) {
 		if textView.textColor == .lightGray {
 			textView.text = nil
+			isPlaceholderShown = false
 			textView.textColor = TableViewCellAppearance.textColor.uiColor()
 		}
 	}
@@ -445,6 +447,7 @@ extension ConversationViewController: UITextViewDelegate {
 	func textViewDidEndEditing(_ textView: UITextView) {
 		if textView.text.isEmpty {
 			textView.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
+			isPlaceholderShown = true
 			textView.textColor = .lightGray
 		}
 	}
