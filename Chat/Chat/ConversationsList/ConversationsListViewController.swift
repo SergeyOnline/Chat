@@ -12,10 +12,6 @@ final class ConversationsListViewController: UIViewController {
 	
 	private enum Constants {
 		static let cellReuseIdentifier = "ConversationsListCell"
-		static let userImageViewCornerRadius = 20.0
-		static let userImageViewWidth = 40.0
-		static let userImageViewHeight = 40.0
-		static let userImageViewLabelfontSize = 20.0
 		static let tableViewRowHeight = 80.0
 		static let channelsDBCollection = "channels"
 		static let channelKeyName = "name"
@@ -29,11 +25,6 @@ final class ConversationsListViewController: UIViewController {
 	
 	private lazy var db = Firestore.firestore()
 	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
-	private lazy var channels: [Channel] = [] {
-		didSet {
-			tableView.reloadData()
-		}
-	}
 	
 	// MARK: - UI
 	var tableView: UITableView = {
@@ -41,13 +32,13 @@ final class ConversationsListViewController: UIViewController {
 		return table
 	}()
 	
-	var userImageView: UserImageView = {
-		let imageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
-		return imageView
-	}()
-	
 	// MARK: - Model
-	
+	private lazy var channels: [Channel] = [] {
+		didSet {
+			tableView.reloadData()
+		}
+	}
+
 	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
 		return GCDUserProfileInfoHandler()
 	}()
@@ -69,39 +60,6 @@ final class ConversationsListViewController: UIViewController {
 		tableView.reloadData()
 	}
 	
-	// MARK: - Actions
-	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
-		let profileViewController = ProfileViewController()
-		profileViewController.completion = {
-			
-			self.userProfileHandler.loadOwnerInfo { result in
-				switch result {
-				case .success(let owner):
-					self.userImageView.setInitials(initials: owner.initials)
-				case .failure:
-					break
-				}
-			}
-			
-			self.userProfileHandler.loadOwnerImage { result in
-				switch result {
-				case .success(let image):
-					self.userImageView.image = image
-				case .failure:
-					self.userImageView.image = nil
-				}
-			}
-			
-			// TODO: - User defaults
-			//			if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-			//				self.userImageView.image = UIImage(data: imageData)
-			//			} else {
-			//				self.userImageView.image = nil
-			//			}
-		}
-		present(profileViewController, animated: true, completion: nil)
-	}
-	
 	// MARK: - Private functions
 	
 	private func setup() {
@@ -109,33 +67,6 @@ final class ConversationsListViewController: UIViewController {
 		Timer.scheduledTimer(withTimeInterval: 540, repeats: true) { _ in
 				self.tableView.reloadData()
 		}
-		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
-		userProfileHandler.loadOwnerImage { result in
-			switch result {
-			case .success(let image):
-				self.userImageView.image = image
-			case .failure:
-				self.userImageView.image = nil
-			}
-		}
-		
-		userProfileHandler.loadOwnerInfo { [weak self] in
-			switch $0 {
-			case .success(let owner):
-				self?.userImageView.setInitials(initials: owner.initials)
-			case .failure:
-				self?.userImageView.setInitials(initials: Owner().initials)
-			}
-		}
-		
-		// TODO: - User defaults
-		//		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-		//			userImageView.image = UIImage(data: imageData)
-		//		}
-		
-		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
-		userImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
-		
 		setupTableView()
 		view.addSubview(tableView)
 		setupTableViewConstraints()
@@ -168,9 +99,9 @@ final class ConversationsListViewController: UIViewController {
 					} else if ch2.lastActivity == nil {
 						return true
 					} else {
-						guard let lastU1Date = ch1.lastActivity else { return false }
-						guard let lastU2Date = ch2.lastActivity else { return false }
-						return lastU1Date > lastU2Date
+						guard let lastCh1Date = ch1.lastActivity else { return false }
+						guard let lastCh2Date = ch2.lastActivity else { return false }
+						return lastCh1Date > lastCh2Date
 					}
 				})
 			}
