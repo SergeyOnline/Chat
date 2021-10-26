@@ -40,7 +40,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		return label
 	}()
 	
-	var nameLebel: UILabel = {
+	var nameLabel: UILabel = {
 		let label = UILabel()
 		label.font = UIFont.boldSystemFont(ofSize: 12)
 		label.textColor = .black
@@ -88,7 +88,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		wrapperMessageLabelStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
 		
 		if reuseIdentifier == Constants.InputReuseIdentifier {
-			wrapperMessageLabelStack.addArrangedSubview(nameLebel)
+			wrapperMessageLabelStack.addArrangedSubview(nameLabel)
 		}
 		
 		wrapperMessageLabelStack.addArrangedSubview(messageLabel)

@@ -426,7 +426,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 			return UITableViewCell()
 		}
 		cell.isTailNeed = tailsArray[indexPath.row]
-		cell.nameLebel.text = messages?[indexPath.row].senderName ?? ""
+		cell.nameLabel.text = messages?[indexPath.row].senderName ?? ""
 		cell.messageText = messages?[indexPath.row].content ?? ""
 		return cell
 	}
