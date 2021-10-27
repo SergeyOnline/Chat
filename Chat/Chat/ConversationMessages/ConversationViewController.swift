@@ -411,6 +411,14 @@ final class ConversationViewController: UIViewController {
 		}
 	}
 	
+	private func stringFromDate(_ date: Date?) -> String {
+		guard let d = date else { return "" }
+		let dateFormatter = DateFormatter()
+		let dateFormat = "HH:mm"
+		dateFormatter.dateFormat = dateFormat
+		return dateFormatter.string(from: d)
+	}
+	
 }
 
 extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
@@ -432,6 +440,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 			cell.nameLabel.text = (tailsArray[index - 1] == true) ? messages?[index].senderName ?? "" : ""
 		}
 		cell.messageText = messages?[index].content ?? ""
+		cell.date = stringFromDate(messages?[index].created ?? nil)
 		return cell
 	}
 	

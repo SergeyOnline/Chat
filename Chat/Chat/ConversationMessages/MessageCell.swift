@@ -31,6 +31,12 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		}
 	}
 	
+	var date: String = "" {
+		didSet {
+			dateLabel.text = date
+		}
+	}
+	
 	var messageLabel: UILabel = {
 		let label = UILabel()
 		label.clipsToBounds = true
@@ -49,6 +55,13 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		return label
 	}()
 	
+	private lazy var dateLabel: UILabel = {
+		let label = UILabel()
+		label.textColor = .lightGray
+		label.font = UIFont.systemFont(ofSize: 12)
+		return label
+	}()
+	
 	var isTailNeed = false {
 		didSet {
 			setup()
@@ -57,6 +70,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	
 	private var tailImageView: UIImageView
 	private var wrapperMessageLabelStack = CustomStackView()
+	private var messageAndDateStack = CustomStackView(axis: .horizontal, distribution: .equalSpacing, spacing: 5)
 		
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		if #available(iOS 14.0, *) {
@@ -86,13 +100,23 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 		tailImageView.translatesAutoresizingMaskIntoConstraints = false
 		
-		wrapperMessageLabelStack = CustomStackView(axis: .vertical, distribution: .equalCentering)
+		wrapperMessageLabelStack = CustomStackView(axis: .vertical, distribution: .equalSpacing)
 		
 		if reuseIdentifier == Constants.InputReuseIdentifier {
 			wrapperMessageLabelStack.addArrangedSubview(nameLabel)
 		}
 		
-		wrapperMessageLabelStack.addArrangedSubview(messageLabel)
+		if #available(iOS 14.0, *) {
+			messageAndDateStack.alignment = .bottom
+			messageAndDateStack.addArrangedSubview(messageLabel)
+			messageAndDateStack.addArrangedSubview(dateLabel)
+			wrapperMessageLabelStack.addArrangedSubview(messageAndDateStack)
+			wrapperMessageLabelStack.layer.cornerRadius = Constants.vStackCornerRadius
+		} else {
+			wrapperMessageLabelStack.addArrangedSubview(messageLabel)
+			wrapperMessageLabelStack.addArrangedSubview(dateLabel)
+		}
+		
 		messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: contentView.frame.width * 0.75).isActive = true
 		wrapperMessageLabelStack.translatesAutoresizingMaskIntoConstraints = false
 		wrapperMessageLabelStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
@@ -100,9 +124,6 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 											bottom: Constants.vStackUniversalOffset,
 											right: Constants.vStackUniversalOffset)
 		wrapperMessageLabelStack.isLayoutMarginsRelativeArrangement = true
-		if #available(iOS 14.0, *) {
-			wrapperMessageLabelStack.layer.cornerRadius = Constants.vStackCornerRadius
-		}
 		
 		self.contentView.addSubview(wrapperMessageLabelStack)
 		wrapperMessageLabelStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 1).isActive = true
@@ -166,4 +187,5 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		}
 		return color
 	}
+	
 }
