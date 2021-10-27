@@ -216,7 +216,7 @@ final class ConversationViewController: UIViewController {
 				for document in documents {
 					let data = document.data()
 					let content: String = (data[Constants.messageKeyContent] as? String) ?? ""
-					let created: Date = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date()
+					let created: Date = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
 					let senderId: String = (data[Constants.messageKeySenderId] as? String) ?? ""
 					let senderName: String = (data[Constants.messageKeySenderName] as? String) ?? ""
 					let message = ChannelMessage(content: content, created: created, senderId: senderId, senderName: senderName)
