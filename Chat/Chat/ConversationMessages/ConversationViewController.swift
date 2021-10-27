@@ -271,9 +271,7 @@ final class ConversationViewController: UIViewController {
 		}
 		
 		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		
 		getMessage()
-		
 		setupNavigationBar()
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -426,13 +424,17 @@ final class ConversationViewController: UIViewController {
 	
 	private func calculateHeaderForMessagesOfOneDay(forCellIndex index: Int) -> String {
 		var result = ""
+		let calendar = Calendar(identifier: .gregorian)
 		if index == 0 {
 			if let currentMessageDate = messages?[index].created {
-				result = stringFromDate(currentMessageDate, whithFormat: DateFormat.dayAndMonth)
+				if calendar.startOfDay(for: currentMessageDate) == calendar.startOfDay(for: Date()) {
+					result = NSLocalizedString(LocalizeKeys.headerDateTitle, comment: "")
+				} else {
+					result = stringFromDate(currentMessageDate, whithFormat: DateFormat.dayAndMonth)
+				}
 			}
 		} else {
 			if let currentMessageDate = messages?[index].created, let previosMessageDate = messages?[index - 1].created {
-				let calendar = Calendar(identifier: .gregorian)
 				let beginningDayCurent = calendar.startOfDay(for: currentMessageDate)
 				let beginningDayPrevios = calendar.startOfDay(for: previosMessageDate)
 				if beginningDayCurent != beginningDayPrevios {
