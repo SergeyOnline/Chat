@@ -420,14 +420,18 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		
-		let id = (messages?[indexPath.row].senderId != ownerID) ? Constants.inputID : Constants.outputID
+		let index = indexPath.row
+		let id = (messages?[index].senderId != ownerID) ? Constants.inputID : Constants.outputID
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: id, for: indexPath) as? MessageCell else {
 			return UITableViewCell()
 		}
-		cell.isTailNeed = tailsArray[indexPath.row]
-		cell.nameLabel.text = messages?[indexPath.row].senderName ?? ""
-		cell.messageText = messages?[indexPath.row].content ?? ""
+		cell.isTailNeed = tailsArray[index]
+		if index == 0 {
+			cell.nameLabel.text = messages?[index].senderName ?? ""
+		} else {
+			cell.nameLabel.text = (tailsArray[index - 1] == true) ? messages?[index].senderName ?? "" : ""
+		}
+		cell.messageText = messages?[index].content ?? ""
 		return cell
 	}
 	
