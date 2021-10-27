@@ -209,8 +209,8 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		case 2: color = .blue
 		case 3: color = .red
 		case 4: color = .purple
-		case 5: color = .green
-		case 6: color = .cyan
+		case 5: color = UIColor(red: 103 / 255, green: 183 / 255, blue: 164 / 255, alpha: 1)
+		case 6: color = UIColor(red: 18 / 255, green: 70 / 255, blue: 122 / 255, alpha: 1)
 		default: break
 		}
 		return color
