@@ -55,6 +55,16 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		return label
 	}()
 	
+	let newDayLabel: UILabel = {
+		let label = UILabel()
+		label.textColor = NavigationBarAppearance.elementsColor.uiColor()
+		label.text = ""
+		label.textAlignment = .center
+		label.font = UIFont.systemFont(ofSize: 15)
+		label.translatesAutoresizingMaskIntoConstraints = false
+		return label
+	}()
+	
 	private lazy var dateLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = .lightGray
@@ -118,25 +128,43 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		}
 		
 		messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: contentView.frame.width * 0.75).isActive = true
-		wrapperMessageLabelStack.translatesAutoresizingMaskIntoConstraints = false
-		wrapperMessageLabelStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
-											left: Constants.vStackUniversalOffset,
-											bottom: Constants.vStackUniversalOffset,
-											right: Constants.vStackUniversalOffset)
-		wrapperMessageLabelStack.isLayoutMarginsRelativeArrangement = true
+		setupwrapperMessageLabelStack()
+		
+		self.contentView.addSubview(newDayLabel)
+		setupNewDayLabelConstraints()
 		
 		self.contentView.addSubview(wrapperMessageLabelStack)
-		wrapperMessageLabelStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 1).isActive = true
-		if isTailNeed {
-			wrapperMessageLabelStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15).isActive = true
-		} else {
-			wrapperMessageLabelStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -1).isActive = true
-		}
+		setupWrapperMessageLabelStackConstraints()
 		
 		if reuseIdentifier == Constants.InputReuseIdentifier {
 			setupInputMessageCell()
 		} else {
 			setupOutputMessageCell()
+		}
+	}
+	
+	private func setupwrapperMessageLabelStack() {
+		wrapperMessageLabelStack.translatesAutoresizingMaskIntoConstraints = false
+		wrapperMessageLabelStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
+															  left: Constants.vStackUniversalOffset,
+															  bottom: Constants.vStackUniversalOffset,
+															  right: Constants.vStackUniversalOffset)
+		wrapperMessageLabelStack.isLayoutMarginsRelativeArrangement = true
+	}
+	
+	private func setupNewDayLabelConstraints() {
+		newDayLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+		newDayLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor).isActive = true
+		newDayLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor).isActive = true
+		newDayLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 1).isActive = true
+	}
+	
+	private func setupWrapperMessageLabelStackConstraints() {
+		wrapperMessageLabelStack.topAnchor.constraint(equalTo: newDayLabel.bottomAnchor, constant: 1).isActive = true
+		if isTailNeed {
+			wrapperMessageLabelStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15).isActive = true
+		} else {
+			wrapperMessageLabelStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -1).isActive = true
 		}
 	}
 	

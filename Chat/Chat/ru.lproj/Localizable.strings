@@ -29,6 +29,7 @@
 // MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Сообщение...";
 "headerTitle" = "Каналы";
+"headerDateTitle" = "Сегодня";
 
 // MARK: - ConversationsListCell
 "noMessages" = "Сообщений пока нет";

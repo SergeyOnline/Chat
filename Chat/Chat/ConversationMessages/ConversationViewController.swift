@@ -34,6 +34,12 @@ final class ConversationViewController: UIViewController {
 	
 	private enum LocalizeKeys {
 		static let messageInputFieldPlaceholder = "messageInputFieldPlaceholder"
+		static let headerDateTitle = "headerDateTitle"
+	}
+	
+	private enum DateFormat {
+		static let hourAndMinute = "HH:mm"
+		static let dayAndMonth = "dd MMMM"
 	}
 	
 	private let ownerID = UIDevice.current.identifierForVendor?.uuidString ?? ""
@@ -411,12 +417,34 @@ final class ConversationViewController: UIViewController {
 		}
 	}
 	
-	private func stringFromDate(_ date: Date?) -> String {
+	private func stringFromDate(_ date: Date?, whithFormat format: String) -> String {
 		guard let d = date else { return "" }
 		let dateFormatter = DateFormatter()
-		let dateFormat = "HH:mm"
-		dateFormatter.dateFormat = dateFormat
+		dateFormatter.dateFormat = format
 		return dateFormatter.string(from: d)
+	}
+	
+	private func calculateHeaderForMessagesOfOneDay(forCellIndex index: Int) -> String {
+		var result = ""
+		if index == 0 {
+			if let currentMessageDate = messages?[index].created {
+				result = stringFromDate(currentMessageDate, whithFormat: DateFormat.dayAndMonth)
+			}
+		} else {
+			if let currentMessageDate = messages?[index].created, let previosMessageDate = messages?[index - 1].created {
+				let calendar = Calendar(identifier: .gregorian)
+				let beginningDayCurent = calendar.startOfDay(for: currentMessageDate)
+				let beginningDayPrevios = calendar.startOfDay(for: previosMessageDate)
+				if beginningDayCurent != beginningDayPrevios {
+					if beginningDayCurent == calendar.startOfDay(for: Date()) {
+						result = NSLocalizedString(LocalizeKeys.headerDateTitle, comment: "")
+					} else {
+						result = stringFromDate(currentMessageDate, whithFormat: DateFormat.dayAndMonth)
+					}
+				}
+			}
+		}
+		return result
 	}
 	
 }
@@ -439,8 +467,9 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 		} else {
 			cell.nameLabel.text = (tailsArray[index - 1] == true) ? messages?[index].senderName ?? "" : ""
 		}
+		cell.newDayLabel.text = calculateHeaderForMessagesOfOneDay(forCellIndex: index)
 		cell.messageText = messages?[index].content ?? ""
-		cell.date = stringFromDate(messages?[index].created ?? nil)
+		cell.date = stringFromDate(messages?[index].created ?? nil, whithFormat: DateFormat.hourAndMinute)
 		return cell
 	}
 	

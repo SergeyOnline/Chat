@@ -8,7 +8,7 @@
 import UIKit
 import Firebase
 
-class TabBarController: UITabBarController {
+final class TabBarController: UITabBarController {
 
 	private enum Constants {
 		static let settingsButtonImageName = "Gear"
