@@ -123,7 +123,6 @@ final class ConversationViewController: UIViewController {
 		}
 		let newMessage = ChannelMessage(content: messageInputField.text, created: Date(), senderId: ownerID, senderName: ownerName)
 		referenceMessages.addDocument(data: newMessage.toDict)
-		
 		messageInputField.text = ""
 		resizeTextViewToFitText()
 	}
@@ -135,15 +134,6 @@ final class ConversationViewController: UIViewController {
 				messageInputField.resignFirstResponder()
 			}
 		}
-	}
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-//		if user.messages != nil {
-//			for i in 0..<user.messages!.count {
-//				user.messages![i].unread = false
-//			}
-//		}
 	}
 	
 //	init(user: User) {
@@ -251,7 +241,6 @@ final class ConversationViewController: UIViewController {
 		if expectedSize.height > Constants.maxHeightMessageInput {
 			messageInputField.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.maxHeightMessageInput).isActive = true
 			messageInputField.isScrollEnabled = true
-			
 		} else {
 			messageInputField.isScrollEnabled = false
 		}
@@ -259,7 +248,6 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	private func setup() {
-		
 		let userProfileHandler = GCDUserProfileInfoHandler()
 		userProfileHandler.loadOwnerInfo { [weak self] in
 			switch $0 {
@@ -305,7 +293,6 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	private func setupNavigationBar() {
-		
 		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
 		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue:
@@ -341,7 +328,7 @@ final class ConversationViewController: UIViewController {
 	
 	private func getChannelTitleForName(_ name: String?) -> String {
 		var result = ""
-		guard let channelName = name else {return result}
+		guard let channelName = name else { return result }
 		if channelName.isEmpty { return result }
 		let arr = channelName.components(separatedBy: " ")
 		result.append(arr[0].first ?? " ")
@@ -358,6 +345,7 @@ final class ConversationViewController: UIViewController {
 		messageInputField.delegate = self
 		messageInputField.text = NSLocalizedString(LocalizeKeys.messageInputFieldPlaceholder, comment: "")
 		messageInputField.textColor = .lightGray
+		messageInputField.font = UIFont.systemFont(ofSize: 16)
 		resizeTextViewToFitText()
 	}
 	
@@ -393,8 +381,13 @@ final class ConversationViewController: UIViewController {
 	private func setupSendButtonConstraints() {
 		sendButton.rightAnchor.constraint(equalTo: textinputView.rightAnchor, constant: -12).isActive = true
 		sendButton.bottomAnchor.constraint(equalTo: textinputView.bottomAnchor, constant: -25).isActive = true
-		sendButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
-		sendButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+		if #available(iOS 14.0, *) {
+			sendButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+			sendButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+		} else {
+			sendButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
+			sendButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+		}
 	}
 	
 	private func setupTextinputViewConstraints() {
