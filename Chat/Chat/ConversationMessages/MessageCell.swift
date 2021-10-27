@@ -27,7 +27,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		willSet {
 			guard let value = newValue else { return }
 			messageLabel.text = value
-			nameLabel.textColor = getColorFromName(value.hashValue)
+			nameLabel.textColor = getColorFromName(nameLabel.text)
 		}
 	}
 	
@@ -150,9 +150,10 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		wrapperMessageLabelStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.vStackUniversalOffset).isActive = true
 	}
 	
-	private func getColorFromName(_ id: Int) -> UIColor {
-		let component = abs(id % 7)
+	private func getColorFromName(_ name: String?) -> UIColor {
 		var color = UIColor.black
+		guard let value = name else { return color }
+		let component = abs(value.hashValue % 7)
 		switch component {
 		case 0: color = .orange
 		case 1: color = .brown
