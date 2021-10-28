@@ -16,6 +16,7 @@
 "cancelButtonTitle" = "Cancel";
 "editImageButtonTitle" = "Edit";
 "cameraAction" = "Camera";
+"cancelAction" = "Cancel";
 "gallaryAction" = "Gallery";
 "deleteAction" = "Delete";
 "nameTextFieldPlaceholder" = "Your name";

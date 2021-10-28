@@ -16,6 +16,7 @@
 "cancelButtonTitle" = "Отмена";
 "editImageButtonTitle" = "Править";
 "cameraAction" = "Камера";
+"cancelAction" = "Отмена";
 "gallaryAction" = "Галерея";
 "deleteAction" = "Удалить";
 "nameTextFieldPlaceholder" = "Ваше имя";

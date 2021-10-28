@@ -11,6 +11,7 @@ final class ProfileViewController: UIViewController {
 	private enum LocalizeKeys {
 		static let cameraAction = "cameraAction"
 		static let gallaryAction = "gallaryAction"
+		static let cancelAction = "cancelAction"
 		static let deleteAction = "deleteAction"
 		static let profileLabel = "profileLabel"
 		static let closeButtonTitle = "closeButtonTitle"
@@ -155,8 +156,10 @@ final class ProfileViewController: UIViewController {
 		alert.addAction(cameraAction)
 		alert.addAction(gallaryAction)
 		alert.addAction(deleteAction)
+		alert.addAction(UIAlertAction(title: NSLocalizedString(LocalizeKeys.cancelAction, comment: ""), style: .cancel, handler: nil))
 		present(alert, animated: true, completion: nil)
 	}
+	
 	@objc func cancelButtonAction(_ sender: UIButton) {
 		hideSaveButtons()
 		textFieldsResignFirstResponder()
