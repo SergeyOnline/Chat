@@ -111,7 +111,6 @@ final class ProfileViewController: UIViewController {
 		super.viewDidLoad()
 		setup()
 	}
-	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		updateTheme()
@@ -148,16 +147,27 @@ final class ProfileViewController: UIViewController {
 					self.completion()
 				}
 			}
-			// MARK: - User defaults
-			//			UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.userImage)
-			//			self.completion()
 		}
 		picker.delegate = self
+		alert.view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+		alert.view.layer.cornerRadius = 15
 		alert.addAction(cameraAction)
 		alert.addAction(gallaryAction)
 		alert.addAction(deleteAction)
-		alert.addAction(UIAlertAction(title: NSLocalizedString(LocalizeKeys.cancelAction, comment: ""), style: .cancel, handler: nil))
-		present(alert, animated: true, completion: nil)
+		if let firstSubview = alert.view.subviews.first, let alertContentView = firstSubview.subviews.first {
+			for view in alertContentView.subviews {
+				view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor().withAlphaComponent(0.85)
+			}
+		}
+		alert.view.tintColor = NavigationBarAppearance.elementsColor.uiColor()
+		present(alert, animated: true) {
+			alert.view.superview?.subviews.first?.isUserInteractionEnabled = true
+			alert.view.superview?.subviews.first?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertTapGestureHandler(_:))))
+		}
+	}
+
+	@objc func alertTapGestureHandler(_ sender: UITapGestureRecognizer) {
+		dismiss(animated: true, completion: nil)
 	}
 	
 	@objc func cancelButtonAction(_ sender: UIButton) {
@@ -196,10 +206,7 @@ final class ProfileViewController: UIViewController {
 		} else {
 			changeSaveButtonsStatusTo(.enable)
 		}
-		if (sender.text?.count ?? 0) > 28 {
-			sender.text?.removeLast()
-		}
-		if text.numberOfWords == 2 && text.last == " " {
+		if (sender.text?.count ?? 0) > 28 || (text.numberOfWords == 2 && text.last == " ") {
 			sender.text?.removeLast()
 		}
 	}
@@ -445,9 +452,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
 		picker.dismiss(animated: true, completion: nil)
 		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-		
 		guard let image = imageView.image else { return }
-		
 		userProfileHandlerGCD.saveOwnerImage(image: image) { error in
 			DispatchQueue.main.async {
 				if let error = error {
@@ -457,10 +462,6 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 				}
 			}
 		}
-		// MARK: - User defaults
-		//		let imageData = image.jpegData(compressionQuality: 0.3)
-		//		UserDefaults.standard.set(imageData, forKey: UserDefaultsKeys.userImage)
-		//		completion()
 	}
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
 		picker.dismiss(animated: true, completion: nil)
