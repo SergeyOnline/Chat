@@ -28,7 +28,7 @@ final class ConversationViewController: UIViewController {
 		static let messagesDBCollection = "messages"
 		static let messageKeyContent = "content"
 		static let messageKeyCreated = "created"
-		static let messageKeySenderId = "senderID"
+		static let messageKeySenderId = "senderId"
 		static let messageKeySenderName = "senderName"
 	}
 	
@@ -207,9 +207,7 @@ final class ConversationViewController: UIViewController {
 					let data = document.data()
 					let content: String = (data[Constants.messageKeyContent] as? String) ?? ""
 					let created: Date = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
-					var senderId: String = (data[Constants.messageKeySenderId] as? String) ?? ""
-					// TODO: - We need an unambiguous answer which key to use
-					if senderId == "" { senderId = (data["senderId"] as? String) ?? "" }
+					let senderId: String = (data[Constants.messageKeySenderId] as? String) ?? ""
 					let senderName: String = (data[Constants.messageKeySenderName] as? String) ?? ""
 					let message = ChannelMessage(content: content, created: created, senderId: senderId, senderName: senderName)
 					messages.append(message)
@@ -459,10 +457,11 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 			return UITableViewCell()
 		}
 		cell.isTailNeed = tailsArray[index]
+		let name = messages?[index].senderName ?? ""
 		if index == 0 {
-			cell.nameLabel.text = messages?[index].senderName ?? ""
+			cell.nameLabel.text = name.isEmpty ? "Unknown" : name
 		} else {
-			cell.nameLabel.text = (tailsArray[index - 1] == true) ? messages?[index].senderName ?? "" : ""
+			cell.nameLabel.text = (tailsArray[index - 1] == true) ? (name.isEmpty ? "Unknown" : name) : ""
 		}
 		cell.newDayLabel.text = calculateHeaderForMessagesOfOneDay(forCellIndex: index)
 		cell.messageText = messages?[index].content ?? ""
