@@ -28,7 +28,7 @@ final class ConversationViewController: UIViewController {
 		static let messagesDBCollection = "messages"
 		static let messageKeyContent = "content"
 		static let messageKeyCreated = "created"
-		static let messageKeySenderId = "senderId"
+		static let messageKeySenderId = "senderID"
 		static let messageKeySenderName = "senderName"
 	}
 	
@@ -207,7 +207,9 @@ final class ConversationViewController: UIViewController {
 					let data = document.data()
 					let content: String = (data[Constants.messageKeyContent] as? String) ?? ""
 					let created: Date = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
-					let senderId: String = (data[Constants.messageKeySenderId] as? String) ?? ""
+					var senderId: String = (data[Constants.messageKeySenderId] as? String) ?? ""
+					// TODO: - We need an unambiguous answer which key to use
+					if senderId == "" { senderId = (data["senderId"] as? String) ?? "" }
 					let senderName: String = (data[Constants.messageKeySenderName] as? String) ?? ""
 					let message = ChannelMessage(content: content, created: created, senderId: senderId, senderName: senderName)
 					messages.append(message)

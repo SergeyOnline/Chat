@@ -150,7 +150,7 @@ final class TabBarController: UITabBarController {
 	}
 	
 	@objc func textFieldEditing(_ sender: UITextField) {
-		if (sender.text?.count ?? 0) > 30 {
+		if (sender.text?.count ?? 0) > 20 {
 			sender.text?.removeLast()
 		}
 		self.alertTextMessage = sender.text ?? ""

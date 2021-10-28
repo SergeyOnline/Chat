@@ -19,7 +19,7 @@ extension ChannelMessage {
 	var toDict: [String: Any] {
 		return ["content": content,
 				"created": created,
-				"senderId": senderId,
+				"senderID": senderId,
 				"senderName": senderName]
 	}
 	
