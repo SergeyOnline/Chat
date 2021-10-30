@@ -15,8 +15,8 @@ final class OperationUserProfileInfoHandler: UserProfileInfoHandlerProtocol {
 		let saveOwnerInfoOperation = SaveOwnerInfoOperation(owner: owner)
 		saveOwnerInfoOperation.completionBlock = {
 			OperationQueue.main.addOperation {
-				if let result = saveOwnerInfoOperation.error {
-					completion(result)
+				if let error = saveOwnerInfoOperation.error {
+					completion(error)
 				} else {
 					completion(nil)
 				}
@@ -41,8 +41,8 @@ final class OperationUserProfileInfoHandler: UserProfileInfoHandlerProtocol {
 		let saveOwnerInfoOperation = SaveOwnerImageOperation(image: image)
 		saveOwnerInfoOperation.completionBlock = {
 			OperationQueue.main.addOperation {
-				if let result = saveOwnerInfoOperation.error {
-					completion(result)
+				if let error = saveOwnerInfoOperation.error {
+					completion(error)
 				} else {
 					completion(nil)
 				}

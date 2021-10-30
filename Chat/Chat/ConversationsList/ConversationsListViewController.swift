@@ -108,11 +108,6 @@ final class ConversationsListViewController: UIViewController {
 		}
 	}
 	
-	// MARK: - Private functions
-	private func logThemeChanging() {
-		print(Theme.theme)
-	}
-	
 	// MARK: - setup Table View and Constraints
 	
 	private func setupTableView() {
