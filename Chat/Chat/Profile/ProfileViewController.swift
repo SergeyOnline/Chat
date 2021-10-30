@@ -435,6 +435,7 @@ final class ProfileViewController: UIViewController {
 		self.cancelButton.isEnabled = true
 		self.hideSaveButtons()
 		self.editImageButton.isHidden = false
+		self.view.setNeedsLayout()
 		completion()
 	}
 	private func textFieldsResignFirstResponder() {
