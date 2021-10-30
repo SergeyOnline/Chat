@@ -78,11 +78,31 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		}
 	}
 	
-	private var nameLabel: UILabel!
-	private var dateLabel: UILabel!
-	private var messageLabel: UILabel!
-	private var userImageView: UserImageView!
-	private var contentVerticalStack: CustomStackView!
+	//MARK: - UI
+	private var nameLabel: UILabel = {
+		let label = UILabel()
+		return label
+	}()
+	
+	private var dateLabel: UILabel = {
+		let label = UILabel()
+		return label
+	}()
+	
+	private var messageLabel: UILabel = {
+		let label = UILabel()
+		return label
+	}()
+	
+	private var userImageView: UserImageView = {
+		let imageView = UserImageView(labelTitle: "", labelfontSize: Constants.imageHeight / 2)
+		return imageView
+	}()
+	
+	private var contentVerticalStack: CustomStackView = {
+		let stack = CustomStackView(axis: .vertical, distribution: .fillProportionally)
+		return stack
+	}()
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -93,12 +113,19 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+		nameLabel.textColor = TableViewCellAppearance.textColor.uiColor()
+	}
+	
 	//MARK: - Private finctions
 	private func setup() {
-		nameLabel = UILabel()
-		nameLabel.font = UIFont.boldSystemFont(ofSize: Constants.headerFontSize)
 		
-		dateLabel = UILabel()
+		contentView.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+		nameLabel.font = UIFont.boldSystemFont(ofSize: Constants.headerFontSize)
+		nameLabel.textColor = TableViewCellAppearance.textColor.uiColor()
+		
 		dateLabel.font = UIFont.systemFont(ofSize: Constants.bodyFontSize)
 		dateLabel.textColor = .gray
 		dateLabel.textAlignment = .right
@@ -107,33 +134,37 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 		headerHorizontalStack.addArrangedSubview(nameLabel)
 		headerHorizontalStack.addArrangedSubview(dateLabel)
 		
-		messageLabel = UILabel()
 		messageLabel.numberOfLines = 2
 		messageLabel.lineBreakMode = .byWordWrapping
 		messageLabel.textColor = .gray
 		
-		contentVerticalStack = CustomStackView(axis: .vertical, distribution: .fillProportionally)
 		contentVerticalStack.addArrangedSubview(headerHorizontalStack)
 		contentVerticalStack.addArrangedSubview(messageLabel)
 		contentVerticalStack.translatesAutoresizingMaskIntoConstraints = false
 		
-		userImageView = UserImageView(labelTitle: "", labelfontSize: Constants.imageHeight / 2)
 		userImageView.layer.masksToBounds = false
 		userImageView.layer.cornerRadius = Constants.imageHeight / 2
 		
 		contentView.addSubview(userImageView)
 		contentView.addSubview(contentVerticalStack)
 	
+		setupUserImageViewConstraints()
+		setupContentVerticalStackConstraints()
+		
+	}
+	
+	private func setupUserImageViewConstraints() {
 		userImageView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20).isActive = true
 		userImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
 		userImageView.heightAnchor.constraint(equalToConstant: Constants.imageHeight).isActive = true
 		userImageView.widthAnchor.constraint(equalToConstant: Constants.imageHeight).isActive = true
-		
+	}
+	
+	private func setupContentVerticalStackConstraints() {
 		contentVerticalStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5).isActive = true
 		contentVerticalStack.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.9).isActive = true
 		contentVerticalStack.leftAnchor.constraint(equalTo: userImageView.rightAnchor, constant: 10).isActive = true
 		contentVerticalStack.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20).isActive = true
-	
 	}
 	
 	private func stringFromDate(_ date : Date?) -> String {

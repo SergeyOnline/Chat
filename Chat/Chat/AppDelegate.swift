@@ -31,6 +31,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window?.rootViewController = navViewController
 		window?.makeKeyAndVisible()
 		PrintStateTransitionFrom(.suspended, to: .inactive)
+		
+		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
+		case 0:
+			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
+			Theme.theme = .light
+		case 1:
+			Theme.theme = .light
+		case 2:
+			Theme.theme = .dark
+		case 3:
+			Theme.theme = .darkBlue
+		default:
+			break
+		}
+		
 		return true
 	}
 	

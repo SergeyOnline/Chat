@@ -14,7 +14,7 @@ protocol ConversationsListViewControllerDelegate: AnyObject {
 final class ConversationsListViewController: UIViewController {
 	
 	private enum Constants {
-		static let cellReuseIdentifier = "Cell"
+		static let cellReuseIdentifier = "ConversationsListCell"
 		static let userImageViewCornerRadius = 20.0
 		static let userImageViewWidth = 40.0
 		static let userImageViewHeight = 40.0
@@ -29,8 +29,18 @@ final class ConversationsListViewController: UIViewController {
 		static let offlineHeaderTitle = "offlineHeaderTitle";
 	}
 	
-	var tableView: UITableView!
+	//MARK: - UI
+	var tableView: UITableView = {
+		let table = UITableView(frame: CGRect.zero, style: .grouped)
+		return table
+	}()
 	
+	var userImageView: UserImageView = {
+		let imageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
+		return imageView
+	}()
+	
+	//MARK: - Model
 	private let users = TestData.users
 	private var onlineUsers: [User] {
 		get {
@@ -39,6 +49,7 @@ final class ConversationsListViewController: UIViewController {
 			return users
 		}
 	}
+	
 	private var offlineUsers: [User] {
 		get {
 			var users = users.filter({ $0.online == false})
@@ -49,13 +60,53 @@ final class ConversationsListViewController: UIViewController {
 
 	override func viewDidLoad() {
         super.viewDidLoad()
-
-		view.backgroundColor = .systemGray
-		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
-		
-		let userImageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
-		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
+		setup()
+    }
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
+		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
+		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
+		
+	}
+
+	//MARK: - Actions
+	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
+		let profileViewController = ProfileViewController()
+		profileViewController.completion = {
+			if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+				self.userImageView.image = UIImage(data: imageData)
+			} else {
+				self.userImageView.image = nil
+			}
+		}
+		present(profileViewController, animated: true, completion: nil)
+	}
+	
+	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
+		let themesVC = ThemesViewController()
+		themesVC.modalPresentationStyle = .fullScreen
+		themesVC.completion = {
+			self.tableView.reloadData()
+			self.viewWillAppear(false)
+			self.logThemeChanging()
+		}
+		present(themesVC, animated: true, completion: nil)
+	}
+	
+	//MARK: -- Private functions
+	
+	private func setup() {
+		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
+		navigationItem.backButtonTitle = ""
+		
+		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
+		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+			userImageView.image = UIImage(data: imageData)
+		}
 		
 		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
 		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))
@@ -68,37 +119,40 @@ final class ConversationsListViewController: UIViewController {
 		navigationItem.rightBarButtonItem = profileBarButtonItem
 		navigationItem.leftBarButtonItem = settingsBarButtonItem
 
-		
-		tableView = UITableView(frame: view.safeAreaLayoutGuide.layoutFrame, style: .grouped)
-
+		setupTableView()
+		view.addSubview(tableView)
+		setupTableViewConstraints()
+	}
+	
+	//MARK: - setup Table View and Constraints
+	
+	private func setupTableView() {
 		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.rowHeight = Constants.tableViewRowHeight
+		tableView.translatesAutoresizingMaskIntoConstraints = false
 //		tableView.rowHeight = UITableView.automaticDimension
-//		tableView.estimatedRowHeight = 80
-
-		view.addSubview(tableView)
-    }
-
-	//MARK: - Actions
-	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
-		let profileViewController = ProfileViewController()
-		present(profileViewController, animated: true, completion: nil)
+		tableView.estimatedRowHeight = 80
 	}
 	
-	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
-		//TODO: - settings
-		print("TO DO")
+	private func setupTableViewConstraints() {
+		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+		tableView.bottomAnchor.constraint(equalTo:  view.bottomAnchor).isActive = true
 	}
 	
-	//MARK: - Private functions
 	private func sortUsers(users: [User]) -> [User] {
 		
 		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true }
 		var otheUsers = users.filter { $0.hasUnreadMessages == false }
 		hasUnreadMassageUsers = hasUnreadMassageUsers.sorted(by: { u1, u2 in
-			return u1.messages!.last!.date > u2.messages!.last!.date
+			
+			guard let lastU1Date = u1.messages?.last?.date else { return false }
+			guard let lastU2Date = u2.messages?.last?.date else { return false }
+
+			return lastU1Date > lastU2Date
 		})
 		otheUsers = otheUsers.sorted(by: { u1, u2 in
 			if u1.messages == nil && u2.messages == nil {
@@ -108,10 +162,16 @@ final class ConversationsListViewController: UIViewController {
 			} else if u2.messages == nil {
 				return true
 			} else {
-				return u1.messages!.last!.date > u2.messages!.last!.date
+				guard let lastU1Date = u1.messages?.last?.date else { return false }
+				guard let lastU2Date = u2.messages?.last?.date else { return false }
+				return lastU1Date > lastU2Date
 			}
 		})
 		return hasUnreadMassageUsers + otheUsers
+	}
+	
+	private func logThemeChanging() {
+		print(Theme.theme)
 	}
 }
 
@@ -130,8 +190,10 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as! ConversationsListCell
-
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as? ConversationsListCell else {
+			return UITableViewCell()
+		}
+		
 		var currentUsers: [User] = []
 		if indexPath.section == 0 {
 			currentUsers = onlineUsers
@@ -173,6 +235,11 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 		}
 		conversationVC.delegate = self
 		self.navigationController?.pushViewController(conversationVC, animated: true)
+	}
+	
+	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		guard let header = view as? UITableViewHeaderFooterView else { return }
+		header.textLabel?.textColor = TableViewAppearance.headerTitleColor.uiColor()
 	}
 }
 

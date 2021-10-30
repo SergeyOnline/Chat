@@ -28,7 +28,7 @@ class User {
 		}
 	}
 	
-	var imageView: UIImageView!
+	var imageView: UIImageView?
 	
 	var fullName: String {
 		get {
