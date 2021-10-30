@@ -121,7 +121,6 @@ final class ConversationsListViewController: UIViewController {
 		tableView.dataSource = self
 		tableView.rowHeight = Constants.tableViewRowHeight
 		tableView.translatesAutoresizingMaskIntoConstraints = false
-//		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 80
 	}
 	

@@ -82,20 +82,9 @@ final class ConversationsListCell: UITableViewCell, ConversationCellConfiguratio
 	}
 	
 	// MARK: - UI
-	private var nameLabel: UILabel = {
-		let label = UILabel()
-		return label
-	}()
-	
-	private var dateLabel: UILabel = {
-		let label = UILabel()
-		return label
-	}()
-	
-	private var messageLabel: UILabel = {
-		let label = UILabel()
-		return label
-	}()
+	private var nameLabel = UILabel()
+	private var dateLabel = UILabel()
+	private var messageLabel = UILabel()
 	
 	private var userImageView: UserImageView = {
 		let imageView = UserImageView(labelTitle: "", labelfontSize: Constants.imageHeight / 2)
