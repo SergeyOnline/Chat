@@ -32,34 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window?.rootViewController = navViewController
 		window?.makeKeyAndVisible()
 		PrintStateTransitionFrom(.suspended, to: .inactive)
-		
-		let userProfileInfoHandler = GCDUserProfileInfoHandler()
-		userProfileInfoHandler.loadTheme { result in
-			switch result {
-			case .success(let themeId):
-				DispatchQueue.main.async {
-					self.setApplicationThemeForId(themeId)
-					tabBarController.viewWillAppear(false)
-				}
-			case .failure:
-				Theme.theme = .light
-			}
-		}
-		
-		// TODO: - User Defaults
-//		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
-//		case 0:
-//			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
-//			Theme.theme = .light
-//		case 1:
-//			Theme.theme = .light
-//		case 2:
-//			Theme.theme = .dark
-//		case 3:
-//			Theme.theme = .darkBlue
-//		default:
-//			break
-//		}
+		setApplicationTheme()
 		
 		return true
 	}
@@ -108,8 +81,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		#endif
 	}
 	
-	private func setApplicationThemeForId(_ id: Int) {
-		switch id {
+	private func setApplicationTheme() {
+		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
+		case 0:
+			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
+			Theme.theme = .light
 		case 1:
 			Theme.theme = .light
 		case 2:
@@ -117,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		case 3:
 			Theme.theme = .darkBlue
 		default:
-			Theme.theme = .light
+			break
 		}
 	}
 

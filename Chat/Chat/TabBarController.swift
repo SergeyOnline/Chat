@@ -127,9 +127,15 @@ final class TabBarController: UITabBarController {
 	@objc func addChannelBarButtonAction(_ sender: UIBarButtonItem) {
 		
 		let alert = UIAlertController(title: "Create new channel", message: "Enter channel name\nThe field cannot be empty!", preferredStyle: .alert)
-		
+		alert.setThemeOptions(viewBackground: TableViewCellAppearance.backgroundColor.uiColor(),
+							   titleColor: NavigationBarAppearance.elementsColor.uiColor(),
+							   buttonsBackground: NavigationBarAppearance.backgroundColor.uiColor(),
+							   tintColor: NavigationBarAppearance.elementsColor.uiColor())
 		alert.addTextField { textField in
-			textField.placeholder = "name"
+			textField.attributedPlaceholder = NSAttributedString(string: "name", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+			textField.superview?.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+			textField.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+			textField.textColor = NavigationBarAppearance.elementsColor.uiColor()
 			textField.addTarget(self, action: #selector(self.textFieldEditing(_:)), for: .editingChanged)
 		}
 		

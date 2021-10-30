@@ -23,6 +23,7 @@
 		876BAC1D26FF3A1B00D5BF31 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC1F26FF3A1B00D5BF31 /* Localizable.strings */; };
 		876BAC2326FF3D7C00D5BF31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC2526FF3D7C00D5BF31 /* InfoPlist.strings */; };
 		876BAC3026FF460F00D5BF31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 876BAC2F26FF460F00D5BF31 /* Assets.xcassets */; };
+		876ED7EB272D107E002F85E2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876ED7EA272D107E002F85E2 /* Extensions.swift */; };
 		8774D3392709B32B007D359C /* ConversationListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D3382709B32B007D359C /* ConversationListCell.swift */; };
 		8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33A2709BB00007D359C /* CustomStackView.swift */; };
 		8774D33D2709CB6A007D359C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8774D33C2709CB6A007D359C /* User.swift */; };
@@ -61,6 +62,7 @@
 		876BAC2426FF3D7C00D5BF31 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		876BAC2626FF3D7E00D5BF31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		876BAC2F26FF460F00D5BF31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		876ED7EA272D107E002F85E2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8774D3382709B32B007D359C /* ConversationListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationListCell.swift; sourceTree = "<group>"; };
 		8774D33A2709BB00007D359C /* CustomStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStackView.swift; sourceTree = "<group>"; };
 		8774D33C2709CB6A007D359C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 			children = (
 				8774D33A2709BB00007D359C /* CustomStackView.swift */,
 				876BAC1426FF39D500D5BF31 /* UserImageView.swift */,
+				876ED7EA272D107E002F85E2 /* Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				8781CC142713191000566A90 /* ThemesViewController.swift in Sources */,
 				8783FD03270BCB8400C21A66 /* Message.swift in Sources */,
 				8768BDF1270C53650078C271 /* MessageCell.swift in Sources */,
+				876ED7EB272D107E002F85E2 /* Extensions.swift in Sources */,
 				8775C7F42724C40200AA8480 /* ChannelMessage.swift in Sources */,
 				876BABFA26FF38E800D5BF31 /* AppDelegate.swift in Sources */,
 				8774D3392709B32B007D359C /* ConversationListCell.swift in Sources */,

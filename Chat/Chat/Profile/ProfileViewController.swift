@@ -149,17 +149,13 @@ final class ProfileViewController: UIViewController {
 			}
 		}
 		picker.delegate = self
-		alert.view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
-		alert.view.layer.cornerRadius = 15
 		alert.addAction(cameraAction)
 		alert.addAction(gallaryAction)
 		alert.addAction(deleteAction)
-		if let firstSubview = alert.view.subviews.first, let alertContentView = firstSubview.subviews.first {
-			for view in alertContentView.subviews {
-				view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor().withAlphaComponent(0.85)
-			}
-		}
-		alert.view.tintColor = NavigationBarAppearance.elementsColor.uiColor()
+		alert.setThemeOptions(viewBackground: TableViewCellAppearance.backgroundColor.uiColor(),
+							   titleColor: NavigationBarAppearance.elementsColor.uiColor(),
+							   buttonsBackground: NavigationBarAppearance.backgroundColor.uiColor(),
+							   tintColor: NavigationBarAppearance.elementsColor.uiColor())
 		present(alert, animated: true) {
 			alert.view.superview?.subviews.first?.isUserInteractionEnabled = true
 			alert.view.superview?.subviews.first?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertTapGestureHandler(_:))))
@@ -334,6 +330,10 @@ final class ProfileViewController: UIViewController {
 												message: "", preferredStyle: .alert)
 		let okAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.alertOkActionTitle, comment: ""), style: .default, handler: nil)
 		alertController.addAction(okAction)
+		alertController.setThemeOptions(viewBackground: TableViewCellAppearance.backgroundColor.uiColor(),
+										 titleColor: NavigationBarAppearance.elementsColor.uiColor(),
+										 buttonsBackground: NavigationBarAppearance.backgroundColor.uiColor(),
+										 tintColor: NavigationBarAppearance.elementsColor.uiColor())
 		self.present(alertController, animated: true, completion: nil)
 	}
 	private func showFailureAlert(sender: UIButton) {
@@ -345,6 +345,10 @@ final class ProfileViewController: UIViewController {
 		}
 		alertController.addAction(okAction)
 		alertController.addAction(repeatSaveAction)
+		alertController.setThemeOptions(viewBackground: TableViewCellAppearance.backgroundColor.uiColor(),
+										 titleColor: NavigationBarAppearance.elementsColor.uiColor(),
+										 buttonsBackground: NavigationBarAppearance.backgroundColor.uiColor(),
+										 tintColor: NavigationBarAppearance.elementsColor.uiColor())
 		self.present(alertController, animated: true, completion: nil)
 	}
 	private func changeSaveButtonsStatusTo(_ status: SaveButtonStatus) {
