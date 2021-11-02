@@ -25,7 +25,7 @@ final class ConversationsListViewController: UIViewController {
 	
 	private lazy var db = Firestore.firestore()
 	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
-	private let dataManager = DataManager()
+	private let dataManager = DataManager.shared
 	
 	// MARK: - UI
 	var tableView: UITableView = {
