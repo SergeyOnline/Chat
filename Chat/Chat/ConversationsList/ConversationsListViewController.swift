@@ -47,6 +47,8 @@ final class ConversationsListViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setup()
+		// MARK - Change the initializer, if you need to display the entire contents of the database
+//		dataManager.logChannelsContent(needPrintMessages: true)
 		dataManager.logChannelsContent()
 	}
 	

@@ -28,22 +28,22 @@ final class DataManager {
 	}()
 	
 	func saveChannels(_ channels: [Channel]) {
-		for channel in channels {
-			persistentContainer.performBackgroundTask({ context in
+		persistentContainer.performBackgroundTask({ context in
+			for channel in channels {
 				context.mergePolicy = NSMergePolicy.overwrite
 				let newChannel = DBChannel(context: context)
 				newChannel.name = channel.name
 				newChannel.identifier = channel.identifier
 				newChannel.lastActivity = channel.lastActivity
 				newChannel.lastMessage = channel.lastMessage
-				do {
-					try context.save()
-				} catch {
-					let error = error as NSError
-					fatalError("Unresolved error \(error), \(error.userInfo)")
-				}
-			})
-		}
+			}
+			do {
+				try context.save()
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+		})
 	}
 	
 	func loadChannels(_ predicate: NSPredicate? = nil) -> [DBChannel] {
@@ -65,7 +65,6 @@ final class DataManager {
 	}
 	
 	func saveMessages(_ messages: [ChannelMessage], forChannelId id: String) {
-		
 		persistentContainer.performBackgroundTask({ context in
 			context.mergePolicy = NSMergePolicy.overwrite
 			var channels: [DBChannel] = []
@@ -80,7 +79,6 @@ final class DataManager {
 			}
 			
 			guard let channel = channels.first else { return }
-			
 			for message in messages {
 				context.mergePolicy = NSMergePolicy.overwrite
 				let newMessage = DBMessage(context: context)
@@ -89,12 +87,12 @@ final class DataManager {
 				newMessage.senderId = message.senderId
 				newMessage.senderName = message.senderName
 				newMessage.channel = channel
-				do {
-					try context.save()
-				} catch {
-					let error = error as NSError
-					fatalError("Unresolved error \(error), \(error.userInfo)")
-				}
+			}
+			do {
+				try context.save()
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
 			}
 		})
 	}
@@ -117,7 +115,7 @@ final class DataManager {
 	}
 	
 	func logChannelsContent(needPrintMessages isNeed: Bool = false) {
-		#if DEBUG
+	#if DEBUG
 		if CommandLine.arguments.contains("DEBUG_LOG_CHANNELS_CONTENT") {
 			print("----------------------------------------------------------")
 			print("*************** Core Data Channels content ***************")
@@ -130,38 +128,45 @@ final class DataManager {
 					print("Date\t\t: " + (channel.lastActivity?.formatted(date: .numeric, time: .shortened) ?? "--empty--"))
 				}
 				print("Last message: \(channel.lastMessage ?? "--empty--")")
-				print("----------------------------------")
+				print("--------------------------------------------")
 				if isNeed {
 					if let id = channel.identifier {
 						logMessagesContent(forChannelId: id)
-						print("\n")
 					}
 				}
 			}
 			print("Channels count: \(channels.count)")
+			print("--------------------------------------------")
 		}
-		#endif
+	#endif
 	}
 	
 	func logMessagesContent(forChannelId id: String) {
-		#if DEBUG
+	#if DEBUG
 		if CommandLine.arguments.contains("DEBUG_LOG_MESSAGES_CONTENT") {
+			let messages = loadMessages(forChannelId: id)
+			if messages.isEmpty {
+				print("* There are no messages in the database for the current channel *")
+				print("* Perhaps the channel is empty, or no data has been downloaded from Firebase *")
+				print("--------------------------------------------")
+				return
+			}
 			print("\t||----------------------------------------------------------")
 			print("\t||*************** Core Data Messages content ***************")
 			print("\t||----------------------------------------------------------")
-			let messages = loadMessages(forChannelId: id)
 			for message in messages {
 				print("\t||\tSender Id\t: " + (message.senderId ?? "--empty--"))
 				print("\t||\tSender name\t: " + (message.senderName ?? "--empty--"))
 				if #available(iOS 15.0, *) {
 					print("\t||\tCreated\t\t: " + (message.created?.formatted(date: .numeric, time: .shortened) ?? "--empty--"))
 				}
-				print("\t||\tMessage\t: \(message.content ?? "--empty--")")
-				print("\t||----------------------------------")
+				print("\t||\tMessage\t\t: \(message.content ?? "--empty--")")
+				print("\t||--------------------------------------------")
 			}
 			print("\t||\tMessages count: \(messages.count)")
+			print("\t||--------------------------------------------")
 		}
-		#endif
+	#endif
 	}
 }
 
