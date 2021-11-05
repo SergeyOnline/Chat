@@ -8,8 +8,8 @@
 import UIKit
 
 enum Themes: Int {
-	case dark = 1
-	case light = 2
+	case light = 1
+	case dark = 2
 	case darkBlue = 3
 }
 
