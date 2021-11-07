@@ -7,8 +7,21 @@
 
 import UIKit
 import CoreData
+import Firebase
 
 final class DataManager {
+	
+	private enum Constants {
+//		static let channelsDBCollection = "channels"
+		static let channelKeyName = "name"
+		static let channelKeyLastMessage = "lastMessage"
+		static let channelKeyLastActivity = "lastActivity"
+//		static let messagesDBCollection = "messages"
+		static let messageKeyContent = "content"
+		static let messageKeyCreated = "created"
+		static let messageKeySenderId = "senderId"
+		static let messageKeySenderName = "senderName"
+	}
 	
 	static var shared: DataManager = {
 		let instance = DataManager()
@@ -24,21 +37,38 @@ final class DataManager {
 				fatalError("Unresolved error \(error), \(error.userInfo)")
 			}
 		}
+		container.viewContext.automaticallyMergesChangesFromParent = true
 		return container
 	}()
 	
-	func saveChannels(_ channels: [Channel]) {
+	func saveChannel(_ channel: DocumentChange) {
 		persistentContainer.performBackgroundTask({ context in
-			for channel in channels {
-				context.mergePolicy = NSMergePolicy.overwrite
-				let newChannel = DBChannel(context: context)
-				newChannel.name = channel.name
-				newChannel.identifier = channel.identifier
-				newChannel.lastActivity = channel.lastActivity
-				newChannel.lastMessage = channel.lastMessage
-			}
+			context.mergePolicy = NSMergePolicy.overwrite
+			let newChannel = DBChannel(context: context)
+			let data = channel.document.data()
+			newChannel.identifier = channel.document.documentID
+			newChannel.name = (data[Constants.channelKeyName] as? String) ?? ""
+			newChannel.lastMessage = data[Constants.channelKeyLastMessage] as? String
+			newChannel.lastActivity = (data[Constants.channelKeyLastActivity] as? Timestamp)?.dateValue()
 			do {
 				try context.save()
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+		})
+	}
+	
+	func removeChannel(_ channel: DocumentChange) {
+		persistentContainer.performBackgroundTask({ context in
+			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
+			let predicate = NSPredicate(format: "identifier like %@", channel.document.documentID)
+			request.predicate = predicate
+			do {
+				if let channel = try context.fetch(request).first {
+					context.delete(channel)
+					try context.save()
+				}
 			} catch {
 				let error = error as NSError
 				fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -64,7 +94,40 @@ final class DataManager {
 		return channels
 	}
 	
-	func saveMessages(_ messages: [ChannelMessage], forChannelId id: String) {
+//	func saveMessages(_ messages: [ChannelMessage], forChannelId id: String) {
+//		persistentContainer.performBackgroundTask({ context in
+//			context.mergePolicy = NSMergePolicy.overwrite
+//			var channels: [DBChannel] = []
+//			let predicate = NSPredicate(format: "identifier like %@", id)
+//			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
+//			request.predicate = predicate
+//			do {
+//				channels = try context.fetch(request)
+//			} catch {
+//				let error = error as NSError
+//				fatalError("Unresolved error \(error), \(error.userInfo)")
+//			}
+//
+//			guard let channel = channels.first else { return }
+//			for message in messages {
+//				context.mergePolicy = NSMergePolicy.overwrite
+//				let newMessage = DBMessage(context: context)
+//				newMessage.content = message.content
+//				newMessage.created = message.created
+//				newMessage.senderId = message.senderId
+//				newMessage.senderName = message.senderName
+//				newMessage.channel = channel
+//			}
+//			do {
+//				try context.save()
+//			} catch {
+//				let error = error as NSError
+//				fatalError("Unresolved error \(error), \(error.userInfo)")
+//			}
+//		})
+//	}
+	
+	func saveMessage(_ message: DocumentChange, forChannelId id: String) {
 		persistentContainer.performBackgroundTask({ context in
 			context.mergePolicy = NSMergePolicy.overwrite
 			var channels: [DBChannel] = []
@@ -77,17 +140,14 @@ final class DataManager {
 				let error = error as NSError
 				fatalError("Unresolved error \(error), \(error.userInfo)")
 			}
-			
 			guard let channel = channels.first else { return }
-			for message in messages {
-				context.mergePolicy = NSMergePolicy.overwrite
-				let newMessage = DBMessage(context: context)
-				newMessage.content = message.content
-				newMessage.created = message.created
-				newMessage.senderId = message.senderId
-				newMessage.senderName = message.senderName
-				newMessage.channel = channel
-			}
+			let data = message.document.data()
+			let newMessage = DBMessage(context: context)
+			newMessage.content = (data[Constants.messageKeyContent] as? String) ?? ""
+			newMessage.created = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
+			newMessage.senderId = (data[Constants.messageKeySenderId] as? String) ?? ""
+			newMessage.senderName = (data[Constants.messageKeySenderName] as? String) ?? ""
+			newMessage.channel = channel
 			do {
 				try context.save()
 			} catch {
