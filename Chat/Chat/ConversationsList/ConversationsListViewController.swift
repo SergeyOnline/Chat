@@ -27,6 +27,7 @@ final class ConversationsListViewController: UIViewController {
 	private lazy var db = Firestore.firestore()
 	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
 	private let dataManager = DataManager.shared
+	private var listener: ListenerRegistration?
 	
 	private lazy var fetchResultController: NSFetchedResultsController<DBChannel> = {
 		let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
@@ -47,10 +48,7 @@ final class ConversationsListViewController: UIViewController {
 	}()
 	
 	// MARK: - UI
-	var tableView: UITableView = {
-		let table = UITableView(frame: CGRect.zero, style: .grouped)
-		return table
-	}()
+	var tableView = UITableView(frame: CGRect.zero, style: .grouped)
 
 	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
 		return GCDUserProfileInfoHandler()
@@ -73,7 +71,30 @@ final class ConversationsListViewController: UIViewController {
 																							NSAttributedString.Key.foregroundColor.rawValue):
 																	NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
-		tableView.reloadData()
+//		fetchResultController.delegate = self
+//		referenceChannel.getDocuments { [weak self] querySnapshot, error in
+//			if let error = error {
+//				print("Error getting documents: \(error)")
+//				return
+//			}
+//			guard let snapshot = querySnapshot else {
+//				print("Error fetching snapshots: \(error!)")
+//				return
+//			}
+//			snapshot.documentChanges.forEach { channel in
+//				if !channel.document.metadata.isFromCache {
+//					if channel.type == .added {
+//						self?.dataManager.saveChannel(channel)
+//					}
+//					if channel.type == .modified {
+//						self?.dataManager.saveChannel(channel)
+//					}
+//					if channel.type == .removed {
+//						self?.dataManager.removeChannel(channel)
+//					}
+//				}
+//			}
+//		}
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
@@ -84,6 +105,8 @@ final class ConversationsListViewController: UIViewController {
 	
 	private func setup() {
 		getChannels()
+		// Updating the table is only needed to show online status
+		// Comment out to match the assignment do not use the tableView.reloadData() method
 		Timer.scheduledTimer(withTimeInterval: 540, repeats: true) { _ in
 				self.tableView.reloadData()
 		}
@@ -93,7 +116,7 @@ final class ConversationsListViewController: UIViewController {
 	}
 	
 	func getChannels() {
-		referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
+		listener = referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
 			if let error = error {
 				print("Error getting documents: \(error)")
 				return
@@ -105,15 +128,12 @@ final class ConversationsListViewController: UIViewController {
 			snapshot.documentChanges.forEach { channel in
 				if channel.type == .added {
 					self?.dataManager.saveChannel(channel)
-//					print("New channel: \(channel.document.data())")
 				}
 				if channel.type == .modified {
 					self?.dataManager.saveChannel(channel)
-//					print("Modified channel: \(channel.document.data())")
 				}
 				if channel.type == .removed {
 					self?.dataManager.removeChannel(channel)
-//					print("Removed channel: \(channel.document.data())")
 				}
 			}
 		}
@@ -134,6 +154,10 @@ final class ConversationsListViewController: UIViewController {
 		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
 		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
 		tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+	}
+	
+	deinit {
+		listener?.remove()
 	}
 }
 
@@ -173,6 +197,7 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		var conversationVC: ConversationViewController
 		let channel = fetchResultController.object(at: indexPath)
+//		fetchResultController.delegate = nil
 		conversationVC = ConversationViewController(channel: channel)
 		self.navigationController?.pushViewController(conversationVC, animated: true)
 	}

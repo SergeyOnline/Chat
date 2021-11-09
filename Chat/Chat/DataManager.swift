@@ -12,11 +12,9 @@ import Firebase
 final class DataManager {
 	
 	private enum Constants {
-//		static let channelsDBCollection = "channels"
 		static let channelKeyName = "name"
 		static let channelKeyLastMessage = "lastMessage"
 		static let channelKeyLastActivity = "lastActivity"
-//		static let messagesDBCollection = "messages"
 		static let messageKeyContent = "content"
 		static let messageKeyCreated = "created"
 		static let messageKeySenderId = "senderId"
@@ -94,44 +92,11 @@ final class DataManager {
 		return channels
 	}
 	
-//	func saveMessages(_ messages: [ChannelMessage], forChannelId id: String) {
-//		persistentContainer.performBackgroundTask({ context in
-//			context.mergePolicy = NSMergePolicy.overwrite
-//			var channels: [DBChannel] = []
-//			let predicate = NSPredicate(format: "identifier like %@", id)
-//			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
-//			request.predicate = predicate
-//			do {
-//				channels = try context.fetch(request)
-//			} catch {
-//				let error = error as NSError
-//				fatalError("Unresolved error \(error), \(error.userInfo)")
-//			}
-//
-//			guard let channel = channels.first else { return }
-//			for message in messages {
-//				context.mergePolicy = NSMergePolicy.overwrite
-//				let newMessage = DBMessage(context: context)
-//				newMessage.content = message.content
-//				newMessage.created = message.created
-//				newMessage.senderId = message.senderId
-//				newMessage.senderName = message.senderName
-//				newMessage.channel = channel
-//			}
-//			do {
-//				try context.save()
-//			} catch {
-//				let error = error as NSError
-//				fatalError("Unresolved error \(error), \(error.userInfo)")
-//			}
-//		})
-//	}
-	
 	func saveMessage(_ message: DocumentChange, forChannelId id: String) {
 		persistentContainer.performBackgroundTask({ context in
-			context.mergePolicy = NSMergePolicy.overwrite
+			context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
 			var channels: [DBChannel] = []
-			let predicate = NSPredicate(format: "identifier like %@", id)
+			let predicate = NSPredicate(format: "identifier == %@", id)
 			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
 			request.predicate = predicate
 			do {
@@ -142,19 +107,47 @@ final class DataManager {
 			}
 			guard let channel = channels.first else { return }
 			let data = message.document.data()
-			let newMessage = DBMessage(context: context)
-			newMessage.content = (data[Constants.messageKeyContent] as? String) ?? ""
-			newMessage.created = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
-			newMessage.senderId = (data[Constants.messageKeySenderId] as? String) ?? ""
-			newMessage.senderName = (data[Constants.messageKeySenderName] as? String) ?? ""
-			newMessage.channel = channel
+			if !self.isMessageExist(messageData: data) {
+				let newMessage = DBMessage(context: context)
+				newMessage.content = (data[Constants.messageKeyContent] as? String) ?? ""
+				newMessage.created = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
+				newMessage.senderId = (data[Constants.messageKeySenderId] as? String) ?? ""
+				newMessage.senderName = (data[Constants.messageKeySenderName] as? String) ?? ""
+				channel.addToMessages(newMessage)
+			}
 			do {
-				try context.save()
+				if context.hasChanges {
+					try context.save()
+				}
 			} catch {
 				let error = error as NSError
 				fatalError("Unresolved error \(error), \(error.userInfo)")
 			}
 		})
+	}
+	
+	func isMessageExist(messageData: [String: Any]) -> Bool {
+		var messages: [DBMessage] = []
+		let context = persistentContainer.viewContext
+		if let content = messageData[Constants.messageKeyContent] as? String,
+		   let created = (messageData[Constants.messageKeyCreated] as? Timestamp)?.dateValue(),
+		   let senderName = messageData[Constants.messageKeySenderName] as? String,
+		   let senderId = messageData[Constants.messageKeySenderId] as? String {
+			let request: NSFetchRequest<DBMessage> = DBMessage.fetchRequest()
+			let predicate = NSPredicate(format: "content == %@ AND created == %@ AND senderName == %@ AND senderId == %@",
+										content,
+										created as NSDate,
+										senderName,
+										senderId)
+			request.predicate = predicate
+			do {
+				messages = try context.fetch(request)
+				if !messages.isEmpty { return true }
+			} catch {
+				return false
+			}
+		}
+		return false
 	}
 	
 	func loadMessages(forChannelId id: String) -> [DBMessage] {
@@ -172,6 +165,21 @@ final class DataManager {
 			fatalError("Unresolved error \(error), \(error.userInfo)")
 		}
 		return messages
+	}
+	
+	func messagesCount(forChannel id: String) -> Int {
+		var count = 0
+		let context = persistentContainer.viewContext
+		let request: NSFetchRequest<DBMessage> = DBMessage.fetchRequest()
+		let predicate = NSPredicate(format: "channel != nil && channel.identifier like %@", id)
+		request.predicate = predicate
+		do {
+			count = try context.count(for: request)
+		} catch {
+			let error = error as NSError
+			fatalError("Unresolved error \(error), \(error.userInfo)")
+		}
+		return count
 	}
 	
 	func logChannelsContent(needPrintMessages isNeed: Bool = false) {
