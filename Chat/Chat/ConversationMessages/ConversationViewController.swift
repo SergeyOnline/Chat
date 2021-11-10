@@ -198,22 +198,23 @@ final class ConversationViewController: UIViewController {
 			}
 			guard let snapshot = querySnapshot else { return }
 			guard let id = self?.channel?.identifier else { return }
+			var messages: [DocumentChange] = []
 			snapshot.documentChanges.forEach { message in
 				if message.type == .added {
 					if !message.document.metadata.isFromCache {
-						self?.dataManager.saveMessage(message, forChannelId: id)
+						messages.append(message)
 					}
 				}
 				// MARK: - modify message if needed
-				// if message.type == .modified {
-				// }
+				// if message.type == .modified {}
 				// MARK: - remove message if needed
-				// if message.type == .removed {
-				// }
+				// if message.type == .removed {}
 			}
-			DispatchQueue.main.async {
-				self?.scrollTableViewToEnd()
-			}
+			self?.dataManager.saveMessage(messages, forChannelId: id, completion: {
+				DispatchQueue.main.async {
+					self?.scrollTableViewToEnd()
+				}
+			})
 		}
 	}
 	
@@ -372,7 +373,7 @@ final class ConversationViewController: UIViewController {
 		textinputView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 	}
 	
-	private func scrollTableViewToEnd() {
+	func scrollTableViewToEnd() {
 		guard let id = channel?.identifier else { return }
 		let count = dataManager.messagesCount(forChannel: id)
 		let cellNumber = count - 1

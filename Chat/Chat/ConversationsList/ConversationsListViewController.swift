@@ -125,17 +125,20 @@ final class ConversationsListViewController: UIViewController {
 				print("Error fetching snapshots: \(error!)")
 				return
 			}
+			var channels: [DocumentChange] = []
+			
 			snapshot.documentChanges.forEach { channel in
 				if channel.type == .added {
-					self?.dataManager.saveChannel(channel)
+					channels.append(channel)
 				}
 				if channel.type == .modified {
-					self?.dataManager.saveChannel(channel)
+					channels.append(channel)
 				}
 				if channel.type == .removed {
 					self?.dataManager.removeChannel(channel)
 				}
 			}
+			self?.dataManager.saveChannels(channels)
 		}
 	}
 	

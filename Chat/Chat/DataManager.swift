@@ -57,6 +57,26 @@ final class DataManager {
 		})
 	}
 	
+	func saveChannels(_ channels: [DocumentChange]) {
+		persistentContainer.performBackgroundTask({ context in
+			context.mergePolicy = NSMergePolicy.overwrite
+			channels.forEach { channel in
+				let newChannel = DBChannel(context: context)
+				let data = channel.document.data()
+				newChannel.identifier = channel.document.documentID
+				newChannel.name = (data[Constants.channelKeyName] as? String) ?? ""
+				newChannel.lastMessage = data[Constants.channelKeyLastMessage] as? String
+				newChannel.lastActivity = (data[Constants.channelKeyLastActivity] as? Timestamp)?.dateValue()
+			}
+			do {
+				try context.save()
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+		})
+	}
+	
 	func removeChannel(_ channel: DocumentChange) {
 		persistentContainer.performBackgroundTask({ context in
 			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
@@ -118,6 +138,43 @@ final class DataManager {
 			do {
 				if context.hasChanges {
 					try context.save()
+				}
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+		})
+	}
+	
+	func saveMessage(_ messages: [DocumentChange], forChannelId id: String, completion: @escaping () -> Void) {
+		persistentContainer.performBackgroundTask({ context in
+			context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+			var channels: [DBChannel] = []
+			let predicate = NSPredicate(format: "identifier == %@", id)
+			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
+			request.predicate = predicate
+			do {
+				channels = try context.fetch(request)
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+			guard let channel = channels.first else { return }
+			messages.forEach { message in
+				let data = message.document.data()
+				if !self.isMessageExist(messageData: data) {
+					let newMessage = DBMessage(context: context)
+					newMessage.content = (data[Constants.messageKeyContent] as? String) ?? ""
+					newMessage.created = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
+					newMessage.senderId = (data[Constants.messageKeySenderId] as? String) ?? ""
+					newMessage.senderName = (data[Constants.messageKeySenderName] as? String) ?? ""
+					channel.addToMessages(newMessage)
+				}
+			}
+			do {
+				if context.hasChanges {
+					try context.save()
+					completion()
 				}
 			} catch {
 				let error = error as NSError
