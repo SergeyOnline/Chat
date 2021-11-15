@@ -6,18 +6,17 @@
   
 */
 
-//MARK: - MainViewController
-
+// MARK: - MainViewController
 "navigationItemTitle" = "Tinkoff Chat";
 
-//MARK: - ProfileViewController
-
+// MARK: - ProfileViewController
 "profileLabel" = "My Profile";
 "closeButtonTitle" = "Close";
 "editButtonTitle" = "Edit";
 "cancelButtonTitle" = "Cancel";
 "editImageButtonTitle" = "Edit";
 "cameraAction" = "Camera";
+"cancelAction" = "Cancel";
 "gallaryAction" = "Gallery";
 "deleteAction" = "Delete";
 "nameTextFieldPlaceholder" = "Your name";
@@ -26,14 +25,22 @@
 "successAlertTitle" = "Data saved";
 "failureAlertTitle" = "Error";
 "failureAlertMessage" = "Failed to save data";
+"saveButtonTitle" = "Save";
 
-//MARK: - ConversationViewController
+// MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Message...";
-"onlineHeaderTitle" = "Online";
-"offlineHeaderTitle" = "Offline";
+"headerTitle" = "Channels";
+"headerDateTitle" = "Today";
 
-//MARK: = ThemesViewController
+// MARK: - ConversationsListCell
+"noMessages" = "No messages yet";
+
+// MARK: - ThemesViewController
 "closeButtonTitle" = "Close";
 "theme1ButtonTitle" = "Light";
 "theme2ButtonTitle" = "Dark";
 "theme3ButtonTitle" = "Dark blue";
+
+// MARK: - TabBarController
+"profile" = "Profile";
+"channels" = "Channels";

@@ -6,171 +6,114 @@
 //
 
 import UIKit
-
-protocol ConversationsListViewControllerDelegate: AnyObject {
-	func changeMessagesForUserWhithID(_ id: Int, to: [Message]?)
-}
+import Firebase
 
 final class ConversationsListViewController: UIViewController {
 	
 	private enum Constants {
 		static let cellReuseIdentifier = "ConversationsListCell"
-		static let userImageViewCornerRadius = 20.0
-		static let userImageViewWidth = 40.0
-		static let userImageViewHeight = 40.0
-		static let userImageViewLabelfontSize = 20.0
 		static let tableViewRowHeight = 80.0
-		static let settingsButtonImageName = "Gear"
+		static let channelsDBCollection = "channels"
+		static let channelKeyName = "name"
+		static let channelKeyLastMessage = "lastMessage"
+		static let channelKeyLastActivity = "lastActivity"
 	}
 	
 	private enum LocalizeKeys {
-		static let navigationItemTitle = "navigationItemTitle"
-		static let onlineHeaderTitle = "onlineHeaderTitle";
-		static let offlineHeaderTitle = "offlineHeaderTitle";
+		static let headerTitle = "headerTitle"
 	}
 	
-	//MARK: - UI
+	private lazy var db = Firestore.firestore()
+	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
+	
+	// MARK: - UI
 	var tableView: UITableView = {
 		let table = UITableView(frame: CGRect.zero, style: .grouped)
 		return table
 	}()
 	
-	var userImageView: UserImageView = {
-		let imageView = UserImageView(labelTitle: Owner().initials, labelfontSize: Constants.userImageViewLabelfontSize)
-		return imageView
-	}()
-	
-	//MARK: - Model
-	private let users = TestData.users
-	private var onlineUsers: [User] {
-		get {
-			var users = users.filter({ $0.online == true})
-			users = sortUsers(users: users)
-			return users
+	// MARK: - Model
+	private lazy var channels: [Channel] = [] {
+		didSet {
+			tableView.reloadData()
 		}
 	}
-	
-	private var offlineUsers: [User] {
-		get {
-			var users = users.filter({ $0.online == false})
-			users = sortUsers(users: users)
-			return users
-		}
-	}
-	
-	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
-		//MARK: - GCD or Operation handler
-		return OperationUserProfileInfoHandler()
-//		return GCDUserProfileInfoHandler()
-	}()
 
+	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
+		return GCDUserProfileInfoHandler()
+	}()
+	
 	override func viewDidLoad() {
-        super.viewDidLoad()
+		super.viewDidLoad()
 		setup()
-    }
+	}
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		navigationController?.navigationBar.barTintColor = NavigationBarAppearance.backgroundColor.uiColor()
 		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
-		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue:
+																							NSAttributedString.Key.foregroundColor.rawValue):
+																	NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
 		tableView.reloadData()
 	}
-
-	//MARK: - Actions
-	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
-		let profileViewController = ProfileViewController()
-		profileViewController.completion = {
 	
-			self.userProfileHandler.loadOwnerInfo { result in
-				switch result {
-				case .success(let owner):
-					self.userImageView.setInitials(initials: owner.initials)
-				case .failure:
-					break
-//					print("Error: load info error")
-				}
-			}
-			
-			self.userProfileHandler.loadOwnerImage { result in
-				switch result {
-				case .success(let image):
-					self.userImageView.image = image
-				case .failure:
-					self.userImageView.image = nil
-				}
-			}
-			
-			//TODO: - User defaults
-//			if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-//				self.userImageView.image = UIImage(data: imageData)
-//			} else {
-//				self.userImageView.image = nil
-//			}
-		}
-		present(profileViewController, animated: true, completion: nil)
-	}
-	
-	@objc func settingsBarButtonAction(_ sender: UIBarButtonItem) {
-		let themesVC = ThemesViewController()
-		themesVC.modalPresentationStyle = .fullScreen
-		themesVC.completion = {
-			self.tableView.reloadData()
-			self.viewWillAppear(false)
-//			self.logThemeChanging()
-		}
-		present(themesVC, animated: true, completion: nil)
-	}
-	
-	//MARK: -- Private functions
+	// MARK: - Private functions
 	
 	private func setup() {
-		navigationItem.title = NSLocalizedString(LocalizeKeys.navigationItemTitle, comment: "")
-		navigationItem.backButtonTitle = ""
-		
-		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
-		userProfileHandler.loadOwnerImage { result in
-			switch result {
-			case .success(let image):
-				self.userImageView.image = image
-			case .failure:
-				self.userImageView.image = nil
-			}
+		getChannels()
+		Timer.scheduledTimer(withTimeInterval: 540, repeats: true) { _ in
+				self.tableView.reloadData()
 		}
-		
-		userProfileHandler.loadOwnerInfo { [weak self] in
-			switch $0 {
-			case .success(let owner):
-				self?.userImageView.setInitials(initials: owner.initials)
-			case .failure:
-				self?.userImageView.setInitials(initials: Owner().initials)
-			}
-		}
-		
-		//TODO: - User defaults
-//		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-//			userImageView.image = UIImage(data: imageData)
-//		}
-		
-		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
-		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))
-		userImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
-		userImageView.heightAnchor.constraint(equalToConstant: Constants.userImageViewHeight).isActive = true
-		
-		let image = UIImage(named: Constants.settingsButtonImageName)
-		let settingsBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(settingsBarButtonAction(_:)))
-	
-		navigationItem.rightBarButtonItem = profileBarButtonItem
-		navigationItem.leftBarButtonItem = settingsBarButtonItem
-
 		setupTableView()
 		view.addSubview(tableView)
 		setupTableViewConstraints()
 	}
 	
-	//MARK: - setup Table View and Constraints
+	func getChannels() {
+		referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
+			var channels: [Channel] = []
+			if let error = error {
+				print("Error getting documents: \(error)")
+				return
+			}
+			if let documents = querySnapshot?.documents {
+				for document in documents {
+					let data = document.data()
+					let id: String = document.documentID
+					let name: String = (data[Constants.channelKeyName] as? String) ?? ""
+					let lastMessage: String? = data[Constants.channelKeyLastMessage] as? String
+					let lastActivity: Date? = (data[Constants.channelKeyLastActivity] as? Timestamp)?.dateValue()
+					let channel = Channel(identifier: id, name: name, lastMessage: lastMessage, lastActivity: lastActivity)
+					channels.append(channel)
+				}
+			}
+			DispatchQueue.main.async {
+				self?.channels = channels.sorted(by: { ch1, ch2 in
+					if ch1.lastActivity == nil && ch2.lastActivity == nil {
+						return false
+					} else if ch1.lastActivity == nil {
+						return false
+					} else if ch2.lastActivity == nil {
+						return true
+					} else {
+						guard let lastCh1Date = ch1.lastActivity else { return false }
+						guard let lastCh2Date = ch2.lastActivity else { return false }
+						return lastCh1Date > lastCh2Date
+					}
+				})
+			}
+		}
+	}
+	
+	// MARK: - Private functions
+	private func logThemeChanging() {
+		print(Theme.theme)
+	}
+	
+	// MARK: - setup Table View and Constraints
 	
 	private func setupTableView() {
 		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
@@ -186,86 +129,69 @@ final class ConversationsListViewController: UIViewController {
 		tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
 		tableView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
 		tableView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-		tableView.bottomAnchor.constraint(equalTo:  view.bottomAnchor).isActive = true
+		tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 	}
 	
-	private func sortUsers(users: [User]) -> [User] {
-		
-		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true }
-		var otheUsers = users.filter { $0.hasUnreadMessages == false }
-		hasUnreadMassageUsers = hasUnreadMassageUsers.sorted(by: { u1, u2 in
-			
-			guard let lastU1Date = u1.messages?.last?.date else { return false }
-			guard let lastU2Date = u2.messages?.last?.date else { return false }
-
-			return lastU1Date > lastU2Date
-		})
-		otheUsers = otheUsers.sorted(by: { u1, u2 in
-			if u1.messages == nil && u2.messages == nil {
-				return false
-			} else if u1.messages == nil {
-				return false
-			} else if u2.messages == nil {
-				return true
-			} else {
-				guard let lastU1Date = u1.messages?.last?.date else { return false }
-				guard let lastU2Date = u2.messages?.last?.date else { return false }
-				return lastU1Date > lastU2Date
-			}
-		})
-		return hasUnreadMassageUsers + otheUsers
-	}
-	
-	private func logThemeChanging() {
-		print(Theme.theme)
-	}
+	// TODO: - The function is not used in the current version, but left for further modifications of the project
+//	private func sortUsers(users: [User]) -> [User] {
+//
+//		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true }
+//		var otheUsers = users.filter { $0.hasUnreadMessages == false }
+//		hasUnreadMassageUsers = hasUnreadMassageUsers.sorted(by: { u1, u2 in
+//
+//			guard let lastU1Date = u1.messages?.last?.date else { return false }
+//			guard let lastU2Date = u2.messages?.last?.date else { return false }
+//
+//			return lastU1Date > lastU2Date
+//		})
+//		otheUsers = otheUsers.sorted(by: { u1, u2 in
+//			if u1.messages == nil && u2.messages == nil {
+//				return false
+//			} else if u1.messages == nil {
+//				return false
+//			} else if u2.messages == nil {
+//				return true
+//			} else {
+//				guard let lastU1Date = u1.messages?.last?.date else { return false }
+//				guard let lastU2Date = u2.messages?.last?.date else { return false }
+//				return lastU1Date > lastU2Date
+//			}
+//		})
+//		return hasUnreadMassageUsers + otheUsers
+//	}
 }
 
 extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
-
+	
 	// MARK: - Table view delegate, data source
 	func numberOfSections(in tableView: UITableView) -> Int {
-		return 2
+		return 1
 	}
-
+	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if section == 1 {
-			return offlineUsers.count
-		}
-		return onlineUsers.count
+		return channels.count
 	}
-
+	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as? ConversationsListCell else {
 			return UITableViewCell()
 		}
 		
-		var currentUsers: [User] = []
-		if indexPath.section == 0 {
-			currentUsers = onlineUsers
+		cell.name = channels[indexPath.row].name
+		cell.message = channels[indexPath.row].lastMessage
+		cell.date = channels[indexPath.row].lastActivity
+		if let timeInterval = channels[indexPath.row].lastActivity?.timeIntervalSince(Date()) {
+			cell.online = -timeInterval <= 600
 		} else {
-			currentUsers = offlineUsers
+			cell.online = false
 		}
-		
-		cell.name = currentUsers[indexPath.row].fullName
-		if let message = currentUsers[indexPath.row].messages?.last {
-			cell.message = message.body
-			cell.date = message.date
-		} else {
-			cell.message = nil
-			cell.date = nil
-		}
-		cell.online = currentUsers[indexPath.row].online
-		cell.hasUnreadMessages = currentUsers[indexPath.row].hasUnreadMessages
+		// TODO: - use unread message
+//		cell.hasUnreadMessages = false
 		return cell
 	}
 	
 	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		switch section {
-		case 0: return NSLocalizedString(LocalizeKeys.onlineHeaderTitle, comment: "")
-		case 1: return NSLocalizedString(LocalizeKeys.offlineHeaderTitle, comment: "")
-		default: return ""
-		}
+		return NSLocalizedString(LocalizeKeys.headerTitle, comment: "")
 	}
 	
 	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -274,29 +200,12 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		var conversationVC: ConversationViewController
-		if indexPath.section == 0 {
-			conversationVC = ConversationViewController(user: onlineUsers[indexPath.row])
-		} else {
-			conversationVC = ConversationViewController(user: offlineUsers[indexPath.row])
-		}
-		conversationVC.delegate = self
+		conversationVC = ConversationViewController(channel: channels[indexPath.row])
 		self.navigationController?.pushViewController(conversationVC, animated: true)
 	}
 	
 	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 		guard let header = view as? UITableViewHeaderFooterView else { return }
 		header.textLabel?.textColor = TableViewAppearance.headerTitleColor.uiColor()
-	}
-}
-
-extension ConversationsListViewController: ConversationsListViewControllerDelegate {
-	func changeMessagesForUserWhithID(_ id: Int, to messages: [Message]?) {
-		for user in users {
-			if user.id == id {
-				user.messages = messages
-				break
-			}
-		}
-		self.tableView.reloadData()
 	}
 }

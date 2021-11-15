@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 enum State: String {
 	case active = "active"
@@ -16,49 +17,22 @@ enum State: String {
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+	
 	var window: UIWindow?
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
-		
 		window = UIWindow()
+			
+		FirebaseApp.configure()
 		
-		let conversationsListVC = ConversationsListViewController()
-		let navViewController = UINavigationController(rootViewController: conversationsListVC)
-		
+		let tabBarController = TabBarController()
+		let navViewController = UINavigationController(rootViewController: tabBarController)
 		
 		window?.rootViewController = navViewController
 		window?.makeKeyAndVisible()
 		PrintStateTransitionFrom(.suspended, to: .inactive)
-		
-		let userProfileInfoHandler = GCDUserProfileInfoHandler()
-		userProfileInfoHandler.loadTheme { result in
-			switch result {
-			case .success(let themeId):
-				DispatchQueue.main.async {
-					self.setApplicationThemeForId(themeId)
-					conversationsListVC.viewWillAppear(false)
-				}
-			case .failure:
-				Theme.theme = .light
-			}
-		}
-		
-		//TODO: - User Defaults
-//		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
-//		case 0:
-//			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
-//			Theme.theme = .light
-//		case 1:
-//			Theme.theme = .light
-//		case 2:
-//			Theme.theme = .dark
-//		case 3:
-//			Theme.theme = .darkBlue
-//		default:
-//			break
-//		}
+		setApplicationTheme()
 		
 		return true
 	}
@@ -83,12 +57,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		PrintStateTransitionFrom(.background, to: .inactive)
 	}
 
-
 	func applicationWillTerminate(_ application: UIApplication) {
 
 		PrintStateTransitionFrom(.background, to: .suspended)
 	}
-	
 	
 	/**
 	Prints the transition state of the application lifecycle
@@ -109,8 +81,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		#endif
 	}
 	
-	private func setApplicationThemeForId(_ id: Int) {
-		switch id {
+	private func setApplicationTheme() {
+		switch UserDefaults.standard.integer(forKey: UserDefaultsKeys.theme) {
+		case 0:
+			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
+			Theme.theme = .light
 		case 1:
 			Theme.theme = .light
 		case 2:
@@ -118,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		case 3:
 			Theme.theme = .darkBlue
 		default:
-			Theme.theme = .light
+			break
 		}
 	}
 

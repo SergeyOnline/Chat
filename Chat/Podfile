@@ -1,0 +1,12 @@
+platform :ios, '12.0'
+
+inhibit_all_warnings!
+
+target 'Chat' do
+  use_frameworks!
+	
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+  pod 'SwiftLint'
+
+end

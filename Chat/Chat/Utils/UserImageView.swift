@@ -57,7 +57,7 @@ extension UserImageView {
 		case offline
 	}
 	
-	func changeUserStatusTo(_ status : Status) {
+	func changeUserStatusTo(_ status: Status) {
 		switch status {
 		case .online:
 			statusView.isHidden = false
@@ -67,6 +67,6 @@ extension UserImageView {
 	}
 	
 	func setInitials(initials: String) {
-		initialLabel.text = initials
+		initialLabel.text = initials.uppercased()
 	}
 }

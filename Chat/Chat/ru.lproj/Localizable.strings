@@ -6,18 +6,17 @@
   
 */
 
-//MARK: - MainViewController
-
+// MARK: - MainViewController
 "navigationItemTitle" = "Тинькофф Чат";
 
-//MARK:  - ProfileViewController
-
+// MARK:  - ProfileViewController
 "profileLabel" = "Мой Профиль";
 "closeButtonTitle" = "Закрыть";
 "editButtonTitle" = "Редактировать";
 "cancelButtonTitle" = "Отмена";
 "editImageButtonTitle" = "Править";
 "cameraAction" = "Камера";
+"cancelAction" = "Отмена";
 "gallaryAction" = "Галерея";
 "deleteAction" = "Удалить";
 "nameTextFieldPlaceholder" = "Ваше имя";
@@ -26,14 +25,22 @@
 "successAlertTitle" = "Данные сохранены";
 "failureAlertTitle" = "Ошибка";
 "failureAlertMessage" = "Не удалось сохранить данные";
+"saveButtonTitle" = "Сохранить";
 
-//MARK: - ConversationViewController
+// MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Сообщение...";
-"onlineHeaderTitle" = "В сети";
-"offlineHeaderTitle" = "Не в сети";
+"headerTitle" = "Каналы";
+"headerDateTitle" = "Сегодня";
 
-//MARK: = ThemesViewController
+// MARK: - ConversationsListCell
+"noMessages" = "Сообщений пока нет";
+
+// MARK: - ThemesViewController
 "closeButtonTitle" = "Закрыть";
 "theme1ButtonTitle" = "Светлая";
 "theme2ButtonTitle" = "Темная";
 "theme3ButtonTitle" = "Темно-синяя";
+
+// MARK: - TabBarController
+"profile" = "Профиль";
+"channels" = "Каналы";

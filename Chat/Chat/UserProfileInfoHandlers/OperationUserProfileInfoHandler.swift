@@ -9,7 +9,6 @@ import UIKit
 
 final class OperationUserProfileInfoHandler: UserProfileInfoHandlerProtocol {
 	
-	
 	private let queue = OperationQueue()
 	
 	func saveOwnerInfo(owner: Owner, completion: @escaping (Error?) -> Void) {
@@ -65,7 +64,7 @@ final class OperationUserProfileInfoHandler: UserProfileInfoHandlerProtocol {
 	}
 }
 
-fileprivate class AsyncOperation: Operation {
+private class AsyncOperation: Operation {
 	
 	public enum State: String {
 		case ready, executing, finished
@@ -120,7 +119,7 @@ extension AsyncOperation {
 	}
 }
 
-fileprivate func syncSaveOwnerInfo(owner: Owner, completion: @escaping (Error?) -> Void) {
+private func syncSaveOwnerInfo(owner: Owner, completion: @escaping (Error?) -> Void) {
 	do {
 		let fileManager = FileManager.default
 		let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userInfo)
@@ -131,7 +130,7 @@ fileprivate func syncSaveOwnerInfo(owner: Owner, completion: @escaping (Error?) 
 	}
 }
 
-fileprivate func syncLoadOwnerInfo(completion: @escaping (Result<Owner, Error>) -> Void) {
+private func syncLoadOwnerInfo(completion: @escaping (Result<Owner, Error>) -> Void) {
 	do {
 		let fileManager = FileManager.default
 		let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userInfo)
@@ -144,7 +143,7 @@ fileprivate func syncLoadOwnerInfo(completion: @escaping (Result<Owner, Error>) 
 	
 }
 
-fileprivate func syncSaveOwnerImage(image: UIImage?, completion: @escaping (Error?) -> Void) {
+private func syncSaveOwnerImage(image: UIImage?, completion: @escaping (Error?) -> Void) {
 	do {
 		let fileManager = FileManager.default
 		let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userImage)
@@ -160,7 +159,7 @@ fileprivate func syncSaveOwnerImage(image: UIImage?, completion: @escaping (Erro
 	}
 }
 
-fileprivate func syncLoadOwnerImage(completion: @escaping (Result<UIImage?, Error>) -> Void) {
+private func syncLoadOwnerImage(completion: @escaping (Result<UIImage?, Error>) -> Void) {
 	do {
 		let fileManager = FileManager.default
 		let fileUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent(FileKeys.userImage)
@@ -172,7 +171,7 @@ fileprivate func syncLoadOwnerImage(completion: @escaping (Result<UIImage?, Erro
 	}
 }
 
-fileprivate class SaveOwnerInfoOperation: AsyncOperation {
+private class SaveOwnerInfoOperation: AsyncOperation {
 	private let owner: Owner
 	private(set) var error: Error?
 	
@@ -193,7 +192,7 @@ fileprivate class SaveOwnerInfoOperation: AsyncOperation {
 	}
 }
 
-fileprivate class SaveOwnerImageOperation: AsyncOperation {
+private class SaveOwnerImageOperation: AsyncOperation {
 	private let image: UIImage?
 	private(set) var error: Error?
 	
@@ -214,7 +213,7 @@ fileprivate class SaveOwnerImageOperation: AsyncOperation {
 	}
 }
 
-fileprivate class LoadOwnerInfoOperation: AsyncOperation {
+private class LoadOwnerInfoOperation: AsyncOperation {
 	
 	private(set) var result: Result<Owner, Error>?
 	
@@ -230,7 +229,7 @@ fileprivate class LoadOwnerInfoOperation: AsyncOperation {
 	}
 }
 
-fileprivate class LoadOwnerImageOperation: AsyncOperation {
+private class LoadOwnerImageOperation: AsyncOperation {
 	
 	private(set) var result: Result<UIImage?, Error>?
 	

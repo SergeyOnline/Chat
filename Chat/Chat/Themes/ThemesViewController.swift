@@ -25,7 +25,7 @@ class ThemesViewController: UIViewController {
 		return view
 	}()
 	
-	private var theme1Button: UIButton = {
+	private lazy var theme1Button: UIButton = {
 		let button = UIButton(type: .system)
 		button.layer.cornerRadius = Constants.buttonsCornerRadius
 		button.tag = 1
@@ -35,7 +35,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	private var theme2Button: UIButton = {
+	private lazy var theme2Button: UIButton = {
 		let button = UIButton(type: .system)
 		button.layer.cornerRadius = Constants.buttonsCornerRadius
 		button.tag = 2
@@ -45,7 +45,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	private var theme3Button: UIButton = {
+	private lazy var theme3Button: UIButton = {
 		let button = UIButton(type: .system)
 		button.layer.cornerRadius = Constants.buttonsCornerRadius
 		button.tag = 3
@@ -55,7 +55,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	private var closeButton: UIButton = {
+	private lazy var closeButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setTitle(NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), for: .normal)
 		button.addTarget(self, action: #selector(closeButtonAction(_:)), for: .touchUpInside)
@@ -63,7 +63,7 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
-	var completion: (()-> Void) = {}
+	var completion: (() -> Void) = {}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,7 +87,7 @@ class ThemesViewController: UIViewController {
 		
 	}
 	
-	//MARK: - Actions
+	// MARK: - Actions
 	
 	@objc func closeButtonAction(_ sender: UIButton) {
 		dismiss(animated: true, completion: nil)
@@ -97,23 +97,20 @@ class ThemesViewController: UIViewController {
 		switch sender.tag {
 		case 1:
 			Theme.theme = .light
-			saveTheme(themeId: 1)
-//			UserDefaults.standard.set(Themes.light.rawValue, forKey: UserDefaultsKeys.theme)
+			UserDefaults.standard.set(Themes.light.rawValue, forKey: UserDefaultsKeys.theme)
 		case 2:
 			Theme.theme = .dark
-			saveTheme(themeId: 2)
-//			UserDefaults.standard.set(Themes.dark.rawValue, forKey: UserDefaultsKeys.theme)
+			UserDefaults.standard.set(Themes.dark.rawValue, forKey: UserDefaultsKeys.theme)
 		case 3:
 			Theme.theme = .darkBlue
-			saveTheme(themeId: 3)
-//			UserDefaults.standard.set(Themes.darkBlue.rawValue, forKey: UserDefaultsKeys.theme)
+			UserDefaults.standard.set(Themes.darkBlue.rawValue, forKey: UserDefaultsKeys.theme)
 		default: Theme.theme = .light
 		}
 		viewWillAppear(true)
 		completion()
 	}
 	
-	//MARK: - Private functions
+	// MARK: - Private functions
 	private func setup() {
 		
 		headerView.translatesAutoresizingMaskIntoConstraints = false
@@ -166,15 +163,6 @@ class ThemesViewController: UIViewController {
 		theme3Button.centerYAnchor.constraint(equalTo: theme2Button.centerYAnchor, constant: 80).isActive = true
 		theme3Button.widthAnchor.constraint(equalTo: theme2Button.widthAnchor).isActive = true
 		theme3Button.heightAnchor.constraint(equalTo: theme2Button.heightAnchor).isActive = true
-	}
-	
-	private func saveTheme(themeId: Int) {
-		let handler = GCDUserProfileInfoHandler()
-		handler.saveTheme(themeId: themeId) { error in
-			if error != nil {
-				Theme.theme = .light
-			}
-		}
 	}
 	
 }
