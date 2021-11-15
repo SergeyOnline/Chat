@@ -24,6 +24,11 @@ final class TabBarController: UITabBarController {
 		static let navigationItemTitle = "navigationItemTitle"
 		static let profileItenTitle = "profile"
 		static let channelsItemTitle = "channels"
+		static let alertOkActionTitle = "alertOkActionTitle"
+		static let alertCancelActionTitle = "alertCancelActionTitle"
+		static let alertTitle = "alertTitle"
+		static let alertMessage = "alertMessage"
+		static let alertPlaceholder = "alertPlaceholder"
 	}
 	
 	let conversationsListVC = ConversationsListViewController()
@@ -119,27 +124,29 @@ final class TabBarController: UITabBarController {
 		themesVC.completion = {
 			self.conversationsListVC.tableView.reloadData()
 			self.viewWillAppear(false)
-//			self.logThemeChanging()
 		}
 		present(themesVC, animated: true, completion: nil)
 	}
 	
 	@objc func addChannelBarButtonAction(_ sender: UIBarButtonItem) {
 		
-		let alert = UIAlertController(title: "Create new channel", message: "Enter channel name\nThe field cannot be empty!", preferredStyle: .alert)
+		let alert = UIAlertController(title: NSLocalizedString(LocalizeKeys.alertTitle, comment: ""),
+									  message: NSLocalizedString(LocalizeKeys.alertMessage, comment: ""),
+									  preferredStyle: .alert)
 		alert.setThemeOptions(viewBackground: TableViewCellAppearance.backgroundColor.uiColor(),
 							   titleColor: NavigationBarAppearance.elementsColor.uiColor(),
 							   buttonsBackground: NavigationBarAppearance.backgroundColor.uiColor(),
 							   tintColor: NavigationBarAppearance.elementsColor.uiColor())
 		alert.addTextField { textField in
-			textField.attributedPlaceholder = NSAttributedString(string: "name", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+			textField.attributedPlaceholder = NSAttributedString(string: NSLocalizedString(LocalizeKeys.alertPlaceholder, comment: ""),
+																 attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
 			textField.superview?.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 			textField.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
 			textField.textColor = NavigationBarAppearance.elementsColor.uiColor()
 			textField.addTarget(self, action: #selector(self.textFieldEditing(_:)), for: .editingChanged)
 		}
 		
-		let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
+		let okAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.alertOkActionTitle, comment: ""), style: .default) { _ in
 			if self.alertTextMessage.isEmpty {
 				self.addChannelBarButtonAction(self.addChannelBarButtonItem)
 			} else {
@@ -148,7 +155,7 @@ final class TabBarController: UITabBarController {
 			}
 		}
 		
-		let cancellAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+		let cancellAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.alertCancelActionTitle, comment: ""), style: .cancel, handler: nil)
 		
 		alert.addAction(okAction)
 		alert.addAction(cancellAction)

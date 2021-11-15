@@ -44,3 +44,8 @@
 // MARK: - TabBarController
 "profile" = "Профиль";
 "channels" = "Каналы";
+"alertOkActionTitle" = "Ок";
+"alertCancelActionTitle" = "Отмена";
+"alertTitle" = "Новый канал";
+"alertMessage" = "Введите название\nПоле не должно быть пустым!";
+"alertPlaceholder" = "Название";

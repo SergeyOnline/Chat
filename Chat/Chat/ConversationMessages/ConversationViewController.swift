@@ -77,6 +77,7 @@ final class ConversationViewController: UIViewController {
 	private var isKeyboardHidden = true
 	private var tailsArray: [Bool] = []
 	private var isPlaceholderShown = true
+	private let dataManager = DataManager.shared
 	
 	private lazy var tapGesture: UITapGestureRecognizer = {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(tapGestureAction(_:)))
@@ -109,6 +110,9 @@ final class ConversationViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setup()
+		if let id = channel?.identifier {
+			dataManager.logMessagesContent(forChannelId: id)
+		}
 	}
 	
 	// MARK: - Actions
@@ -225,6 +229,9 @@ final class ConversationViewController: UIViewController {
 							self?.tailsArray[i - 1] = false
 						}
 					}
+				}
+				if let id = self?.channel?.identifier {
+					self?.dataManager.saveMessages(messages, forChannelId: id)
 				}
 				self?.tableView.reloadData()
 				self?.scrollTableViewToEnd()
@@ -445,7 +452,6 @@ final class ConversationViewController: UIViewController {
 }
 
 extension ConversationViewController: UITableViewDelegate, UITableViewDataSource {
-	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return messages?.count ?? 0
 	}
@@ -468,7 +474,6 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 		cell.date = stringFromDate(messages?[index].created ?? nil, whithFormat: DateFormat.hourAndMinute)
 		return cell
 	}
-	
 }
 
 extension ConversationViewController: UITextViewDelegate {

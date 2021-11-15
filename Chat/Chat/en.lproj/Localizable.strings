@@ -44,3 +44,8 @@
 // MARK: - TabBarController
 "profile" = "Profile";
 "channels" = "Channels";
+"alertOkActionTitle" = "Ok";
+"alertCancelActionTitle" = "Cancel";
+"alertTitle" = "Create new channel";
+"alertMessage" = "Enter channel name\nThe field cannot be empty!";
+"alertPlaceholder" = "Name";

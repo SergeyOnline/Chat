@@ -25,6 +25,7 @@ final class ConversationsListViewController: UIViewController {
 	
 	private lazy var db = Firestore.firestore()
 	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
+	private let dataManager = DataManager.shared
 	
 	// MARK: - UI
 	var tableView: UITableView = {
@@ -46,6 +47,9 @@ final class ConversationsListViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setup()
+		// MARK: - Change the initializer, if you need to display the entire contents of the database
+//		dataManager.logChannelsContent(needPrintMessages: true)
+		dataManager.logChannelsContent()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -104,24 +108,19 @@ final class ConversationsListViewController: UIViewController {
 						return lastCh1Date > lastCh2Date
 					}
 				})
+				guard let channels = self?.channels else { return }
+				self?.dataManager.saveChannels(channels)
 			}
 		}
 	}
 	
-	// MARK: - Private functions
-	private func logThemeChanging() {
-		print(Theme.theme)
-	}
-	
 	// MARK: - setup Table View and Constraints
-	
 	private func setupTableView() {
 		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.rowHeight = Constants.tableViewRowHeight
 		tableView.translatesAutoresizingMaskIntoConstraints = false
-//		tableView.rowHeight = UITableView.automaticDimension
 		tableView.estimatedRowHeight = 80
 	}
 	

@@ -56,6 +56,14 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "DEBUG_LOG_MESSAGES_CONTENT"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "DEBUG_LOG_CHANNELS_CONTENT"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "DEBUG_LOG_APP_LIFE"
             isEnabled = "NO">
          </CommandLineArgument>
