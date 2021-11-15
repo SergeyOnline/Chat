@@ -57,6 +57,12 @@ final class ConversationsListViewController: UIViewController {
 			return users
 		}
 	}
+	
+	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
+		//MARK: - GCD or Operation handler
+		return OperationUserProfileInfoHandler()
+//		return GCDUserProfileInfoHandler()
+	}()
 
 	override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,18 +76,39 @@ final class ConversationsListViewController: UIViewController {
 		navigationController?.navigationBar.tintColor = NavigationBarAppearance.elementsColor.uiColor()
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
-		
+		tableView.reloadData()
 	}
 
 	//MARK: - Actions
 	@objc func profileBarButtonAction(_ sender: UIBarButtonItem) {
 		let profileViewController = ProfileViewController()
 		profileViewController.completion = {
-			if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-				self.userImageView.image = UIImage(data: imageData)
-			} else {
-				self.userImageView.image = nil
+	
+			self.userProfileHandler.loadOwnerInfo { result in
+				switch result {
+				case .success(let owner):
+					self.userImageView.setInitials(initials: owner.initials)
+				case .failure:
+					break
+//					print("Error: load info error")
+				}
 			}
+			
+			self.userProfileHandler.loadOwnerImage { result in
+				switch result {
+				case .success(let image):
+					self.userImageView.image = image
+				case .failure:
+					self.userImageView.image = nil
+				}
+			}
+			
+			//TODO: - User defaults
+//			if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+//				self.userImageView.image = UIImage(data: imageData)
+//			} else {
+//				self.userImageView.image = nil
+//			}
 		}
 		present(profileViewController, animated: true, completion: nil)
 	}
@@ -92,7 +119,7 @@ final class ConversationsListViewController: UIViewController {
 		themesVC.completion = {
 			self.tableView.reloadData()
 			self.viewWillAppear(false)
-			self.logThemeChanging()
+//			self.logThemeChanging()
 		}
 		present(themesVC, animated: true, completion: nil)
 	}
@@ -104,9 +131,28 @@ final class ConversationsListViewController: UIViewController {
 		navigationItem.backButtonTitle = ""
 		
 		userImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
-		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
-			userImageView.image = UIImage(data: imageData)
+		userProfileHandler.loadOwnerImage { result in
+			switch result {
+			case .success(let image):
+				self.userImageView.image = image
+			case .failure:
+				self.userImageView.image = nil
+			}
 		}
+		
+		userProfileHandler.loadOwnerInfo { [weak self] in
+			switch $0 {
+			case .success(let owner):
+				self?.userImageView.setInitials(initials: owner.initials)
+			case .failure:
+				self?.userImageView.setInitials(initials: Owner().initials)
+			}
+		}
+		
+		//TODO: - User defaults
+//		if let imageData = UserDefaults.standard.data(forKey: UserDefaultsKeys.userImage) {
+//			userImageView.image = UIImage(data: imageData)
+//		}
 		
 		let profileBarButtonItem = UIBarButtonItem(customView: userImageView)
 		profileBarButtonItem.customView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileBarButtonAction(_:))))

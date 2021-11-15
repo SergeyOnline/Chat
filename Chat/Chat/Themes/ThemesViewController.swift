@@ -97,13 +97,16 @@ class ThemesViewController: UIViewController {
 		switch sender.tag {
 		case 1:
 			Theme.theme = .light
-			UserDefaults.standard.set(1, forKey: UserDefaultsKeys.theme)
+			saveTheme(themeId: 1)
+//			UserDefaults.standard.set(Themes.light.rawValue, forKey: UserDefaultsKeys.theme)
 		case 2:
 			Theme.theme = .dark
-			UserDefaults.standard.set(2, forKey: UserDefaultsKeys.theme)
+			saveTheme(themeId: 2)
+//			UserDefaults.standard.set(Themes.dark.rawValue, forKey: UserDefaultsKeys.theme)
 		case 3:
 			Theme.theme = .darkBlue
-			UserDefaults.standard.set(3, forKey: UserDefaultsKeys.theme)
+			saveTheme(themeId: 3)
+//			UserDefaults.standard.set(Themes.darkBlue.rawValue, forKey: UserDefaultsKeys.theme)
 		default: Theme.theme = .light
 		}
 		viewWillAppear(true)
@@ -163,6 +166,15 @@ class ThemesViewController: UIViewController {
 		theme3Button.centerYAnchor.constraint(equalTo: theme2Button.centerYAnchor, constant: 80).isActive = true
 		theme3Button.widthAnchor.constraint(equalTo: theme2Button.widthAnchor).isActive = true
 		theme3Button.heightAnchor.constraint(equalTo: theme2Button.heightAnchor).isActive = true
+	}
+	
+	private func saveTheme(themeId: Int) {
+		let handler = GCDUserProfileInfoHandler()
+		handler.saveTheme(themeId: themeId) { error in
+			if error != nil {
+				Theme.theme = .light
+			}
+		}
 	}
 	
 }

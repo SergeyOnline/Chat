@@ -14,11 +14,18 @@
 
 "profileLabel" = "My Profile";
 "closeButtonTitle" = "Close";
-"saveButtonTitle" = "Save";
 "editButtonTitle" = "Edit";
+"cancelButtonTitle" = "Cancel";
+"editImageButtonTitle" = "Edit";
 "cameraAction" = "Camera";
 "gallaryAction" = "Gallery";
 "deleteAction" = "Delete";
+"nameTextFieldPlaceholder" = "Your name";
+"alertOkActionTitle" = "Ok";
+"alertRepeatSaveAction" = "Repeat";
+"successAlertTitle" = "Data saved";
+"failureAlertTitle" = "Error";
+"failureAlertMessage" = "Failed to save data";
 
 //MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Message...";
