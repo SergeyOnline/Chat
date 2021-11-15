@@ -72,33 +72,6 @@ final class ConversationsListViewController: UIViewController {
 																	NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
 //		fetchResultController.delegate = self
-//		referenceChannel.getDocuments { [weak self] querySnapshot, error in
-//			if let error = error {
-//				print("Error getting documents: \(error)")
-//				return
-//			}
-//			guard let snapshot = querySnapshot else {
-//				print("Error fetching snapshots: \(error!)")
-//				return
-//			}
-//			snapshot.documentChanges.forEach { channel in
-//				if !channel.document.metadata.isFromCache {
-//					if channel.type == .added {
-//						self?.dataManager.saveChannel(channel)
-//					}
-//					if channel.type == .modified {
-//						self?.dataManager.saveChannel(channel)
-//					}
-//					if channel.type == .removed {
-//						self?.dataManager.removeChannel(channel)
-//					}
-//				}
-//			}
-//		}
-	}
-	
-	override func viewDidDisappear(_ animated: Bool) {
-		super.viewDidDisappear(animated)
 	}
 	
 	// MARK: - Private functions
@@ -126,7 +99,6 @@ final class ConversationsListViewController: UIViewController {
 				return
 			}
 			var channels: [DocumentChange] = []
-			
 			snapshot.documentChanges.forEach { channel in
 				if channel.type == .added {
 					channels.append(channel)
