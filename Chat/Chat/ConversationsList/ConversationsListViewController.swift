@@ -31,13 +31,13 @@ final class ConversationsListViewController: UIViewController {
 	
 	private lazy var fetchResultController: NSFetchedResultsController<DBChannel> = {
 		let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
-		let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
+		let sortDescriptor = NSSortDescriptor(key: Constants.channelKeyLastActivity, ascending: false)
 		request.fetchBatchSize = 20
 		request.sortDescriptors = [sortDescriptor]
 		let controller = NSFetchedResultsController(fetchRequest: request,
 													managedObjectContext: dataManager.persistentContainer.viewContext,
 													sectionNameKeyPath: nil,
-													cacheName: "channels")
+													cacheName: Constants.channelsDBCollection)
 		controller.delegate = self
 		do {
 			try controller.performFetch()
