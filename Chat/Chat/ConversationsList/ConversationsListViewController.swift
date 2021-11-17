@@ -25,11 +25,11 @@ final class ConversationsListViewController: UIViewController {
 	}
 	
 	private lazy var db = Firestore.firestore()
+	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
 	private let dataManager = DataManager.shared
 	private var listener: ListenerRegistration?
 	
-	lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
-	lazy var fetchedResultsController: NSFetchedResultsController<DBChannel> = {
+	private lazy var fetchResultController: NSFetchedResultsController<DBChannel> = {
 		let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
 		let sortDescriptor = NSSortDescriptor(key: Constants.channelKeyLastActivity, ascending: false)
 		request.fetchBatchSize = 20
@@ -38,7 +38,7 @@ final class ConversationsListViewController: UIViewController {
 													managedObjectContext: dataManager.persistentContainer.viewContext,
 													sectionNameKeyPath: nil,
 													cacheName: Constants.channelsDBCollection)
-		controller.delegate = frcDelegate
+		controller.delegate = self
 		do {
 			try controller.performFetch()
 		} catch {
@@ -46,10 +46,6 @@ final class ConversationsListViewController: UIViewController {
 		}
 		return controller
 	}()
-	
-	private lazy var frcDelegate = FRCDelegate(conversationsListViewController: self)
-	private lazy var tableViewDataSource = TableViewDataSource(conversationsListViewController: self)
-	private lazy var tableViewDelegate = TableViewDelegate(conversationsListViewController: self)
 	
 	// MARK: - UI
 	var tableView = UITableView(frame: CGRect.zero, style: .grouped)
@@ -75,12 +71,13 @@ final class ConversationsListViewController: UIViewController {
 																							NSAttributedString.Key.foregroundColor.rawValue):
 																	NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
+//		fetchResultController.delegate = self
 	}
 	
 	// MARK: - Private functions
 	
 	private func setup() {
-		setListener()
+		getChannels()
 		// Updating the table is only needed to show online status
 		// Comment out to match the assignment do not use the tableView.reloadData() method
 		Timer.scheduledTimer(withTimeInterval: 540, repeats: true) { _ in
@@ -91,7 +88,7 @@ final class ConversationsListViewController: UIViewController {
 		setupTableViewConstraints()
 	}
 	
-	func setListener() {
+	func getChannels() {
 		listener = referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
 			if let error = error {
 				print("Error getting documents: \(error)")
@@ -120,8 +117,8 @@ final class ConversationsListViewController: UIViewController {
 	// MARK: - setup Table View and Constraints
 	private func setupTableView() {
 		tableView.register(ConversationsListCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
-		tableView.dataSource = tableViewDataSource
-		tableView.delegate = tableViewDelegate
+		tableView.delegate = self
+		tableView.dataSource = self
 		tableView.rowHeight = Constants.tableViewRowHeight
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		tableView.estimatedRowHeight = 80
@@ -137,4 +134,120 @@ final class ConversationsListViewController: UIViewController {
 	deinit {
 		listener?.remove()
 	}
+}
+
+extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
+	
+	// MARK: - Table view delegate, data source
+	func numberOfSections(in tableView: UITableView) -> Int {
+		return fetchResultController.sections?.count ?? 0
+	}
+	
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		guard let sections = self.fetchResultController.sections else {
+			fatalError("No sections in fetchedResultsController")
+		}
+		let sectionInfo = sections[section]
+		return sectionInfo.numberOfObjects
+	}
+	
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as? ConversationsListCell else {
+			return UITableViewCell()
+		}
+		configureCell(cell, atIndexPath: indexPath)
+		// TODO: - use unread message
+//		cell.hasUnreadMessages = false
+		return cell
+	}
+	
+	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		return NSLocalizedString(LocalizeKeys.headerTitle, comment: "")
+	}
+	
+	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+		return UITableView.automaticDimension
+	}
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		var conversationVC: ConversationViewController
+		let channel = fetchResultController.object(at: indexPath)
+//		fetchResultController.delegate = nil
+		conversationVC = ConversationViewController(channel: channel)
+		self.navigationController?.pushViewController(conversationVC, animated: true)
+	}
+	
+	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		guard let header = view as? UITableViewHeaderFooterView else { return }
+		header.textLabel?.textColor = TableViewAppearance.headerTitleColor.uiColor()
+	}
+	
+	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return true
+	}
+	
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		if editingStyle == .delete {
+			let channel = fetchResultController.object(at: indexPath)
+			if let id = channel.identifier {
+				referenceChannel.document(id).delete { err in
+					if let err = err {
+						print("Error removing document: \(err)")
+					} else {
+						print("Document successfully removed!")
+					}
+				}
+			}
+		}
+	}
+	
+	private func configureCell(_ cell: ConversationsListCell, atIndexPath indexPath: IndexPath) {
+		let channel = fetchResultController.object(at: indexPath)
+		cell.name = channel.name
+		cell.message = channel.lastMessage
+		cell.date = channel.lastActivity
+		if let timeInterval = channel.lastActivity?.timeIntervalSince(Date()) {
+			cell.online = -timeInterval <= 600
+		} else {
+			cell.online = false
+		}
+	}
+}
+
+extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		tableView.beginUpdates()
+	}
+	
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		tableView.endUpdates()
+	}
+	
+	func controller(
+		_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+		didChange anObject: Any,
+		at indexPath: IndexPath?, for type: NSFetchedResultsChangeType,
+		newIndexPath: IndexPath?
+	) {
+		switch type {
+		case .insert:
+			guard let newIndexPath = newIndexPath else { return	}
+			tableView.insertRows(at: [newIndexPath], with: .fade)
+		case .delete:
+			guard let indexPath = indexPath else { return	}
+			tableView.deleteRows(at: [indexPath], with: .fade)
+		case .update:
+			guard let indexPath = indexPath else { return }
+//			guard let cell = tableView.cellForRow(at: indexPath) as? ConversationsListCell else { return }
+//			configureCell(cell, atIndexPath: indexPath)
+			tableView.reloadRows(at: [indexPath], with: .automatic)
+		case .move:
+			guard let indexPath = indexPath else { return }
+			guard let newIndexPath = newIndexPath else { return	}
+			tableView.deleteRows(at: [indexPath], with: .fade)
+			tableView.insertRows(at: [newIndexPath], with: .fade)
+		default: break
+		}
+	}
+	
 }
