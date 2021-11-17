@@ -42,6 +42,9 @@
 		878BFE1A27243C6000DCC092 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878BFE1927243C6000DCC092 /* TabBarController.swift */; };
 		87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */; };
 		87BB05E327313FE800017179 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BB05E227313FE800017179 /* DataManager.swift */; };
+		87C416D42744F1A0000FA1E7 /* FRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C416D32744F1A0000FA1E7 /* FRCDelegate.swift */; };
+		87C416D62744F6FF000FA1E7 /* TableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C416D52744F6FF000FA1E7 /* TableViewDataSource.swift */; };
+		87C416D82744FA37000FA1E7 /* TableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C416D72744FA37000FA1E7 /* TableViewDelegate.swift */; };
 		87E6AAA5272D4D6A00A2DAFD /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 87E6AAA3272D4D6A00A2DAFD /* Chat.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +87,9 @@
 		878BFE1927243C6000DCC092 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
 		87BB05E227313FE800017179 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		87C416D32744F1A0000FA1E7 /* FRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FRCDelegate.swift; sourceTree = "<group>"; };
+		87C416D52744F6FF000FA1E7 /* TableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewDataSource.swift; sourceTree = "<group>"; };
+		87C416D72744FA37000FA1E7 /* TableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewDelegate.swift; sourceTree = "<group>"; };
 		87E6AAA4272D4D6A00A2DAFD /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
 		9DD2E2A840343F2A30F4AA76 /* Pods-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.debug.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.debug.xcconfig"; sourceTree = "<group>"; };
 		D3A6243B839F498151EF9319 /* Pods-Chat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.release.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.release.xcconfig"; sourceTree = "<group>"; };
@@ -195,6 +201,9 @@
 			children = (
 				876BAC1526FF39D600D5BF31 /* ConversationsListViewController.swift */,
 				8774D3382709B32B007D359C /* ConversationListCell.swift */,
+				87C416D32744F1A0000FA1E7 /* FRCDelegate.swift */,
+				87C416D52744F6FF000FA1E7 /* TableViewDataSource.swift */,
+				87C416D72744FA37000FA1E7 /* TableViewDelegate.swift */,
 			);
 			path = ConversationsList;
 			sourceTree = "<group>";
@@ -395,7 +404,9 @@
 				876BABFE26FF38E800D5BF31 /* ViewController.swift in Sources */,
 				876BAC1326FF39C300D5BF31 /* ProfileLabel.swift in Sources */,
 				878182BE271C6E89008077DF /* GCDUserProfileInfoHandler.swift in Sources */,
+				87C416D42744F1A0000FA1E7 /* FRCDelegate.swift in Sources */,
 				87750AB6271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift in Sources */,
+				87C416D82744FA37000FA1E7 /* TableViewDelegate.swift in Sources */,
 				876BAC1A26FF39E000D5BF31 /* Owner.swift in Sources */,
 				87750AB2271DA95C00B84A9C /* OperationUserProfileInfoHandler.swift in Sources */,
 				87BB05E327313FE800017179 /* DataManager.swift in Sources */,
@@ -409,6 +420,7 @@
 				8775C7F42724C40200AA8480 /* ChannelMessage.swift in Sources */,
 				876BABFA26FF38E800D5BF31 /* AppDelegate.swift in Sources */,
 				8774D3392709B32B007D359C /* ConversationListCell.swift in Sources */,
+				87C416D62744F6FF000FA1E7 /* TableViewDataSource.swift in Sources */,
 				8774D33D2709CB6A007D359C /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
