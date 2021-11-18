@@ -11,7 +11,7 @@ import CoreData
 
 final class ConversationsListViewController: UIViewController {
 	
-	private enum Constants {
+	internal enum Constants {
 		static let cellReuseIdentifier = "ConversationsListCell"
 		static let tableViewRowHeight = 80.0
 		static let channelsDBCollection = "channels"
@@ -20,16 +20,16 @@ final class ConversationsListViewController: UIViewController {
 		static let channelKeyLastActivity = "lastActivity"
 	}
 	
-	private enum LocalizeKeys {
+	internal enum LocalizeKeys {
 		static let headerTitle = "headerTitle"
 	}
 	
 	private lazy var db = Firestore.firestore()
-	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
+	internal lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
 	private let dataManager = DataManager.shared
 	private var listener: ListenerRegistration?
 	
-	private lazy var fetchResultController: NSFetchedResultsController<DBChannel> = {
+	internal lazy var fetchResultController: NSFetchedResultsController<DBChannel> = {
 		let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
 		let sortDescriptor = NSSortDescriptor(key: Constants.channelKeyLastActivity, ascending: false)
 		request.fetchBatchSize = 20
@@ -76,7 +76,7 @@ final class ConversationsListViewController: UIViewController {
 	// MARK: - Private functions
 	
 	private func setup() {
-		getChannels()
+		setChannelsListener()
 		// Updating the table is only needed to show online status
 		// Comment out to match the assignment do not use the tableView.reloadData() method
 		Timer.scheduledTimer(withTimeInterval: 540, repeats: true) { _ in
@@ -87,7 +87,7 @@ final class ConversationsListViewController: UIViewController {
 		setupTableViewConstraints()
 	}
 	
-	func getChannels() {
+	func setChannelsListener() {
 		listener = referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
 			if let error = error {
 				print("Error getting documents: \(error)")
@@ -132,82 +132,5 @@ final class ConversationsListViewController: UIViewController {
 	
 	deinit {
 		listener?.remove()
-	}
-}
-
-extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
-	
-	// MARK: - Table view delegate, data source
-	func numberOfSections(in tableView: UITableView) -> Int {
-		return fetchResultController.sections?.count ?? 0
-	}
-	
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		guard let sections = self.fetchResultController.sections else {
-			fatalError("No sections in fetchedResultsController")
-		}
-		let sectionInfo = sections[section]
-		return sectionInfo.numberOfObjects
-	}
-	
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as? ConversationsListCell else {
-			return UITableViewCell()
-		}
-		configureCell(cell, atIndexPath: indexPath)
-		// TODO: - use unread message
-//		cell.hasUnreadMessages = false
-		return cell
-	}
-	
-	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return NSLocalizedString(LocalizeKeys.headerTitle, comment: "")
-	}
-	
-	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-		return UITableView.automaticDimension
-	}
-	
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		var conversationVC: ConversationViewController
-		let channel = fetchResultController.object(at: indexPath)
-		conversationVC = ConversationViewController(channel: channel)
-		self.navigationController?.pushViewController(conversationVC, animated: true)
-	}
-	
-	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-		guard let header = view as? UITableViewHeaderFooterView else { return }
-		header.textLabel?.textColor = TableViewAppearance.headerTitleColor.uiColor()
-	}
-	
-	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return true
-	}
-	
-	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-		if editingStyle == .delete {
-			let channel = fetchResultController.object(at: indexPath)
-			if let id = channel.identifier {
-				referenceChannel.document(id).delete { err in
-					if let err = err {
-						print("Error removing document: \(err)")
-					} else {
-						print("Document successfully removed!")
-					}
-				}
-			}
-		}
-	}
-	
-	private func configureCell(_ cell: ConversationsListCell, atIndexPath indexPath: IndexPath) {
-		let channel = fetchResultController.object(at: indexPath)
-		cell.name = channel.name
-		cell.message = channel.lastMessage
-		cell.date = channel.lastActivity
-		if let timeInterval = channel.lastActivity?.timeIntervalSince(Date()) {
-			cell.online = -timeInterval <= 600
-		} else {
-			cell.online = false
-		}
 	}
 }
