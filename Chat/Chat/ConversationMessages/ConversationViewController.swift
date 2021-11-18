@@ -74,7 +74,7 @@ final class ConversationViewController: UIViewController {
 	private var isKeyboardHidden = true
 	internal var tailsArray: [Bool] = []
 	private var isPlaceholderShown = true
-	private let dataManager = DataManager.shared
+	private let dataManager: DataManagerProtocol = DataManager.shared
 	
 	// MARK: - UI
 	var tableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -110,9 +110,6 @@ final class ConversationViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setup()
-		if let id = channel?.identifier {
-			dataManager.logMessagesContent(forChannelId: id)
-		}
 	}
 	
 	// MARK: - Actions
@@ -210,7 +207,7 @@ final class ConversationViewController: UIViewController {
 				// MARK: - remove message if needed
 				// if message.type == .removed {}
 			}
-			self?.dataManager.saveMessages(messages, forChannelId: id, completion: {
+			self?.dataManager.messagesService.saveMessages(messages, forChannelId: id, completion: {
 				DispatchQueue.main.async {
 					self?.scrollTableViewToEnd()
 				}
@@ -374,7 +371,7 @@ final class ConversationViewController: UIViewController {
 	
 	func scrollTableViewToEnd() {
 		guard let id = channel?.identifier else { return }
-		let count = dataManager.messagesCount(forChannel: id)
+		let count = dataManager.messagesService.messagesCount(forChannel: id)
 		let cellNumber = count - 1
 		let indexPath = IndexPath(row: cellNumber, section: 0)
 		DispatchQueue.main.async {

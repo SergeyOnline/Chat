@@ -26,7 +26,7 @@ final class ConversationsListViewController: UIViewController {
 	
 	private lazy var db = Firestore.firestore()
 	internal lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
-	private let dataManager = DataManager.shared
+	private let dataManager: DataManagerProtocol = DataManager.shared
 	private var listener: ListenerRegistration?
 	
 	internal lazy var fetchResultController: NSFetchedResultsController<DBChannel> = {
@@ -57,9 +57,6 @@ final class ConversationsListViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setup()
-		// MARK: - Change the initializer, if you need to display the entire contents of the database
-//		dataManager.logChannelsContent(needPrintMessages: true)
-		dataManager.logChannelsContent()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -106,10 +103,10 @@ final class ConversationsListViewController: UIViewController {
 					channels.append(channel)
 				}
 				if channel.type == .removed {
-					self?.dataManager.removeChannel(channel)
+					self?.dataManager.channelsService.removeChannel(channel)
 				}
 			}
-			self?.dataManager.saveChannels(channels)
+			self?.dataManager.channelsService.saveChannels(channels)
 		}
 	}
 	

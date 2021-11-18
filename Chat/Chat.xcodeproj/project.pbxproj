@@ -38,6 +38,8 @@
 		8781CC16271324BE00566A90 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC15271324BE00566A90 /* Themes.swift */; };
 		8783FD03270BCB8400C21A66 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8783FD02270BCB8400C21A66 /* Message.swift */; };
 		8788591F273ADF4300D099FB /* ConversationViewController+FRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8788591E273ADF4300D099FB /* ConversationViewController+FRCDelegate.swift */; };
+		878A59792746D423006F9158 /* ChannelsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A59782746D423006F9158 /* ChannelsService.swift */; };
+		878A597B2746DA51006F9158 /* MessagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A597A2746DA51006F9158 /* MessagesService.swift */; };
 		878BFE1827241CD900DCC092 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 878BFE1727241CD900DCC092 /* GoogleService-Info.plist */; };
 		878BFE1A27243C6000DCC092 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878BFE1927243C6000DCC092 /* TabBarController.swift */; };
 		87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */; };
@@ -84,6 +86,8 @@
 		8781CC15271324BE00566A90 /* Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
 		8783FD02270BCB8400C21A66 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		8788591E273ADF4300D099FB /* ConversationViewController+FRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConversationViewController+FRCDelegate.swift"; sourceTree = "<group>"; };
+		878A59782746D423006F9158 /* ChannelsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsService.swift; sourceTree = "<group>"; };
+		878A597A2746DA51006F9158 /* MessagesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesService.swift; sourceTree = "<group>"; };
 		878BFE1727241CD900DCC092 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Chat/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		878BFE1927243C6000DCC092 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
@@ -160,6 +164,7 @@
 				87750AB7271E1AA100B84A9C /* Utils */,
 				87750AB8271E1AD400B84A9C /* KeyConstants */,
 				876BABF926FF38E800D5BF31 /* AppDelegate.swift */,
+				878A59772746D3E8006F9158 /* DataManager */,
 				878BFE1927243C6000DCC092 /* TabBarController.swift */,
 				876BAC2F26FF460F00D5BF31 /* Assets.xcassets */,
 				876BABFD26FF38E800D5BF31 /* ViewController.swift */,
@@ -170,7 +175,6 @@
 				876BAC2526FF3D7C00D5BF31 /* InfoPlist.strings */,
 				876BAC1F26FF3A1B00D5BF31 /* Localizable.strings */,
 				87E6AAA3272D4D6A00A2DAFD /* Chat.xcdatamodeld */,
-				87BB05E227313FE800017179 /* DataManager.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -246,6 +250,16 @@
 				87750AB5271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift */,
 			);
 			path = UserProfileInfoHandlers;
+			sourceTree = "<group>";
+		};
+		878A59772746D3E8006F9158 /* DataManager */ = {
+			isa = PBXGroup;
+			children = (
+				87BB05E227313FE800017179 /* DataManager.swift */,
+				878A59782746D423006F9158 /* ChannelsService.swift */,
+				878A597A2746DA51006F9158 /* MessagesService.swift */,
+			);
+			path = DataManager;
 			sourceTree = "<group>";
 		};
 		DBA35397F4CF6F5D31AACCEC /* Frameworks */ = {
@@ -393,6 +407,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				878A597B2746DA51006F9158 /* MessagesService.swift in Sources */,
 				8781CC16271324BE00566A90 /* Themes.swift in Sources */,
 				8775C7F22724C3A200AA8480 /* Channel.swift in Sources */,
 				87BE211627466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift in Sources */,
@@ -406,6 +421,7 @@
 				876BAC1126FF39C300D5BF31 /* ProfileButton.swift in Sources */,
 				87750AB4271E014900B84A9C /* FileKeys.swift in Sources */,
 				87E6AAA5272D4D6A00A2DAFD /* Chat.xcdatamodeld in Sources */,
+				878A59792746D423006F9158 /* ChannelsService.swift in Sources */,
 				8774D33F270A024D007D359C /* TestData.swift in Sources */,
 				876BABFE26FF38E800D5BF31 /* ViewController.swift in Sources */,
 				876BAC1326FF39C300D5BF31 /* ProfileLabel.swift in Sources */,
