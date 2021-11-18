@@ -71,7 +71,6 @@ final class ConversationsListViewController: UIViewController {
 																							NSAttributedString.Key.foregroundColor.rawValue):
 																	NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
-//		fetchResultController.delegate = self
 	}
 	
 	// MARK: - Private functions
@@ -172,7 +171,6 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		var conversationVC: ConversationViewController
 		let channel = fetchResultController.object(at: indexPath)
-//		fetchResultController.delegate = nil
 		conversationVC = ConversationViewController(channel: channel)
 		self.navigationController?.pushViewController(conversationVC, animated: true)
 	}
@@ -212,42 +210,4 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 			cell.online = false
 		}
 	}
-}
-
-extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
-	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		tableView.beginUpdates()
-	}
-	
-	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		tableView.endUpdates()
-	}
-	
-	func controller(
-		_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-		didChange anObject: Any,
-		at indexPath: IndexPath?, for type: NSFetchedResultsChangeType,
-		newIndexPath: IndexPath?
-	) {
-		switch type {
-		case .insert:
-			guard let newIndexPath = newIndexPath else { return	}
-			tableView.insertRows(at: [newIndexPath], with: .fade)
-		case .delete:
-			guard let indexPath = indexPath else { return	}
-			tableView.deleteRows(at: [indexPath], with: .fade)
-		case .update:
-			guard let indexPath = indexPath else { return }
-//			guard let cell = tableView.cellForRow(at: indexPath) as? ConversationsListCell else { return }
-//			configureCell(cell, atIndexPath: indexPath)
-			tableView.reloadRows(at: [indexPath], with: .automatic)
-		case .move:
-			guard let indexPath = indexPath else { return }
-			guard let newIndexPath = newIndexPath else { return	}
-			tableView.deleteRows(at: [indexPath], with: .fade)
-			tableView.insertRows(at: [newIndexPath], with: .fade)
-		default: break
-		}
-	}
-	
 }

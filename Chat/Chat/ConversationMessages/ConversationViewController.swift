@@ -210,7 +210,7 @@ final class ConversationViewController: UIViewController {
 				// MARK: - remove message if needed
 				// if message.type == .removed {}
 			}
-			self?.dataManager.saveMessage(messages, forChannelId: id, completion: {
+			self?.dataManager.saveMessages(messages, forChannelId: id, completion: {
 				DispatchQueue.main.async {
 					self?.scrollTableViewToEnd()
 				}
