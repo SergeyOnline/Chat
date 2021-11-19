@@ -19,6 +19,7 @@
 "cancelAction" = "Отмена";
 "gallaryAction" = "Галерея";
 "deleteAction" = "Удалить";
+"downloadAction" = "Загрузить";
 "nameTextFieldPlaceholder" = "Ваше имя";
 "alertOkActionTitle" = "Ок";
 "alertRepeatSaveAction" = "Повторить";
@@ -26,6 +27,9 @@
 "failureAlertTitle" = "Ошибка";
 "failureAlertMessage" = "Не удалось сохранить данные";
 "saveButtonTitle" = "Сохранить";
+
+// MARK: - AvatarViewController
+"cancelButtonTitle" = "Отмена";
 
 // MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Сообщение...";

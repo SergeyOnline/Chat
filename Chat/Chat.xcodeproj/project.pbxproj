@@ -44,6 +44,9 @@
 		878BFE1A27243C6000DCC092 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878BFE1927243C6000DCC092 /* TabBarController.swift */; };
 		87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */; };
 		87BB05E327313FE800017179 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BB05E227313FE800017179 /* DataManager.swift */; };
+		87BBBFF22747B8780067E043 /* AvatarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BBBFF12747B8780067E043 /* AvatarViewController.swift */; };
+		87BBBFF52747C1F10067E043 /* AvatarPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BBBFF42747C1F10067E043 /* AvatarPresenter.swift */; };
+		87BBBFF92747C6D20067E043 /* ModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BBBFF82747C6D20067E043 /* ModuleBuilder.swift */; };
 		87BE21122746642A008FF4A6 /* ConverasationListVewController+FRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BE21112746642A008FF4A6 /* ConverasationListVewController+FRCDelegate.swift */; };
 		87BE211627466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BE211527466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift */; };
 		87BE211827466C0C008FF4A6 /* ConversationsListViewController+TableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BE211727466C0C008FF4A6 /* ConversationsListViewController+TableViewDelegate.swift */; };
@@ -92,6 +95,9 @@
 		878BFE1927243C6000DCC092 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
 		87BB05E227313FE800017179 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		87BBBFF12747B8780067E043 /* AvatarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarViewController.swift; sourceTree = "<group>"; };
+		87BBBFF42747C1F10067E043 /* AvatarPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarPresenter.swift; sourceTree = "<group>"; };
+		87BBBFF82747C6D20067E043 /* ModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleBuilder.swift; sourceTree = "<group>"; };
 		87BE21112746642A008FF4A6 /* ConverasationListVewController+FRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConverasationListVewController+FRCDelegate.swift"; sourceTree = "<group>"; };
 		87BE211527466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConversationViewController+TableViewDataSource.swift"; sourceTree = "<group>"; };
 		87BE211727466C0C008FF4A6 /* ConversationsListViewController+TableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConversationsListViewController+TableViewDelegate.swift"; sourceTree = "<group>"; };
@@ -155,6 +161,8 @@
 		876BABF826FF38E800D5BF31 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				87BBBFF82747C6D20067E043 /* ModuleBuilder.swift */,
+				87BBBFF32747B87F0067E043 /* AvatarModule */,
 				876BAC0D26FF39C300D5BF31 /* Profile */,
 				876BAC1826FF39E000D5BF31 /* Models */,
 				8774D3372709B2EB007D359C /* ConversationsList */,
@@ -260,6 +268,31 @@
 				878A597A2746DA51006F9158 /* MessagesService.swift */,
 			);
 			path = DataManager;
+			sourceTree = "<group>";
+		};
+		87BBBFF32747B87F0067E043 /* AvatarModule */ = {
+			isa = PBXGroup;
+			children = (
+				87BBBFF62747C6660067E043 /* View */,
+				87BBBFF72747C66D0067E043 /* Presenter */,
+			);
+			path = AvatarModule;
+			sourceTree = "<group>";
+		};
+		87BBBFF62747C6660067E043 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				87BBBFF12747B8780067E043 /* AvatarViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		87BBBFF72747C66D0067E043 /* Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				87BBBFF42747C1F10067E043 /* AvatarPresenter.swift */,
+			);
+			path = Presenter;
 			sourceTree = "<group>";
 		};
 		DBA35397F4CF6F5D31AACCEC /* Frameworks */ = {
@@ -430,10 +463,13 @@
 				876BAC1A26FF39E000D5BF31 /* Owner.swift in Sources */,
 				87750AB2271DA95C00B84A9C /* OperationUserProfileInfoHandler.swift in Sources */,
 				87BB05E327313FE800017179 /* DataManager.swift in Sources */,
+				87BBBFF22747B8780067E043 /* AvatarViewController.swift in Sources */,
+				87BBBFF52747C1F10067E043 /* AvatarPresenter.swift in Sources */,
 				87BE21122746642A008FF4A6 /* ConverasationListVewController+FRCDelegate.swift in Sources */,
 				876BAC1626FF39D600D5BF31 /* UserImageView.swift in Sources */,
 				876BAC1226FF39C300D5BF31 /* ProfileViewController.swift in Sources */,
 				8781CC142713191000566A90 /* ThemesViewController.swift in Sources */,
+				87BBBFF92747C6D20067E043 /* ModuleBuilder.swift in Sources */,
 				8788591F273ADF4300D099FB /* ConversationViewController+FRCDelegate.swift in Sources */,
 				8783FD03270BCB8400C21A66 /* Message.swift in Sources */,
 				8768BDF1270C53650078C271 /* MessageCell.swift in Sources */,

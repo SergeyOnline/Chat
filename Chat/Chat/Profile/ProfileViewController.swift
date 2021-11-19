@@ -13,6 +13,7 @@ final class ProfileViewController: UIViewController {
 		static let gallaryAction = "gallaryAction"
 		static let cancelAction = "cancelAction"
 		static let deleteAction = "deleteAction"
+		static let downloadAction = "downloadAction"
 		static let profileLabel = "profileLabel"
 		static let closeButtonTitle = "closeButtonTitle"
 		static let editButtonTitle = "editButtonTitle"
@@ -148,9 +149,14 @@ final class ProfileViewController: UIViewController {
 				}
 			}
 		}
+		let downloadAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.downloadAction, comment: ""), style: .default) { _ in
+			let avatarVC = ModuleAssembly.createAvatarModule()
+			self.present(avatarVC, animated: true, completion: nil)
+		}
 		picker.delegate = self
 		alert.addAction(cameraAction)
 		alert.addAction(gallaryAction)
+		alert.addAction(downloadAction)
 		alert.addAction(deleteAction)
 		alert.setThemeOptions(viewBackground: TableViewCellAppearance.backgroundColor.uiColor(),
 							   titleColor: NavigationBarAppearance.elementsColor.uiColor(),
