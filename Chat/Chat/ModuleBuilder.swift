@@ -14,10 +14,10 @@ protocol Assembly {
 
 class ModuleAssembly: Assembly {
 	static func createAvatarModule() -> UIViewController {
-		let view = AvatarViewController()
-		let presenter = AvatarPresenter(view: view)
+		let view = ImagePickerViewController()
+		let networkService = NetworkService()
+		let presenter = ImagePickerPresenter(view: view, networkService: networkService)
 		view.presenter = presenter
 		return view
 	}
 }
-
