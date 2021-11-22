@@ -205,7 +205,6 @@ final class ConversationViewController: UIViewController {
 			guard let id = self?.channel?.identifier else { return }
 			var messages: [DocumentChange] = []
 			snapshot.documentChanges.forEach { message in
-				print(message.document.data())
 				if message.type == .added {
 					messages.append(message)
 				}
