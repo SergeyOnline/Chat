@@ -19,7 +19,7 @@ protocol ImagePickerPresenterProtocol: AnyObject {
 	func didSelectCell(_ cell: UICollectionViewCell)
 	func setImageForCellImageView(_ imageView: UIImageView, forIndexPath indexPath: IndexPath)
 	var imagesList: [ImageInfo] { get }
-	var completion: ((UIImage) -> Void) { get set }
+	var completion: ((UIImage, String) -> Void) { get set }
 	
 }
 
@@ -28,7 +28,7 @@ class ImagePickerPresenter: ImagePickerPresenterProtocol {
 	let view: ImagePickerViewProtocol
 	var imagesList: [ImageInfo] = []
 	let networkService: NetworkServiceProtocol
-	var completion: ((UIImage) -> Void) = {_ in }
+	var completion: ((UIImage, String) -> Void) = {_, _ in }
 	
 	required init(view: ImagePickerViewProtocol, networkService: NetworkServiceProtocol) {
 		self.view = view
@@ -51,7 +51,7 @@ class ImagePickerPresenter: ImagePickerPresenterProtocol {
 						self.view.loadImagesListSucsess()
 					}
 				case .failure(let error):
-					print(error)
+					print(error.localizedDescription)
 				}
 			}
 		}
@@ -69,7 +69,7 @@ class ImagePickerPresenter: ImagePickerPresenterProtocol {
 					imageView.image = image
 				}
 			case .failure(let error):
-				print(error)
+				print(error.localizedDescription)
 				return
 			}
 		}
@@ -77,7 +77,7 @@ class ImagePickerPresenter: ImagePickerPresenterProtocol {
 	
 	func didSelectCell(_ cell: UICollectionViewCell) {
 		if let imageView = cell.backgroundView as? UIImageView, let image = imageView.image {
-			completion(image)
+			completion(image, imagesList[cell.tag].imageURL ?? "")
 			view.cancellButtonTapped()
 		}
 	}

@@ -13,6 +13,8 @@ class ImagePickerViewController: UIViewController {
 		static let cellReuseIdentifier = "AvatarCell"
 		static let cellOffset = 5.0
 		static let buttonFontSize = 30.0
+		static let personImageName = "person"
+		static let placeholderImageName = "placeholderImage"
 	}
 	
 	private enum LocalizeKeys {
@@ -137,10 +139,9 @@ extension ImagePickerViewController: UICollectionViewDataSource {
 //		cell.backgroundView = imageView
 		
 		if #available(iOS 13.0, *) {
-			image = UIImage(systemName: "person")
-
+			image = UIImage(systemName: Constants.personImageName)
 		} else {
-			image = UIImage(named: "placeholderImage")
+			image = UIImage(named: Constants.placeholderImageName)
 		}
 		let backgroundView = UIImageView(frame: cell.bounds)
 		backgroundView.image = image
@@ -148,6 +149,7 @@ extension ImagePickerViewController: UICollectionViewDataSource {
 		presenter?.setImageForCellImageView(backgroundView, forIndexPath: indexPath)
 		cell.backgroundView = backgroundView
 		cell.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
+		cell.tag = indexPath.row
 //		cell.isUserInteractionEnabled = false
 		return cell
 	}

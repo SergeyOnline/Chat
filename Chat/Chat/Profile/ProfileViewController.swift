@@ -150,9 +150,9 @@ final class ProfileViewController: UIViewController {
 			}
 		}
 		let downloadAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.downloadAction, comment: ""), style: .default) { _ in
-			let avatarVC = ModuleAssembly.createAvatarModule()
+			let avatarVC = ModuleAssembly.createImagePickerModule()
 			if let avatarController = avatarVC as? ImagePickerViewController {
-				avatarController.presenter?.completion = { image in
+				avatarController.presenter?.completion = { image, _ in
 					self.imageView.image = image
 					self.imageView.contentMode = UIImageView.ContentMode.scaleAspectFill
 					self.userProfileHandlerGCD.saveOwnerImage(image: image) { _ in

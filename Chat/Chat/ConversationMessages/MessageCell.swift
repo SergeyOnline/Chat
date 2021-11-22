@@ -28,6 +28,20 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			guard let value = newValue else { return }
 			messageLabel.text = value
 			nameLabel.textColor = getColorFromName(nameLabel.text)
+//			guard let url = URL(string: value) else { return }
+//			networkService.getImageFromURL(url) { result in
+//				switch result {
+//				case .success(let image):
+//					DispatchQueue.main.async {
+//						self.messageImageView.isHidden = false
+//						self.messageImageView.image = image
+//						self.messageLabel.isHidden = true
+//					}
+//				case .failure(let error):
+//					print("link is't image")
+//				}
+//				
+//			}
 		}
 	}
 	
@@ -36,6 +50,8 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			dateLabel.text = date
 		}
 	}
+	
+	private let networkService = NetworkService()
 	
 	var messageLabel: UILabel = {
 		let label = UILabel()
@@ -72,6 +88,14 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		return label
 	}()
 	
+//	private lazy var messageImageView: UIImageView = {
+//		let view = UIImageView()
+//		view.contentMode = UIImageView.ContentMode.scaleAspectFit
+//		view.isHidden = true
+////		view.translatesAutoresizingMaskIntoConstraints = false
+//		return view
+//	}()
+	
 	var isTailNeed = false {
 		didSet {
 			setup()
@@ -99,6 +123,8 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	
 	override func prepareForReuse() {
 		super.prepareForReuse()
+//		messageImageView.image = nil
+//		messageImageView.isHidden = true
 		tailImageView.removeFromSuperview()
 		wrapperMessageLabelStack.removeFromSuperview()
 	}
@@ -119,6 +145,11 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		if #available(iOS 14.0, *) {
 			messageAndDateStack.alignment = .bottom
 			messageAndDateStack.addArrangedSubview(messageLabel)
+//			messageAndDateStack.addArrangedSubview(messageImageView)
+//			let size = contentView.bounds.width * 0.75
+//			messageImageView.widthAnchor.constraint(equalToConstant: size).isActive = true
+//			messageImageView.heightAnchor.constraint(equalToConstant: size).isActive = true
+			
 			messageAndDateStack.addArrangedSubview(dateLabel)
 			wrapperMessageLabelStack.addArrangedSubview(messageAndDateStack)
 			wrapperMessageLabelStack.layer.cornerRadius = Constants.vStackCornerRadius

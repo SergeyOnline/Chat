@@ -13,6 +13,20 @@ enum NetworkError: Error {
 	case dataError
 	case badImage
 	case badStatusCode
+	
+	var localizedDescription: String {
+		switch self {
+		case .badURL:
+			return "Иad URL address"
+		case .dataError:
+			return "Error loading data"
+		case .badImage:
+			return "Error loading image"
+		case .badStatusCode:
+			return "Invalid server response status code"
+		}
+	}
+
 }
 
 protocol NetworkServiceProtocol {

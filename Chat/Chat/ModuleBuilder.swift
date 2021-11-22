@@ -9,11 +9,11 @@ import Foundation
 import UIKit
 
 protocol Assembly {
-	static func createAvatarModule() -> UIViewController
+	static func createImagePickerModule() -> UIViewController
 }
 
 class ModuleAssembly: Assembly {
-	static func createAvatarModule() -> UIViewController {
+	static func createImagePickerModule() -> UIViewController {
 		let view = ImagePickerViewController()
 		let networkService = NetworkService()
 		let presenter = ImagePickerPresenter(view: view, networkService: networkService)

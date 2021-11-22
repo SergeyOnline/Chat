@@ -114,8 +114,16 @@ final class ConversationViewController: UIViewController {
 	
 	// MARK: - Actions
 	@objc func addButtonAction(_ sender: UIButton) {
-		// TODO: - Add
-		print("TO DO")
+		let imagePickerVC = ModuleAssembly.createImagePickerModule()
+		if let controller = imagePickerVC as? ImagePickerViewController {
+			controller.presenter?.completion = { _, link in
+				DispatchQueue.main.async {
+					self.messageInputField.becomeFirstResponder()
+					self.messageInputField.text = link
+				}
+			}
+		}
+		present(imagePickerVC, animated: true, completion: nil)
 	}
 	@objc func sendButtonAction(_ sender: UIButton) {
 		if messageInputField.text.isEmpty || isPlaceholderShown { return }
@@ -197,10 +205,9 @@ final class ConversationViewController: UIViewController {
 			guard let id = self?.channel?.identifier else { return }
 			var messages: [DocumentChange] = []
 			snapshot.documentChanges.forEach { message in
+				print(message.document.data())
 				if message.type == .added {
-					if !message.document.metadata.isFromCache {
-						messages.append(message)
-					}
+					messages.append(message)
 				}
 				// MARK: - modify message if needed
 				// if message.type == .modified {}
