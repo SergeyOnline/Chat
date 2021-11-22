@@ -28,7 +28,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			guard let value = newValue else { return }
 			messageLabel.text = value
 			nameLabel.textColor = getColorFromName(nameLabel.text)
-			guard let url = URL(string: value) else { return }
+			guard let url = URL(string: value), UIApplication.shared.canOpenURL(url) else { return }
 			networkService.getImageFromURL(url) { result in
 				switch result {
 				case .success(let image):
@@ -36,12 +36,9 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 						self.messageImageView.isHidden = false
 						self.messageImageView.image = image
 						self.messageLabel.isHidden = true
-						self.messageImageView.updateConstraints()
+//						self.messageImageView.updateConstraints()
 					}
-				case .failure(let error):
-					#if DEBUG
-					print(error)
-					#endif
+				case .failure: return
 				}
 				
 			}
@@ -131,6 +128,8 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		messageLabel.isHidden = false
 		tailImageView.removeFromSuperview()
 		wrapperMessageLabelStack.removeFromSuperview()
+		setNeedsLayout()
+		layoutSubviews()
 	}
 	
 	// MARK: - Private functions
@@ -151,8 +150,8 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			messageAndDateStack.addArrangedSubview(messageLabel)
 			messageAndDateStack.addArrangedSubview(messageImageView)
 			let size = (contentView.bounds.width * 0.75) - 20
-			messageImageView.widthAnchor.constraint(equalToConstant: size).isActive = true
-			messageImageView.heightAnchor.constraint(equalToConstant: size).isActive = true
+			messageImageView.widthAnchor.constraint(lessThanOrEqualToConstant: size).isActive = true
+			messageImageView.heightAnchor.constraint(lessThanOrEqualToConstant: size).isActive = true
 			
 			messageAndDateStack.addArrangedSubview(dateLabel)
 			wrapperMessageLabelStack.addArrangedSubview(messageAndDateStack)
