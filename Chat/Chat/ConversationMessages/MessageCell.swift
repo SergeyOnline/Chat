@@ -28,6 +28,11 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			guard let value = newValue else { return }
 			messageLabel.text = value
 			nameLabel.textColor = getColorFromName(nameLabel.text)
+			let text = value.lowercased()
+			if !(text.hasPrefix("https://") || text.hasPrefix("http://") || text.hasSuffix(".jpg") || text.hasSuffix(".png")) {
+				return
+			}
+			
 			guard let url = URL(string: value), UIApplication.shared.canOpenURL(url) else { return }
 			networkService.getImageFromURL(url) { result in
 				switch result {
@@ -36,7 +41,6 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 						self.messageImageView.isHidden = false
 						self.messageImageView.image = image
 						self.messageLabel.isHidden = true
-//						self.messageImageView.updateConstraints()
 					}
 				case .failure: return
 				}
@@ -128,8 +132,6 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		messageLabel.isHidden = false
 		tailImageView.removeFromSuperview()
 		wrapperMessageLabelStack.removeFromSuperview()
-		setNeedsLayout()
-		layoutSubviews()
 	}
 	
 	// MARK: - Private functions
@@ -162,7 +164,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		}
 		
 		messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: contentView.frame.width * 0.75).isActive = true
-		setupwrapperMessageLabelStack()
+		setupWrapperMessageLabelStack()
 		
 		self.contentView.addSubview(newDayLabel)
 		setupNewDayLabelConstraints()
@@ -177,7 +179,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		}
 	}
 	
-	private func setupwrapperMessageLabelStack() {
+	private func setupWrapperMessageLabelStack() {
 		wrapperMessageLabelStack.translatesAutoresizingMaskIntoConstraints = false
 		wrapperMessageLabelStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
 															  left: Constants.vStackUniversalOffset,

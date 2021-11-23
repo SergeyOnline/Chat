@@ -116,10 +116,10 @@ final class ConversationViewController: UIViewController {
 	@objc func addButtonAction(_ sender: UIButton) {
 		let imagePickerVC = ModuleAssembly.createImagePickerModule()
 		if let controller = imagePickerVC as? ImagePickerViewController {
-			controller.presenter?.completion = { _, link in
+			controller.presenter?.completion = { imageAndLink in
 				DispatchQueue.main.async {
 					self.messageInputField.becomeFirstResponder()
-					self.messageInputField.text = link
+					self.messageInputField.text = imageAndLink.link
 				}
 			}
 		}

@@ -8,6 +8,11 @@
 import Foundation
 import UIKit
 
+internal struct ImageAndLink {
+	let image: UIImage
+	let link: String
+}
+
 protocol ImagePickerViewProtocol: AnyObject {
 	func cancellButtonTapped()
 	func loadImagesListSucsess()
@@ -19,7 +24,7 @@ protocol ImagePickerPresenterProtocol: AnyObject {
 	func didSelectCell(_ cell: UICollectionViewCell)
 	func setImageForCellImageView(_ imageView: UIImageView, forIndexPath indexPath: IndexPath)
 	var imagesList: [ImageInfo] { get }
-	var completion: ((UIImage, String) -> Void) { get set }
+	var completion: ((ImageAndLink) -> Void) { get set }
 	
 }
 
@@ -28,7 +33,7 @@ class ImagePickerPresenter: ImagePickerPresenterProtocol {
 	let view: ImagePickerViewProtocol
 	var imagesList: [ImageInfo] = []
 	let networkService: NetworkServiceProtocol
-	var completion: ((UIImage, String) -> Void) = {_, _ in }
+	var completion: ((ImageAndLink) -> Void) = {_ in }
 	
 	required init(view: ImagePickerViewProtocol, networkService: NetworkServiceProtocol) {
 		self.view = view
@@ -77,7 +82,7 @@ class ImagePickerPresenter: ImagePickerPresenterProtocol {
 	
 	func didSelectCell(_ cell: UICollectionViewCell) {
 		if let imageView = cell.backgroundView as? UIImageView, let image = imageView.image {
-			completion(image, imagesList[cell.tag].imageURL ?? "")
+			completion(ImageAndLink(image: image, link: imagesList[cell.tag].imageURL ?? ""))
 			view.cancellButtonTapped()
 		}
 	}

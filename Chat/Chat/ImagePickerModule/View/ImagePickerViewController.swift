@@ -13,7 +13,7 @@ class ImagePickerViewController: UIViewController {
 		static let cellReuseIdentifier = "AvatarCell"
 		static let cellOffset = 5.0
 		static let buttonFontSize = 30.0
-		static let personImageName = "person"
+		static let personImageName = "photo.artframe"
 		static let placeholderImageName = "placeholderImage"
 	}
 	
