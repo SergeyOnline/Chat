@@ -26,6 +26,8 @@ struct Owner: Codable {
 			firstName = arr[0]
 			if arr.count > 1 {
 				lastName = arr[1]
+			} else {
+				lastName = ""
 			}
 		}
 	}

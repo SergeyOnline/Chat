@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImagePickerViewController: UIViewController {
+final class ImagePickerViewController: UIViewController {
 	
 	internal enum Constants {
 		static let cellReuseIdentifier = "AvatarCell"

@@ -34,7 +34,7 @@ protocol NetworkServiceProtocol {
 	func getImageFromURL(_ url: URL, completion: @escaping (Result<UIImage?, Error>) -> Void)
 }
 
-class NetworkService: NetworkServiceProtocol {
+final class NetworkService: NetworkServiceProtocol {
 	
 	private enum Constants {
 		static let keyApi = "24422532-c10439d091c29ea900ea93a03"

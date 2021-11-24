@@ -12,7 +12,7 @@ protocol Assembly {
 	static func createImagePickerModule() -> UIViewController
 }
 
-class ModuleAssembly: Assembly {
+final class ModuleAssembly: Assembly {
 	static func createImagePickerModule() -> UIViewController {
 		let view = ImagePickerViewController()
 		let networkService = NetworkService()

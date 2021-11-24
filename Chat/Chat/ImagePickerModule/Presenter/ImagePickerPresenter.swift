@@ -28,7 +28,7 @@ protocol ImagePickerPresenterProtocol: AnyObject {
 	
 }
 
-class ImagePickerPresenter: ImagePickerPresenterProtocol {
+final class ImagePickerPresenter: ImagePickerPresenterProtocol {
 	
 	let view: ImagePickerViewProtocol
 	var imagesList: [ImageInfo] = []
