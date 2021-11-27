@@ -58,7 +58,7 @@ final class TabBarController: UITabBarController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-	
+		delegate = self
 		conversationsListVC.tabBarItem.title = NSLocalizedString(LocalizeKeys.channelsItemTitle, comment: "")
 		if #available(iOS 13.0, *) {
 			conversationsListVC.tabBarItem.image = UIImage(systemName: Constants.channelsItemImageFill)
@@ -168,5 +168,4 @@ final class TabBarController: UITabBarController {
 		}
 		self.alertTextMessage = sender.text ?? ""
 	}
-
 }

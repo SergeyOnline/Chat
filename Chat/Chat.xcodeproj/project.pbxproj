@@ -37,6 +37,7 @@
 		8781CC142713191000566A90 /* ThemesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC132713191000566A90 /* ThemesViewController.swift */; };
 		8781CC16271324BE00566A90 /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8781CC15271324BE00566A90 /* Themes.swift */; };
 		8783FD03270BCB8400C21A66 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8783FD02270BCB8400C21A66 /* Message.swift */; };
+		87881FAF2752B63B005925DA /* TabBarController+TabBarControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87881FAE2752B63B005925DA /* TabBarController+TabBarControllerDelegate.swift */; };
 		8788591F273ADF4300D099FB /* ConversationViewController+FRCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8788591E273ADF4300D099FB /* ConversationViewController+FRCDelegate.swift */; };
 		878A59792746D423006F9158 /* ChannelsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A59782746D423006F9158 /* ChannelsService.swift */; };
 		878A597B2746DA51006F9158 /* MessagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A597A2746DA51006F9158 /* MessagesService.swift */; };
@@ -92,6 +93,7 @@
 		8781CC132713191000566A90 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		8781CC15271324BE00566A90 /* Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
 		8783FD02270BCB8400C21A66 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		87881FAE2752B63B005925DA /* TabBarController+TabBarControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TabBarController+TabBarControllerDelegate.swift"; sourceTree = "<group>"; };
 		8788591E273ADF4300D099FB /* ConversationViewController+FRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConversationViewController+FRCDelegate.swift"; sourceTree = "<group>"; };
 		878A59782746D423006F9158 /* ChannelsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsService.swift; sourceTree = "<group>"; };
 		878A597A2746DA51006F9158 /* MessagesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesService.swift; sourceTree = "<group>"; };
@@ -182,7 +184,7 @@
 				87750AB8271E1AD400B84A9C /* KeyConstants */,
 				876BABF926FF38E800D5BF31 /* AppDelegate.swift */,
 				878A59772746D3E8006F9158 /* DataManager */,
-				878BFE1927243C6000DCC092 /* TabBarController.swift */,
+				87881FAD2752B602005925DA /* TabBar */,
 				876BAC2F26FF460F00D5BF31 /* Assets.xcassets */,
 				876BABFD26FF38E800D5BF31 /* ViewController.swift */,
 				876BABFF26FF38E800D5BF31 /* Main.storyboard */,
@@ -269,6 +271,15 @@
 				87750AB5271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift */,
 			);
 			path = UserProfileInfoHandlers;
+			sourceTree = "<group>";
+		};
+		87881FAD2752B602005925DA /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				878BFE1927243C6000DCC092 /* TabBarController.swift */,
+				87881FAE2752B63B005925DA /* TabBarController+TabBarControllerDelegate.swift */,
+			);
+			path = TabBar;
 			sourceTree = "<group>";
 		};
 		878A59772746D3E8006F9158 /* DataManager */ = {
@@ -505,6 +516,7 @@
 				8788591F273ADF4300D099FB /* ConversationViewController+FRCDelegate.swift in Sources */,
 				8783FD03270BCB8400C21A66 /* Message.swift in Sources */,
 				8768BDF1270C53650078C271 /* MessageCell.swift in Sources */,
+				87881FAF2752B63B005925DA /* TabBarController+TabBarControllerDelegate.swift in Sources */,
 				876ED7EB272D107E002F85E2 /* Extensions.swift in Sources */,
 				8775C7F42724C40200AA8480 /* ChannelMessage.swift in Sources */,
 				876BABFA26FF38E800D5BF31 /* AppDelegate.swift in Sources */,
