@@ -206,7 +206,8 @@ class ThemesViewController: UIViewController {
 		imageView.layer.opacity = 1.0
 		
 		var center = imageView.layer.position
-		UIView.animate(withDuration: 1.5) {
+		
+		UIView.animate(withDuration: 1.5, delay: 0.0, options: UIView.AnimationOptions.curveEaseOut) {
 			center.x += CGFloat(arc4random_uniform(100)) - CGFloat(arc4random_uniform(100))
 			center.y += CGFloat(arc4random_uniform(100)) - CGFloat(arc4random_uniform(100))
 			imageView.layer.opacity = 0.0
