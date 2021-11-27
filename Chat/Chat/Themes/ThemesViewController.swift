@@ -65,14 +65,41 @@ class ThemesViewController: UIViewController {
 	
 	var completion: (() -> Void) = {}
 	
+	private var timer: Timer?
+	private var emblemLocation = CGPoint.zero
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
 		view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
-
 		setup()
     }
     
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		super.touchesBegan(touches, with: event)
+		guard let touch = touches.first else { return }
+		emblemLocation = touch.location(in: view)
+		timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { _ in
+			self.createAndAnimateImageView(location: self.emblemLocation)
+		})
+		
+	}
+	
+	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+		super.touchesEnded(touches, with: event)
+		timer?.invalidate()
+		timer = nil
+		emblemLocation = .zero
+	}
+	
+	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+		super.touchesMoved(touches, with: event)
+		guard let touch = touches.first else { return }
+		emblemLocation = touch.location(in: view)
+		createAndAnimateImageView(location: self.emblemLocation)
+
+	}
+	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		view.backgroundColor = TableViewCellAppearance.backgroundColor.uiColor()
@@ -163,6 +190,30 @@ class ThemesViewController: UIViewController {
 		theme3Button.centerYAnchor.constraint(equalTo: theme2Button.centerYAnchor, constant: 80).isActive = true
 		theme3Button.widthAnchor.constraint(equalTo: theme2Button.widthAnchor).isActive = true
 		theme3Button.heightAnchor.constraint(equalTo: theme2Button.heightAnchor).isActive = true
+	}
+	
+	private func createAndAnimateImageView(location: CGPoint) {
+		guard let image = UIImage(named: "emblem") else { return }
+		let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+		imageView.layer.cornerRadius = 15
+		imageView.clipsToBounds = true
+		imageView.contentMode = .scaleAspectFit
+		imageView.layer.borderWidth = 0.5
+		imageView.layer.borderColor = UIColor.black.cgColor
+		imageView.image = image
+		imageView.center = location
+		view.addSubview(imageView)
+		imageView.layer.opacity = 1.0
+		
+		var center = imageView.layer.position
+		UIView.animate(withDuration: 1.5) {
+			center.x += CGFloat(arc4random_uniform(100)) - CGFloat(arc4random_uniform(100))
+			center.y += CGFloat(arc4random_uniform(100)) - CGFloat(arc4random_uniform(100))
+			imageView.layer.opacity = 0.0
+			imageView.center = center
+		} completion: { _ in
+			imageView.removeFromSuperview()
+		}
 	}
 	
 }
