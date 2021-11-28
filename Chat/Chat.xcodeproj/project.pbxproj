@@ -44,6 +44,7 @@
 		878BFE1827241CD900DCC092 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 878BFE1727241CD900DCC092 /* GoogleService-Info.plist */; };
 		878BFE1A27243C6000DCC092 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878BFE1927243C6000DCC092 /* TabBarController.swift */; };
 		878CCC3427491FA200A95F25 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878CCC3327491FA200A95F25 /* NetworkService.swift */; };
+		878DC4E32753B90C00DB841E /* ProfileViewController+ImagePickerControllerDelegate+NavigationControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878DC4E22753B90C00DB841E /* ProfileViewController+ImagePickerControllerDelegate+NavigationControllerDelegate.swift */; };
 		87A8274C274AE903001750C8 /* ProfileViewController+TextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A8274B274AE902001750C8 /* ProfileViewController+TextFieldDelegate.swift */; };
 		87A8274E274AE966001750C8 /* ProfileViewController+TextViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A8274D274AE966001750C8 /* ProfileViewController+TextViewDelegate.swift */; };
 		87B7E5EB2715950300F7F1C3 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */; };
@@ -100,6 +101,7 @@
 		878BFE1727241CD900DCC092 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Chat/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		878BFE1927243C6000DCC092 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		878CCC3327491FA200A95F25 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		878DC4E22753B90C00DB841E /* ProfileViewController+ImagePickerControllerDelegate+NavigationControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileViewController+ImagePickerControllerDelegate+NavigationControllerDelegate.swift"; sourceTree = "<group>"; };
 		87A8274B274AE902001750C8 /* ProfileViewController+TextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileViewController+TextFieldDelegate.swift"; sourceTree = "<group>"; };
 		87A8274D274AE966001750C8 /* ProfileViewController+TextViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProfileViewController+TextViewDelegate.swift"; sourceTree = "<group>"; };
 		87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				876BAC0F26FF39C300D5BF31 /* ProfileViewController.swift */,
 				87A8274B274AE902001750C8 /* ProfileViewController+TextFieldDelegate.swift */,
 				87A8274D274AE966001750C8 /* ProfileViewController+TextViewDelegate.swift */,
+				878DC4E22753B90C00DB841E /* ProfileViewController+ImagePickerControllerDelegate+NavigationControllerDelegate.swift */,
 				876BAC1026FF39C300D5BF31 /* ProfileLabel.swift */,
 			);
 			path = Profile;
@@ -485,6 +488,7 @@
 				87A8274E274AE966001750C8 /* ProfileViewController+TextViewDelegate.swift in Sources */,
 				87BE211627466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift in Sources */,
 				8768BDEE270C417B0078C271 /* ConversationViewController.swift in Sources */,
+				878DC4E32753B90C00DB841E /* ProfileViewController+ImagePickerControllerDelegate+NavigationControllerDelegate.swift in Sources */,
 				87BE211827466C0C008FF4A6 /* ConversationsListViewController+TableViewDelegate.swift in Sources */,
 				8774D33B2709BB00007D359C /* CustomStackView.swift in Sources */,
 				876BAC1726FF39D600D5BF31 /* ConversationsListViewController.swift in Sources */,
