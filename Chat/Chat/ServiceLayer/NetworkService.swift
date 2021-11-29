@@ -17,7 +17,7 @@ enum NetworkError: Error {
 	var localizedDescription: String {
 		switch self {
 		case .badURL:
-			return "Иad URL address"
+			return "Bad URL address"
 		case .dataError:
 			return "Error loading data"
 		case .badImage:

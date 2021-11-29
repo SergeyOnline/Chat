@@ -31,8 +31,7 @@ final class ProfileViewController: UIViewController {
 		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
 	}
 	internal enum SaveButtonStatus {
-		case enable
-		case disable
+		case enable, disable
 	}
 	
 	// MARK: - Model
@@ -107,10 +106,10 @@ final class ProfileViewController: UIViewController {
 	private var picker = UIImagePickerController()
 	private var isKeyboardHidden = true
 	var completion: (() -> Void) = {}
-	
 	private var isEditImageButtonAnimated = false {
 		didSet {
 			if isEditImageButtonAnimated {
+				editImageButton.layer.removeAllAnimations()
 				let center = editImageButton.layer.position
 				let moveXPosition = CAKeyframeAnimation(keyPath: "position.x")
 				moveXPosition.values = [center.x, center.x - 5, center.x, center.x + 5,	center.x]
@@ -129,7 +128,20 @@ final class ProfileViewController: UIViewController {
 				group.repeatCount = .infinity
 				editImageButton.layer.add(group, forKey: "animation")
 			} else {
+				guard let layer = editImageButton.layer.presentation() else { return }
 				editImageButton.layer.removeAnimation(forKey: "animation")
+				let center = editImageButton.center
+				let position = CAKeyframeAnimation(keyPath: "position")
+				position.values = [layer.position, center]
+				position.keyTimes = [0, 1.0]
+				let rotate = CAKeyframeAnimation(keyPath: "transform.rotation")
+				rotate.values = [layer.value(forKey: "transform.rotation") ?? 0, 0]
+				rotate.keyTimes = [0, 1.0]
+				let group = CAAnimationGroup()
+				group.animations = [position, rotate]
+				group.duration = 0.3
+				group.repeatCount = 1.0
+				editImageButton.layer.add(group, forKey: "stopAnimation")
 			}
 		}
 	}
@@ -242,11 +254,7 @@ final class ProfileViewController: UIViewController {
 	}
 	@objc func nameTextFieldEditing(_ sender: UITextField) {
 		guard let text = sender.text else { return }
-		if text.isEmpty {
-			changeSaveButtonsStatusTo(.disable)
-		} else {
-			changeSaveButtonsStatusTo(.enable)
-		}
+		changeSaveButtonsStatusTo(text.isEmpty ? .disable : .enable)
 		if (sender.text?.count ?? 0) > 28 || (text.numberOfWords == 2 && text.last == " ") {
 			sender.text?.removeLast()
 		}
@@ -301,9 +309,7 @@ final class ProfileViewController: UIViewController {
 		if UIImagePickerController .isSourceTypeAvailable(.camera) {
 			picker.sourceType = .camera
 			present(picker, animated: true, completion: nil)
-		} else {
-			print("No access to the camera")
-		}
+		} else { print("No access to the camera") }
 	}
 	private func openGallary() {
 		picker.sourceType = .photoLibrary
@@ -326,15 +332,12 @@ final class ProfileViewController: UIViewController {
 		}
 		userProfileHandlerGCD.loadOwnerImage { [weak self] in
 			switch $0 {
-			case .success(let image):
-				self?.imageView.image = image
-			case .failure:
-				break
+			case .success(let image): self?.imageView.image = image
+			case .failure: break
 			}
 		}
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
-		
 		headerView.addSubview(profileLabel)
 		profileLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 16).isActive = true
 		profileLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 20).isActive = true
