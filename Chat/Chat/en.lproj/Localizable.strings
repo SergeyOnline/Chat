@@ -44,7 +44,7 @@
 "theme1ButtonTitle" = "Light";
 "theme2ButtonTitle" = "Dark";
 "theme3ButtonTitle" = "Dark blue";
-"theme4ButtonTitle" = "Unicorn";
+"theme4ButtonTitle" = "🦄";
 
 // MARK: - TabBarController
 "profile" = "Profile";

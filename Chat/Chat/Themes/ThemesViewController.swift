@@ -113,6 +113,32 @@ class ThemesViewController: UIViewController {
 						}
 					} completion: { _ in
 						self.theme3Button.isHidden = true
+						for i in 0..<4 {
+							let imageView = UIImageView(image: UIImage(named: "unicorn"))
+							if i % 2 == 0 {
+								imageView.image = imageView.image?.withHorizontallyFlippedOrientation()
+							}
+							imageView.contentMode = .scaleAspectFit
+							let frame = CGRect(x: 0, y: 0, width: 8, height: 8)
+							imageView.frame = frame
+							imageView.center = self.getUnicornImageCoordinate(forViewNumber: i)
+							imageView.alpha = 0.0
+							self.view.addSubview(imageView)
+							let delay = CGFloat(i) / 10.0
+							
+							UIImageView.animateKeyframes(withDuration: 2.0, delay: delay, options: UIImageView.KeyframeAnimationOptions.calculationModeLinear) {
+								UIImageView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+									imageView.alpha = 1.0
+									imageView.transform = CGAffineTransform(scaleX: 10.0, y: 10.0)
+								}
+								UIImageView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
+									imageView.alpha = 0.0
+									imageView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+								}
+							} completion: { _ in
+								imageView.removeFromSuperview()
+							}
+						}
 					}
 				}
 				self.isNeedAnimate = false
@@ -265,6 +291,26 @@ class ThemesViewController: UIViewController {
 		} completion: { _ in
 			imageView.removeFromSuperview()
 		}
+	}
+	
+	private func getUnicornImageCoordinate(forViewNumber number: Int) -> CGPoint {
+		var point = CGPoint.zero
+		switch number {
+		case 0:
+			point.x = 60
+			point.y = 150
+		case 1:
+			point.x = self.view.frame.width - 80
+			point.y = 180
+		case 2:
+			point.x = 85
+			point.y = self.view.frame.height - 110
+		case 3:
+			point.x = self.view.frame.width - 60
+			point.y = self.view.frame.height - 80
+		default: break
+		}
+		return point
 	}
 	
 }
