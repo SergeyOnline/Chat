@@ -44,6 +44,7 @@
 "theme1ButtonTitle" = "Светлая";
 "theme2ButtonTitle" = "Темная";
 "theme3ButtonTitle" = "Темно-синяя";
+"theme4ButtonTitle" = "Единорог";
 
 // MARK: - TabBarController
 "profile" = "Профиль";

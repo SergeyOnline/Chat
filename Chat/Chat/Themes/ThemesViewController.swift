@@ -14,16 +14,14 @@ class ThemesViewController: UIViewController {
 		static let theme1ButtonTitle = "theme1ButtonTitle"
 		static let theme2ButtonTitle = "theme2ButtonTitle"
 		static let theme3ButtonTitle = "theme3ButtonTitle"
+		static let theme4ButtonTitle = "theme4ButtonTitle"
 	}
 	
 	private enum Constants {
 		static let buttonsCornerRadius = 10.0
 	}
 	
-	private var headerView: UIView = {
-		let view = UIView()
-		return view
-	}()
+	private var headerView = UIView()
 	
 	private lazy var theme1Button: UIButton = {
 		let button = UIButton(type: .system)
@@ -55,6 +53,17 @@ class ThemesViewController: UIViewController {
 		return button
 	}()
 	
+	private lazy var theme4Button: UIButton = {
+		let button = UIButton(type: .system)
+		button.layer.cornerRadius = Constants.buttonsCornerRadius
+		button.tag = 4
+		button.setTitle(NSLocalizedString(LocalizeKeys.theme4ButtonTitle, comment: ""), for: .normal)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.addTarget(self, action: #selector(themeButtonsAction(_:)), for: .touchUpInside)
+		button.isHidden = true
+		return button
+	}()
+	
 	private lazy var closeButton: UIButton = {
 		let button = UIButton(type: .system)
 		button.setTitle(NSLocalizedString(LocalizeKeys.closeButtonTitle, comment: ""), for: .normal)
@@ -67,6 +76,8 @@ class ThemesViewController: UIViewController {
 	
 	private var timer: Timer?
 	private var emblemLocation = CGPoint.zero
+	private var startTime: Date?
+	private var isNeedAnimate = true
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,10 +90,34 @@ class ThemesViewController: UIViewController {
 		super.touchesBegan(touches, with: event)
 		guard let touch = touches.first else { return }
 		emblemLocation = touch.location(in: view)
+		startTime = Date()
 		timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { _ in
 			self.createAndAnimateImageView(location: self.emblemLocation)
+			guard let start = self.startTime else { return }
+			if Date().timeIntervalSince(start) > 5 {
+				if self.isNeedAnimate {
+					let originPosition = self.theme3Button.center
+					var leftPosition = originPosition
+					leftPosition.x -= self.view.frame.width
+					var rightPosition = originPosition
+					rightPosition.x += self.view.frame.width
+					self.theme4Button.center = rightPosition
+					self.theme4Button.alpha = 0.0
+					self.theme4Button.isHidden = false
+					UIButton.animateKeyframes(withDuration: 0.5, delay: 0, options: []) {
+						UIButton.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1.0) {
+							self.theme3Button.center = leftPosition
+							self.theme3Button.alpha = 0.0
+							self.theme4Button.center = originPosition
+							self.theme4Button.alpha = 1.0
+						}
+					} completion: { _ in
+						self.theme3Button.isHidden = true
+					}
+				}
+				self.isNeedAnimate = false
+			}
 		})
-		
 	}
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -90,6 +125,7 @@ class ThemesViewController: UIViewController {
 		timer?.invalidate()
 		timer = nil
 		emblemLocation = .zero
+		
 	}
 	
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -110,6 +146,8 @@ class ThemesViewController: UIViewController {
 		theme2Button.setTitleColor(NavigationBarAppearance.elementsColor.uiColor(), for: .normal)
 		theme3Button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
 		theme3Button.setTitleColor(NavigationBarAppearance.elementsColor.uiColor(), for: .normal)
+		theme4Button.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
+		theme4Button.setTitleColor(NavigationBarAppearance.elementsColor.uiColor(), for: .normal)
 		closeButton.setTitleColor(NavigationBarAppearance.elementsColor.uiColor(), for: .normal)
 		
 	}
@@ -131,6 +169,9 @@ class ThemesViewController: UIViewController {
 		case 3:
 			Theme.theme = .darkBlue
 			UserDefaults.standard.set(Themes.darkBlue.rawValue, forKey: UserDefaultsKeys.theme)
+		case 4:
+			Theme.theme = .pink
+			UserDefaults.standard.set(Themes.pink.rawValue, forKey: UserDefaultsKeys.theme)
 		default: Theme.theme = .light
 		}
 		viewWillAppear(true)
@@ -151,10 +192,12 @@ class ThemesViewController: UIViewController {
 		view.addSubview(theme1Button)
 		view.addSubview(theme2Button)
 		view.addSubview(theme3Button)
+		view.addSubview(theme4Button)
 		
 		setupTheme2ButtonConstraints()
 		setupTheme1ButtonConstraints()
 		setupTheme3ButtonConstraints()
+		setupTheme4ButtonConstraints()
 	}
 	
 	private func setupHeaderViewConstraints() {
@@ -190,6 +233,13 @@ class ThemesViewController: UIViewController {
 		theme3Button.centerYAnchor.constraint(equalTo: theme2Button.centerYAnchor, constant: 80).isActive = true
 		theme3Button.widthAnchor.constraint(equalTo: theme2Button.widthAnchor).isActive = true
 		theme3Button.heightAnchor.constraint(equalTo: theme2Button.heightAnchor).isActive = true
+	}
+	
+	private func setupTheme4ButtonConstraints() {
+		theme4Button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+		theme4Button.centerYAnchor.constraint(equalTo: theme2Button.centerYAnchor, constant: 80).isActive = true
+		theme4Button.widthAnchor.constraint(equalTo: theme2Button.widthAnchor).isActive = true
+		theme4Button.heightAnchor.constraint(equalTo: theme2Button.heightAnchor).isActive = true
 	}
 	
 	private func createAndAnimateImageView(location: CGPoint) {
