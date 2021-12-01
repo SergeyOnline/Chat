@@ -90,6 +90,7 @@ class ThemesViewController: UIViewController {
 		super.touchesBegan(touches, with: event)
 		guard let touch = touches.first else { return }
 		emblemLocation = touch.location(in: view)
+		createAndAnimateImageView(location: self.emblemLocation)
 		startTime = Date()
 		timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { _ in
 			self.createAndAnimateImageView(location: self.emblemLocation)
