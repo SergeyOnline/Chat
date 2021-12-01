@@ -93,56 +93,7 @@ class ThemesViewController: UIViewController {
 		startTime = Date()
 		timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { _ in
 			self.createAndAnimateImageView(location: self.emblemLocation)
-			guard let start = self.startTime else { return }
-			if Date().timeIntervalSince(start) > 5 {
-				if self.isNeedAnimate {
-					let originPosition = self.theme3Button.center
-					var leftPosition = originPosition
-					leftPosition.x -= self.view.frame.width
-					var rightPosition = originPosition
-					rightPosition.x += self.view.frame.width
-					self.theme4Button.center = rightPosition
-					self.theme4Button.alpha = 0.0
-					self.theme4Button.isHidden = false
-					UIButton.animateKeyframes(withDuration: 0.5, delay: 0, options: []) {
-						UIButton.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1.0) {
-							self.theme3Button.center = leftPosition
-							self.theme3Button.alpha = 0.0
-							self.theme4Button.center = originPosition
-							self.theme4Button.alpha = 1.0
-						}
-					} completion: { _ in
-						self.theme3Button.isHidden = true
-						for i in 0..<4 {
-							let imageView = UIImageView(image: UIImage(named: "unicorn"))
-							if i % 2 == 0 {
-								imageView.image = imageView.image?.withHorizontallyFlippedOrientation()
-							}
-							imageView.contentMode = .scaleAspectFit
-							let frame = CGRect(x: 0, y: 0, width: 8, height: 8)
-							imageView.frame = frame
-							imageView.center = self.getUnicornImageCoordinate(forViewNumber: i)
-							imageView.alpha = 0.0
-							self.view.addSubview(imageView)
-							let delay = CGFloat(i) / 10.0
-							
-							UIImageView.animateKeyframes(withDuration: 2.0, delay: delay, options: UIImageView.KeyframeAnimationOptions.calculationModeLinear) {
-								UIImageView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
-									imageView.alpha = 1.0
-									imageView.transform = CGAffineTransform(scaleX: 10.0, y: 10.0)
-								}
-								UIImageView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
-									imageView.alpha = 0.0
-									imageView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-								}
-							} completion: { _ in
-								imageView.removeFromSuperview()
-							}
-						}
-					}
-				}
-				self.isNeedAnimate = false
-			}
+			self.secretThemeHandle()
 		})
 	}
 	
@@ -311,6 +262,73 @@ class ThemesViewController: UIViewController {
 		default: break
 		}
 		return point
+	}
+	
+	private func secretThemeHandle() {
+		guard let start = self.startTime else { return }
+		if Date().timeIntervalSince(start) > 5 {
+			if self.isNeedAnimate {
+				let originPosition = self.theme3Button.center
+				var leftPosition = originPosition
+				leftPosition.x -= self.view.frame.width
+				var rightPosition = originPosition
+				rightPosition.x += self.view.frame.width
+				self.theme4Button.center = rightPosition
+				self.theme4Button.alpha = 0.0
+				self.theme4Button.isHidden = false
+				UIButton.animateKeyframes(withDuration: 0.5, delay: 0, options: []) {
+					UIButton.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1.0) {
+						self.theme3Button.center = leftPosition
+						self.theme3Button.alpha = 0.0
+						self.theme4Button.center = originPosition
+						self.theme4Button.alpha = 1.0
+					}
+				} completion: { _ in
+					self.theme3Button.isHidden = true
+					for i in 0..<4 {
+						let imageView = UIImageView(image: UIImage(named: "unicorn"))
+						if i % 2 == 0 {
+							imageView.image = imageView.image?.withHorizontallyFlippedOrientation()
+						}
+						imageView.contentMode = .scaleAspectFit
+						let frame = CGRect(x: 0, y: 0, width: 8, height: 8)
+						imageView.frame = frame
+						imageView.center = self.getUnicornImageCoordinate(forViewNumber: i)
+						imageView.alpha = 0.0
+						self.view.addSubview(imageView)
+						let delay = CGFloat(i) / 10.0
+						
+						UIImageView.animateKeyframes(withDuration: 2.0, delay: delay, options: UIImageView.KeyframeAnimationOptions.calculationModeLinear) {
+							UIImageView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.5) {
+								imageView.alpha = 1.0
+								imageView.transform = CGAffineTransform(scaleX: 10.0, y: 10.0)
+							}
+							UIImageView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.5) {
+								imageView.alpha = 0.0
+								imageView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+							}
+						} completion: { _ in
+							imageView.removeFromSuperview()
+							Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+								self.theme3Button.center = rightPosition
+								self.theme3Button.isHidden = false
+								UIButton.animateKeyframes(withDuration: 0.5, delay: 0, options: []) {
+									UIButton.addKeyframe(withRelativeStartTime: 0, relativeDuration: 1.0) {
+										self.theme4Button.center = leftPosition
+										self.theme4Button.alpha = 0.0
+										self.theme3Button.center = originPosition
+										self.theme3Button.alpha = 1.0
+									}
+								} completion: { _ in
+									self.theme4Button.isHidden = true
+								}
+							}
+						}
+					}
+				}
+			}
+			self.isNeedAnimate = false
+		}
 	}
 	
 }
