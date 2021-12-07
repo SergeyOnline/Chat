@@ -46,6 +46,7 @@ final class ProfileViewController: UIViewController {
 		textView.font = UIFont.systemFont(ofSize: 16)
 		textView.translatesAutoresizingMaskIntoConstraints = false
 		textView.isUserInteractionEnabled = false
+		textView.accessibilityIdentifier = AccessibilityIdentifiers.ProfileScreen.infoTextView
 		return textView
 	}()
 	lazy var editButton: UIButton = {
@@ -88,6 +89,7 @@ final class ProfileViewController: UIViewController {
 															 attributes: [NSAttributedString.Key.foregroundColor: UIColor.systemGray])
 		textField.isEnabled = false
 		textField.addTarget(self, action: #selector(nameTextFieldEditing(_:)), for: .editingChanged)
+		textField.accessibilityIdentifier = AccessibilityIdentifiers.ProfileScreen.nameTextField
 		return textField
 	}()
 	private var profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
@@ -161,9 +163,7 @@ final class ProfileViewController: UIViewController {
 		infoTextView.text = owner.info
 		super.init(nibName: nil, bundle: nil)
 	}
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 	
 	// MARK: - Actions
 	@objc func editButtonAction(_ sender: UIButton) {

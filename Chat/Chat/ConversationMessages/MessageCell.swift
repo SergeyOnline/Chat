@@ -55,7 +55,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		}
 	}
 	
-	private let networkService = NetworkService()
+	private let networkService = NetworkService(apiKey: APIKey.key)
 	
 	var messageLabel: UILabel = {
 		let label = UILabel()

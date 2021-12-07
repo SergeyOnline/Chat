@@ -15,9 +15,7 @@ enum Themes: Int {
 }
 
 struct Theme {
-	
 	static var theme: Themes = .light
-	
 }
 
 struct ThemeColor {
@@ -97,7 +95,6 @@ enum TableViewCellAppearance {
 	
 	private enum Pink {
 		static let backgroundColor = UIColor(red: 223 / 255, green: 204 / 255, blue: 227 / 255, alpha: 1.0)
-//		static let backgroundColor = UIColor(red: 218 / 255, green: 185 / 255, blue: 227 / 255, alpha: 1.0)
 		static let textColor = UIColor(red: 45 / 255, green: 115 / 255, blue: 114 / 255, alpha: 1.0)
 	}
 	

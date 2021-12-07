@@ -30,19 +30,22 @@ enum NetworkError: Error {
 }
 
 protocol NetworkServiceProtocol {
+	init(apiKey: String)
 	func getImagesList(completion: @escaping (Result<ImagesList?, Error>) -> Void)
 	func getImageFromURL(_ url: URL, completion: @escaping (Result<UIImage?, Error>) -> Void)
 }
 
 final class NetworkService: NetworkServiceProtocol {
 	
-	private enum Constants {
-		static let keyApi = "24422532-c10439d091c29ea900ea93a03"
+	let apiKey: String
+	
+	required init(apiKey: String) {
+		self.apiKey = apiKey
 	}
 	
 	func getImagesList(completion: @escaping (Result<ImagesList?, Error>) -> Void) {
 
-		guard let url = URL(string: "https://pixabay.com/api/?key=\(Constants.keyApi)&q=animals&image_type=photo&per_page=102") else {
+		guard let url = URL(string: "https://pixabay.com/api/?key=\(apiKey)&q=animals&image_type=photo&per_page=102") else {
 			completion(.failure(NetworkError.badURL))
 			return
 		}

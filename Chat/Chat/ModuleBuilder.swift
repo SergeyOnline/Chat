@@ -15,7 +15,7 @@ protocol Assembly {
 final class ModuleAssembly: Assembly {
 	static func createImagePickerModule() -> UIViewController {
 		let view = ImagePickerViewController()
-		let networkService = NetworkService()
+		let networkService = NetworkService(apiKey: APIKey.key)
 		let presenter = ImagePickerPresenter(view: view, networkService: networkService)
 		view.presenter = presenter
 		return view
