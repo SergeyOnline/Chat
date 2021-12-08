@@ -13,6 +13,7 @@ final class ProfileViewController: UIViewController {
 		static let gallaryAction = "gallaryAction"
 		static let cancelAction = "cancelAction"
 		static let deleteAction = "deleteAction"
+		static let downloadAction = "downloadAction"
 		static let profileLabel = "profileLabel"
 		static let closeButtonTitle = "closeButtonTitle"
 		static let editButtonTitle = "editButtonTitle"
@@ -29,7 +30,7 @@ final class ProfileViewController: UIViewController {
 	private enum Constants {
 		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
 	}
-	private enum SaveButtonStatus {
+	internal enum SaveButtonStatus {
 		case enable
 		case disable
 	}
@@ -39,7 +40,7 @@ final class ProfileViewController: UIViewController {
 	
 	// MARK: - UI
 	private var imageView: UserImageView
-	private var infoTextView: UITextView = {
+	internal var infoTextView: UITextView = {
 		let textView = UITextView()
 		textView.isScrollEnabled = false
 		textView.textContainer.maximumNumberOfLines = 2
@@ -148,9 +149,25 @@ final class ProfileViewController: UIViewController {
 				}
 			}
 		}
+		let downloadAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.downloadAction, comment: ""), style: .default) { _ in
+			let avatarVC = ModuleAssembly.createImagePickerModule()
+			if let avatarController = avatarVC as? ImagePickerViewController {
+				avatarController.presenter?.completion = { imageAndLink in
+					self.imageView.image = imageAndLink.image
+					self.imageView.contentMode = UIImageView.ContentMode.scaleAspectFill
+					self.userProfileHandlerGCD.saveOwnerImage(image: imageAndLink.image) { _ in
+						DispatchQueue.main.async {
+							self.completion()
+						}
+					}
+				}
+			}
+			self.present(avatarVC, animated: true, completion: nil)
+		}
 		picker.delegate = self
 		alert.addAction(cameraAction)
 		alert.addAction(gallaryAction)
+		alert.addAction(downloadAction)
 		alert.addAction(deleteAction)
 		alert.setThemeOptions(viewBackground: TableViewCellAppearance.backgroundColor.uiColor(),
 							   titleColor: NavigationBarAppearance.elementsColor.uiColor(),
@@ -266,6 +283,7 @@ final class ProfileViewController: UIViewController {
 	}
 	private func setup() {
 		view.addSubview(headerView)
+		imageView.contentMode = UIImageView.ContentMode.scaleAspectFill
 		setupHeaderViewConstraints()
 		userProfileHandlerGCD.loadOwnerInfo { [weak self] in
 			switch $0 {
@@ -351,12 +369,10 @@ final class ProfileViewController: UIViewController {
 										 tintColor: NavigationBarAppearance.elementsColor.uiColor())
 		self.present(alertController, animated: true, completion: nil)
 	}
-	private func changeSaveButtonsStatusTo(_ status: SaveButtonStatus) {
+	internal func changeSaveButtonsStatusTo(_ status: SaveButtonStatus) {
 		switch status {
-		case .enable:
-			saveButton.isEnabled = true
-		case .disable:
-			saveButton.isEnabled = false
+		case .enable: saveButton.isEnabled = true
+		case .disable: saveButton.isEnabled = false
 		}
 	}
 	private func hideSaveButtons() {
@@ -470,26 +486,5 @@ extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationC
 	}
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
 		picker.dismiss(animated: true, completion: nil)
-	}
-}
-
-extension ProfileViewController: UITextFieldDelegate {
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		textField.resignFirstResponder()
-		infoTextView.becomeFirstResponder()
-		let insertionPoint = NSRange(location: infoTextView.text.count, length: 0)
-		infoTextView.selectedRange = insertionPoint
-		return true
-	}
-}
-
-extension ProfileViewController: UITextViewDelegate {
-	func textViewDidChange(_ textView: UITextView) {
-		guard let text = textView.text else { return }
-		if text.isEmpty {
-			changeSaveButtonsStatusTo(.disable)
-		} else {
-			changeSaveButtonsStatusTo(.enable)
-		}
 	}
 }

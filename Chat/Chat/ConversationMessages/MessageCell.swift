@@ -28,6 +28,24 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			guard let value = newValue else { return }
 			messageLabel.text = value
 			nameLabel.textColor = getColorFromName(nameLabel.text)
+			let text = value.lowercased()
+			if !(text.hasPrefix("https://") || text.hasPrefix("http://") || text.hasSuffix(".jpg") || text.hasSuffix(".png")) {
+				return
+			}
+			
+			guard let url = URL(string: value), UIApplication.shared.canOpenURL(url) else { return }
+			networkService.getImageFromURL(url) { result in
+				switch result {
+				case .success(let image):
+					DispatchQueue.main.async {
+						self.messageImageView.isHidden = false
+						self.messageImageView.image = image
+						self.messageLabel.isHidden = true
+					}
+				case .failure: return
+				}
+				
+			}
 		}
 	}
 	
@@ -36,6 +54,8 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			dateLabel.text = date
 		}
 	}
+	
+	private let networkService = NetworkService()
 	
 	var messageLabel: UILabel = {
 		let label = UILabel()
@@ -72,6 +92,14 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		return label
 	}()
 	
+	private lazy var messageImageView: UIImageView = {
+		let view = UIImageView()
+		view.contentMode = UIImageView.ContentMode.scaleAspectFit
+		view.isHidden = true
+		view.translatesAutoresizingMaskIntoConstraints = false
+		return view
+	}()
+	
 	var isTailNeed = false {
 		didSet {
 			setup()
@@ -99,6 +127,9 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	
 	override func prepareForReuse() {
 		super.prepareForReuse()
+		messageImageView.image = nil
+		messageImageView.isHidden = true
+		messageLabel.isHidden = false
 		tailImageView.removeFromSuperview()
 		wrapperMessageLabelStack.removeFromSuperview()
 	}
@@ -119,6 +150,11 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		if #available(iOS 14.0, *) {
 			messageAndDateStack.alignment = .bottom
 			messageAndDateStack.addArrangedSubview(messageLabel)
+			messageAndDateStack.addArrangedSubview(messageImageView)
+			let size = (contentView.bounds.width * 0.75) - 20
+			messageImageView.widthAnchor.constraint(lessThanOrEqualToConstant: size).isActive = true
+			messageImageView.heightAnchor.constraint(lessThanOrEqualToConstant: size).isActive = true
+			
 			messageAndDateStack.addArrangedSubview(dateLabel)
 			wrapperMessageLabelStack.addArrangedSubview(messageAndDateStack)
 			wrapperMessageLabelStack.layer.cornerRadius = Constants.vStackCornerRadius
@@ -128,7 +164,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		}
 		
 		messageLabel.widthAnchor.constraint(lessThanOrEqualToConstant: contentView.frame.width * 0.75).isActive = true
-		setupwrapperMessageLabelStack()
+		setupWrapperMessageLabelStack()
 		
 		self.contentView.addSubview(newDayLabel)
 		setupNewDayLabelConstraints()
@@ -143,7 +179,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		}
 	}
 	
-	private func setupwrapperMessageLabelStack() {
+	private func setupWrapperMessageLabelStack() {
 		wrapperMessageLabelStack.translatesAutoresizingMaskIntoConstraints = false
 		wrapperMessageLabelStack.layoutMargins = UIEdgeInsets(top: Constants.vStackUniversalOffset,
 															  left: Constants.vStackUniversalOffset,

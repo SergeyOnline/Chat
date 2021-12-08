@@ -19,6 +19,7 @@
 "cancelAction" = "Cancel";
 "gallaryAction" = "Gallery";
 "deleteAction" = "Delete";
+"downloadAction" = "Download";
 "nameTextFieldPlaceholder" = "Your name";
 "alertOkActionTitle" = "Ok";
 "alertRepeatSaveAction" = "Repeat";
@@ -26,6 +27,9 @@
 "failureAlertTitle" = "Error";
 "failureAlertMessage" = "Failed to save data";
 "saveButtonTitle" = "Save";
+
+// MARK: - AvatarViewController
+"cancelButtonTitle" = "Cancel";
 
 // MARK: - ConversationViewController
 "messageInputFieldPlaceholder" = "Message...";

@@ -9,7 +9,7 @@ import UIKit
 
 struct Owner: Codable {
 	var firstName = "Sergei"
-	var lastName = "Gryaznov"
+	var lastName = "G."
 	var info = "iOS Developer\nKazan, Russia"
 	
 	var initials: String {
@@ -26,6 +26,8 @@ struct Owner: Codable {
 			firstName = arr[0]
 			if arr.count > 1 {
 				lastName = arr[1]
+			} else {
+				lastName = ""
 			}
 		}
 	}

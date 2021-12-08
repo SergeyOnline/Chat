@@ -18,7 +18,7 @@ struct ChannelMessage {
 extension ChannelMessage {
 	var toDict: [String: Any] {
 		return ["content": content,
-				"created": created,
+				"created": Timestamp(date: created),
 				"senderId": senderId,
 				"senderName": senderName]
 	}
