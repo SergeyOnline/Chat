@@ -12,6 +12,7 @@ class ChatUITests: XCTestCase {
 	let app = XCUIApplication()
 
     override func setUpWithError() throws {
+		try super.setUpWithError()
         continueAfterFailure = false
 
 		app.launch()

@@ -8,15 +8,51 @@
 import XCTest
 @testable import Chat
 
+class NetworkServiceStub: NetworkServiceProtocol {
+	
+	enum TestError: Error {
+		case someError
+	}
+	
+	required init(apiKey: String = "") {}
+	
+	func getImagesList(completion: @escaping (Result<ImagesList?, Error>) -> Void) {
+		completion(.failure(TestError.someError))
+	}
+	
+	func getImageFromURL(_ url: URL, completion: @escaping (Result<UIImage?, Error>) -> Void) {
+		completion(.failure(TestError.someError))
+	}
+}
+
 class ChatTests: XCTestCase {
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+       try super.setUpWithError()
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        try super.tearDownWithError()
     }
+	
+	func testImagePickerPresenterNetworkServiceWithFailure() {
+		let view = ImagePickerViewController()
+		let networkServiceStub = NetworkServiceStub()
+		let sut = ImagePickerPresenter(view: view, networkService: networkServiceStub)
+		let promise = XCTestExpectation()
+		var error: Error?
+		sut.networkService.getImagesList { result in
+			switch result {
+			case .failure(let err):
+				error = err
+				promise.fulfill()
+			default: break
+			}
+		}
+		
+		wait(for: [promise], timeout: 3)
+		XCTAssertNotNil(error)
+	}
 
 	func testNetworkServiceWithBadApiKeyTimeout3() throws {
 		let networkService = NetworkService(apiKey: "wrongApiKey")
