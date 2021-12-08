@@ -201,9 +201,9 @@
 		8768BDEF270C419C0078C271 /* ConversationMessagesModule */ = {
 			isa = PBXGroup;
 			children = (
-				87C5F07B2760DAC0006870FF /* Model */,
 				87C5F07A2760DAB5006870FF /* View */,
 				87C5F07C2760DAD1006870FF /* Presenter */,
+				87C5F07B2760DAC0006870FF /* Model */,
 			);
 			path = ConversationMessagesModule;
 			sourceTree = "<group>";
