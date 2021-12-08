@@ -10,7 +10,7 @@ import UIKit
 struct Owner: Codable {
 	var firstName = "Sergei"
 	var lastName = "Gryaznov"
-	var info = "iOS Developer, humble genius\nKazan, Russia"
+	var info = "iOS Developer\nKazan, Russia"
 	
 	var initials: String {
 		return (firstName.first?.uppercased() ?? "") + (lastName.first?.uppercased() ?? "")
