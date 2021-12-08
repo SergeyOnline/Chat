@@ -7,8 +7,19 @@
 
 import UIKit
 import CoreData
+import Firebase
 
 final class DataManager {
+	
+	private enum Constants {
+		static let channelKeyName = "name"
+		static let channelKeyLastMessage = "lastMessage"
+		static let channelKeyLastActivity = "lastActivity"
+		static let messageKeyContent = "content"
+		static let messageKeyCreated = "created"
+		static let messageKeySenderId = "senderId"
+		static let messageKeySenderName = "senderName"
+	}
 	
 	static var shared: DataManager = {
 		let instance = DataManager()
@@ -24,21 +35,58 @@ final class DataManager {
 				fatalError("Unresolved error \(error), \(error.userInfo)")
 			}
 		}
+		container.viewContext.automaticallyMergesChangesFromParent = true
 		return container
 	}()
 	
-	func saveChannels(_ channels: [Channel]) {
+	func saveChannel(_ channel: DocumentChange) {
 		persistentContainer.performBackgroundTask({ context in
-			for channel in channels {
-				context.mergePolicy = NSMergePolicy.overwrite
+			context.mergePolicy = NSMergePolicy.overwrite
+			let newChannel = DBChannel(context: context)
+			let data = channel.document.data()
+			newChannel.identifier = channel.document.documentID
+			newChannel.name = (data[Constants.channelKeyName] as? String) ?? ""
+			newChannel.lastMessage = data[Constants.channelKeyLastMessage] as? String
+			newChannel.lastActivity = (data[Constants.channelKeyLastActivity] as? Timestamp)?.dateValue()
+			do {
+				try context.save()
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+		})
+	}
+	
+	func saveChannels(_ channels: [DocumentChange]) {
+		persistentContainer.performBackgroundTask({ context in
+			context.mergePolicy = NSMergePolicy.overwrite
+			channels.forEach { channel in
 				let newChannel = DBChannel(context: context)
-				newChannel.name = channel.name
-				newChannel.identifier = channel.identifier
-				newChannel.lastActivity = channel.lastActivity
-				newChannel.lastMessage = channel.lastMessage
+				let data = channel.document.data()
+				newChannel.identifier = channel.document.documentID
+				newChannel.name = (data[Constants.channelKeyName] as? String) ?? ""
+				newChannel.lastMessage = data[Constants.channelKeyLastMessage] as? String
+				newChannel.lastActivity = (data[Constants.channelKeyLastActivity] as? Timestamp)?.dateValue()
 			}
 			do {
 				try context.save()
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+		})
+	}
+	
+	func removeChannel(_ channel: DocumentChange) {
+		persistentContainer.performBackgroundTask({ context in
+			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
+			let predicate = NSPredicate(format: "identifier like %@", channel.document.documentID)
+			request.predicate = predicate
+			do {
+				if let channel = try context.fetch(request).first {
+					context.delete(channel)
+					try context.save()
+				}
 			} catch {
 				let error = error as NSError
 				fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -64,11 +112,11 @@ final class DataManager {
 		return channels
 	}
 	
-	func saveMessages(_ messages: [ChannelMessage], forChannelId id: String) {
+	func saveMessage(_ message: DocumentChange, forChannelId id: String) {
 		persistentContainer.performBackgroundTask({ context in
-			context.mergePolicy = NSMergePolicy.overwrite
+			context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
 			var channels: [DBChannel] = []
-			let predicate = NSPredicate(format: "identifier like %@", id)
+			let predicate = NSPredicate(format: "identifier == %@", id)
 			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
 			request.predicate = predicate
 			do {
@@ -77,24 +125,86 @@ final class DataManager {
 				let error = error as NSError
 				fatalError("Unresolved error \(error), \(error.userInfo)")
 			}
-			
 			guard let channel = channels.first else { return }
-			for message in messages {
-				context.mergePolicy = NSMergePolicy.overwrite
+			let data = message.document.data()
+			if !self.isMessageExist(messageData: data) {
 				let newMessage = DBMessage(context: context)
-				newMessage.content = message.content
-				newMessage.created = message.created
-				newMessage.senderId = message.senderId
-				newMessage.senderName = message.senderName
-				newMessage.channel = channel
+				newMessage.content = (data[Constants.messageKeyContent] as? String) ?? ""
+				newMessage.created = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
+				newMessage.senderId = (data[Constants.messageKeySenderId] as? String) ?? ""
+				newMessage.senderName = (data[Constants.messageKeySenderName] as? String) ?? ""
+				channel.addToMessages(newMessage)
 			}
 			do {
-				try context.save()
+				if context.hasChanges {
+					try context.save()
+				}
 			} catch {
 				let error = error as NSError
 				fatalError("Unresolved error \(error), \(error.userInfo)")
 			}
 		})
+	}
+	
+	func saveMessage(_ messages: [DocumentChange], forChannelId id: String, completion: @escaping () -> Void) {
+		persistentContainer.performBackgroundTask({ context in
+			context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+			var channels: [DBChannel] = []
+			let predicate = NSPredicate(format: "identifier == %@", id)
+			let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
+			request.predicate = predicate
+			do {
+				channels = try context.fetch(request)
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+			guard let channel = channels.first else { return }
+			messages.forEach { message in
+				let data = message.document.data()
+				if !self.isMessageExist(messageData: data) {
+					let newMessage = DBMessage(context: context)
+					newMessage.content = (data[Constants.messageKeyContent] as? String) ?? ""
+					newMessage.created = (data[Constants.messageKeyCreated] as? Timestamp)?.dateValue() ?? Date(timeIntervalSince1970: 0)
+					newMessage.senderId = (data[Constants.messageKeySenderId] as? String) ?? ""
+					newMessage.senderName = (data[Constants.messageKeySenderName] as? String) ?? ""
+					channel.addToMessages(newMessage)
+				}
+			}
+			do {
+				if context.hasChanges {
+					try context.save()
+					completion()
+				}
+			} catch {
+				let error = error as NSError
+				fatalError("Unresolved error \(error), \(error.userInfo)")
+			}
+		})
+	}
+	
+	func isMessageExist(messageData: [String: Any]) -> Bool {
+		var messages: [DBMessage] = []
+		let context = persistentContainer.viewContext
+		if let content = messageData[Constants.messageKeyContent] as? String,
+		   let created = (messageData[Constants.messageKeyCreated] as? Timestamp)?.dateValue(),
+		   let senderName = messageData[Constants.messageKeySenderName] as? String,
+		   let senderId = messageData[Constants.messageKeySenderId] as? String {
+			let request: NSFetchRequest<DBMessage> = DBMessage.fetchRequest()
+			let predicate = NSPredicate(format: "content == %@ AND created == %@ AND senderName == %@ AND senderId == %@",
+										content,
+										created as NSDate,
+										senderName,
+										senderId)
+			request.predicate = predicate
+			do {
+				messages = try context.fetch(request)
+				if !messages.isEmpty { return true }
+			} catch {
+				return false
+			}
+		}
+		return false
 	}
 	
 	func loadMessages(forChannelId id: String) -> [DBMessage] {
@@ -112,6 +222,21 @@ final class DataManager {
 			fatalError("Unresolved error \(error), \(error.userInfo)")
 		}
 		return messages
+	}
+	
+	func messagesCount(forChannel id: String) -> Int {
+		var count = 0
+		let context = persistentContainer.viewContext
+		let request: NSFetchRequest<DBMessage> = DBMessage.fetchRequest()
+		let predicate = NSPredicate(format: "channel != nil && channel.identifier like %@", id)
+		request.predicate = predicate
+		do {
+			count = try context.count(for: request)
+		} catch {
+			let error = error as NSError
+			fatalError("Unresolved error \(error), \(error.userInfo)")
+		}
+		return count
 	}
 	
 	func logChannelsContent(needPrintMessages isNeed: Bool = false) {

@@ -56,12 +56,16 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-com.apple.CoreData.SQLDebug 1"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "DEBUG_LOG_MESSAGES_CONTENT"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "DEBUG_LOG_CHANNELS_CONTENT"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "DEBUG_LOG_APP_LIFE"

@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 final class ConversationsListViewController: UIViewController {
 	
@@ -26,19 +27,28 @@ final class ConversationsListViewController: UIViewController {
 	private lazy var db = Firestore.firestore()
 	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
 	private let dataManager = DataManager.shared
+	private var listener: ListenerRegistration?
 	
-	// MARK: - UI
-	var tableView: UITableView = {
-		let table = UITableView(frame: CGRect.zero, style: .grouped)
-		return table
+	private lazy var fetchResultController: NSFetchedResultsController<DBChannel> = {
+		let request: NSFetchRequest<DBChannel> = DBChannel.fetchRequest()
+		let sortDescriptor = NSSortDescriptor(key: "lastActivity", ascending: false)
+		request.fetchBatchSize = 20
+		request.sortDescriptors = [sortDescriptor]
+		let controller = NSFetchedResultsController(fetchRequest: request,
+													managedObjectContext: dataManager.persistentContainer.viewContext,
+													sectionNameKeyPath: nil,
+													cacheName: "channels")
+		controller.delegate = self
+		do {
+			try controller.performFetch()
+		} catch {
+			fatalError("Failed to fetch entities: \(error)")
+		}
+		return controller
 	}()
 	
-	// MARK: - Model
-	private lazy var channels: [Channel] = [] {
-		didSet {
-			tableView.reloadData()
-		}
-	}
+	// MARK: - UI
+	var tableView = UITableView(frame: CGRect.zero, style: .grouped)
 
 	private let userProfileHandler: UserProfileInfoHandlerProtocol = {
 		return GCDUserProfileInfoHandler()
@@ -61,13 +71,42 @@ final class ConversationsListViewController: UIViewController {
 																							NSAttributedString.Key.foregroundColor.rawValue):
 																	NavigationBarAppearance.elementsColor.uiColor()]
 		tableView.backgroundColor = TableViewAppearance.backgroundColor.uiColor()
-		tableView.reloadData()
+//		fetchResultController.delegate = self
+//		referenceChannel.getDocuments { [weak self] querySnapshot, error in
+//			if let error = error {
+//				print("Error getting documents: \(error)")
+//				return
+//			}
+//			guard let snapshot = querySnapshot else {
+//				print("Error fetching snapshots: \(error!)")
+//				return
+//			}
+//			snapshot.documentChanges.forEach { channel in
+//				if !channel.document.metadata.isFromCache {
+//					if channel.type == .added {
+//						self?.dataManager.saveChannel(channel)
+//					}
+//					if channel.type == .modified {
+//						self?.dataManager.saveChannel(channel)
+//					}
+//					if channel.type == .removed {
+//						self?.dataManager.removeChannel(channel)
+//					}
+//				}
+//			}
+//		}
+	}
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
 	}
 	
 	// MARK: - Private functions
 	
 	private func setup() {
 		getChannels()
+		// Updating the table is only needed to show online status
+		// Comment out to match the assignment do not use the tableView.reloadData() method
 		Timer.scheduledTimer(withTimeInterval: 540, repeats: true) { _ in
 				self.tableView.reloadData()
 		}
@@ -77,40 +116,29 @@ final class ConversationsListViewController: UIViewController {
 	}
 	
 	func getChannels() {
-		referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
-			var channels: [Channel] = []
+		listener = referenceChannel.addSnapshotListener { [weak self] querySnapshot, error in
 			if let error = error {
 				print("Error getting documents: \(error)")
 				return
 			}
-			if let documents = querySnapshot?.documents {
-				for document in documents {
-					let data = document.data()
-					let id: String = document.documentID
-					let name: String = (data[Constants.channelKeyName] as? String) ?? ""
-					let lastMessage: String? = data[Constants.channelKeyLastMessage] as? String
-					let lastActivity: Date? = (data[Constants.channelKeyLastActivity] as? Timestamp)?.dateValue()
-					let channel = Channel(identifier: id, name: name, lastMessage: lastMessage, lastActivity: lastActivity)
+			guard let snapshot = querySnapshot else {
+				print("Error fetching snapshots: \(error!)")
+				return
+			}
+			var channels: [DocumentChange] = []
+			
+			snapshot.documentChanges.forEach { channel in
+				if channel.type == .added {
 					channels.append(channel)
 				}
+				if channel.type == .modified {
+					channels.append(channel)
+				}
+				if channel.type == .removed {
+					self?.dataManager.removeChannel(channel)
+				}
 			}
-			DispatchQueue.main.async {
-				self?.channels = channels.sorted(by: { ch1, ch2 in
-					if ch1.lastActivity == nil && ch2.lastActivity == nil {
-						return false
-					} else if ch1.lastActivity == nil {
-						return false
-					} else if ch2.lastActivity == nil {
-						return true
-					} else {
-						guard let lastCh1Date = ch1.lastActivity else { return false }
-						guard let lastCh2Date = ch2.lastActivity else { return false }
-						return lastCh1Date > lastCh2Date
-					}
-				})
-				guard let channels = self?.channels else { return }
-				self?.dataManager.saveChannels(channels)
-			}
+			self?.dataManager.saveChannels(channels)
 		}
 	}
 	
@@ -131,59 +159,31 @@ final class ConversationsListViewController: UIViewController {
 		tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
 	}
 	
-	// TODO: - The function is not used in the current version, but left for further modifications of the project
-//	private func sortUsers(users: [User]) -> [User] {
-//
-//		var hasUnreadMassageUsers = users.filter { $0.hasUnreadMessages == true }
-//		var otheUsers = users.filter { $0.hasUnreadMessages == false }
-//		hasUnreadMassageUsers = hasUnreadMassageUsers.sorted(by: { u1, u2 in
-//
-//			guard let lastU1Date = u1.messages?.last?.date else { return false }
-//			guard let lastU2Date = u2.messages?.last?.date else { return false }
-//
-//			return lastU1Date > lastU2Date
-//		})
-//		otheUsers = otheUsers.sorted(by: { u1, u2 in
-//			if u1.messages == nil && u2.messages == nil {
-//				return false
-//			} else if u1.messages == nil {
-//				return false
-//			} else if u2.messages == nil {
-//				return true
-//			} else {
-//				guard let lastU1Date = u1.messages?.last?.date else { return false }
-//				guard let lastU2Date = u2.messages?.last?.date else { return false }
-//				return lastU1Date > lastU2Date
-//			}
-//		})
-//		return hasUnreadMassageUsers + otheUsers
-//	}
+	deinit {
+		listener?.remove()
+	}
 }
 
 extension ConversationsListViewController: UITableViewDelegate, UITableViewDataSource {
 	
 	// MARK: - Table view delegate, data source
 	func numberOfSections(in tableView: UITableView) -> Int {
-		return 1
+		return fetchResultController.sections?.count ?? 0
 	}
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return channels.count
+		guard let sections = self.fetchResultController.sections else {
+			fatalError("No sections in fetchedResultsController")
+		}
+		let sectionInfo = sections[section]
+		return sectionInfo.numberOfObjects
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as? ConversationsListCell else {
 			return UITableViewCell()
 		}
-		
-		cell.name = channels[indexPath.row].name
-		cell.message = channels[indexPath.row].lastMessage
-		cell.date = channels[indexPath.row].lastActivity
-		if let timeInterval = channels[indexPath.row].lastActivity?.timeIntervalSince(Date()) {
-			cell.online = -timeInterval <= 600
-		} else {
-			cell.online = false
-		}
+		configureCell(cell, atIndexPath: indexPath)
 		// TODO: - use unread message
 //		cell.hasUnreadMessages = false
 		return cell
@@ -199,7 +199,9 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		var conversationVC: ConversationViewController
-		conversationVC = ConversationViewController(channel: channels[indexPath.row])
+		let channel = fetchResultController.object(at: indexPath)
+//		fetchResultController.delegate = nil
+		conversationVC = ConversationViewController(channel: channel)
 		self.navigationController?.pushViewController(conversationVC, animated: true)
 	}
 	
@@ -207,4 +209,73 @@ extension ConversationsListViewController: UITableViewDelegate, UITableViewDataS
 		guard let header = view as? UITableViewHeaderFooterView else { return }
 		header.textLabel?.textColor = TableViewAppearance.headerTitleColor.uiColor()
 	}
+	
+	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return true
+	}
+	
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		if editingStyle == .delete {
+			let channel = fetchResultController.object(at: indexPath)
+			if let id = channel.identifier {
+				referenceChannel.document(id).delete { err in
+					if let err = err {
+						print("Error removing document: \(err)")
+					} else {
+						print("Document successfully removed!")
+					}
+				}
+			}
+		}
+	}
+	
+	private func configureCell(_ cell: ConversationsListCell, atIndexPath indexPath: IndexPath) {
+		let channel = fetchResultController.object(at: indexPath)
+		cell.name = channel.name
+		cell.message = channel.lastMessage
+		cell.date = channel.lastActivity
+		if let timeInterval = channel.lastActivity?.timeIntervalSince(Date()) {
+			cell.online = -timeInterval <= 600
+		} else {
+			cell.online = false
+		}
+	}
+}
+
+extension ConversationsListViewController: NSFetchedResultsControllerDelegate {
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		tableView.beginUpdates()
+	}
+	
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		tableView.endUpdates()
+	}
+	
+	func controller(
+		_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+		didChange anObject: Any,
+		at indexPath: IndexPath?, for type: NSFetchedResultsChangeType,
+		newIndexPath: IndexPath?
+	) {
+		switch type {
+		case .insert:
+			guard let newIndexPath = newIndexPath else { return	}
+			tableView.insertRows(at: [newIndexPath], with: .fade)
+		case .delete:
+			guard let indexPath = indexPath else { return	}
+			tableView.deleteRows(at: [indexPath], with: .fade)
+		case .update:
+			guard let indexPath = indexPath else { return }
+//			guard let cell = tableView.cellForRow(at: indexPath) as? ConversationsListCell else { return }
+//			configureCell(cell, atIndexPath: indexPath)
+			tableView.reloadRows(at: [indexPath], with: .automatic)
+		case .move:
+			guard let indexPath = indexPath else { return }
+			guard let newIndexPath = newIndexPath else { return	}
+			tableView.deleteRows(at: [indexPath], with: .fade)
+			tableView.insertRows(at: [newIndexPath], with: .fade)
+		default: break
+		}
+	}
+	
 }
