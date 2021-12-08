@@ -25,56 +25,15 @@ final class ConversationViewController: UIViewController {
 		static let userImageViewHeight = 36.0
 		static let userImageViewLabelfontSize = 18.0
 		static let titleFont = UIFont.boldSystemFont(ofSize: 16)
-		static let channelsDBCollection = "channels"
-		static let messagesDBCollection = "messages"
-		static let messageKeyContent = "content"
-		static let messageKeyCreated = "created"
-		static let messageKeySenderId = "senderId"
-		static let messageKeySenderName = "senderName"
 	}
+	
 	internal enum LocalizeKeys {
 		static let messageInputFieldPlaceholder = "messageInputFieldPlaceholder"
 		static let headerDateTitle = "headerDateTitle"
 	}
-	internal enum DateFormat {
-		static let hourAndMinute = "HH:mm"
-		static let dayAndMonth = "dd MMMM"
-	}
 	
-	internal let ownerID = UIDevice.current.identifierForVendor?.uuidString ?? ""
-	private var ownerName = Owner().fullName
-	
-	private lazy var db = Firestore.firestore()
-	private lazy var referenceChannel = db.collection(Constants.channelsDBCollection)
-	private lazy var referenceMessages: CollectionReference = {
-		guard let channelIdentifier = channel?.identifier else { fatalError() }
-		return referenceChannel.document(channelIdentifier).collection(Constants.messagesDBCollection)
-	}()
-	private var listener: ListenerRegistration?
-	internal lazy var fetchResultController: NSFetchedResultsController<DBMessage> = {
-		let request: NSFetchRequest<DBMessage> = DBMessage.fetchRequest()
-		let sortDescriptor = NSSortDescriptor(key: "created", ascending: true)
-		request.fetchBatchSize = 20
-		request.sortDescriptors = [sortDescriptor]
-		let predicate = NSPredicate(format: "channel.identifier == %@", (channel?.identifier ?? ""))
-		request.predicate = predicate
-		let controller = NSFetchedResultsController(fetchRequest: request,
-													managedObjectContext: dataManager.persistentContainer.viewContext,
-													sectionNameKeyPath: nil,
-													cacheName: "messages")
-		controller.delegate = self
-		do {
-			try controller.performFetch()
-		} catch {
-			fatalError("Failed to fetch entities: \(error)")
-		}
-		return controller
-	}()
-	var channel: DBChannel?
 	private var isKeyboardHidden = true
-	internal var tailsArray: [Bool] = []
 	private var isPlaceholderShown = true
-	private let dataManager: DataManagerProtocol = DataManager.shared
 	
 	// MARK: - UI
 	var tableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -107,6 +66,8 @@ final class ConversationViewController: UIViewController {
 		return button
 	}()
 	
+	var presenter: IConversationMessagesPresenter?
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setup()
@@ -114,21 +75,11 @@ final class ConversationViewController: UIViewController {
 	
 	// MARK: - Actions
 	@objc func addButtonAction(_ sender: UIButton) {
-		let imagePickerVC = ModuleAssembly.createImagePickerModule()
-		if let controller = imagePickerVC as? ImagePickerViewController {
-			controller.presenter?.completion = { imageAndLink in
-				DispatchQueue.main.async {
-					self.messageInputField.becomeFirstResponder()
-					self.messageInputField.text = imageAndLink.link
-				}
-			}
-		}
-		present(imagePickerVC, animated: true, completion: nil)
+		presenter?.addButtonAction()
 	}
 	@objc func sendButtonAction(_ sender: UIButton) {
 		if messageInputField.text.isEmpty || isPlaceholderShown { return }
-		let newMessage = ChannelMessage(content: messageInputField.text, created: Date(), senderId: ownerID, senderName: ownerName)
-		referenceMessages.addDocument(data: newMessage.toDict)
+		presenter?.sendButtonAction(forMessage: messageInputField.text)
 		messageInputField.text = ""
 		resizeTextViewToFitText()
 	}
@@ -141,14 +92,6 @@ final class ConversationViewController: UIViewController {
 		}
 	}
 	
-	init(channel: DBChannel) {
-		self.channel = channel
-		super.init(nibName: nil, bundle: nil)
-	}
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
-	
 	@objc func keyboardWillShow(_ sender: NSNotification) {
 		if isKeyboardHidden {
 			isKeyboardHidden = false
@@ -158,7 +101,7 @@ final class ConversationViewController: UIViewController {
 			let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height - height)
 			view.frame = frame
 		}
-		guard let messages = fetchResultController.fetchedObjects?.count else { return }
+		guard let messages = presenter?.getFetchedMessagesCount() else { return }
 		DispatchQueue.main.async {
 			let cellNumber = messages - 1
 			if cellNumber <= 0 { return }
@@ -166,7 +109,7 @@ final class ConversationViewController: UIViewController {
 			self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
 		}
 	}
-	
+
 	@objc func keyboardWillHide(_ sender: NSNotification) {
 		if !isKeyboardHidden {
 			isKeyboardHidden = true
@@ -175,7 +118,7 @@ final class ConversationViewController: UIViewController {
 			let height = rect.height
 			let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height + height)
 			self.view.frame = frame
-			guard let messages = fetchResultController.fetchedObjects?.count else { return }
+			guard let messages = presenter?.getFetchedMessagesCount() else { return }
 			DispatchQueue.main.async {
 				let cellNumber = messages - 1
 				if cellNumber <= 0 { return }
@@ -190,36 +133,10 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	deinit {
-		listener?.remove()
 		NotificationCenter.default.removeObserver(self)
 	}
 	
 	// MARK: - Private functions
-	func setMessageListener() {
-		listener = referenceMessages.addSnapshotListener { [weak self] querySnapshot, error in
-			if let error = error {
-				print("Error getting documents: \(error)")
-				return
-			}
-			guard let snapshot = querySnapshot else { return }
-			guard let id = self?.channel?.identifier else { return }
-			var messages: [DocumentChange] = []
-			snapshot.documentChanges.forEach { message in
-				if message.type == .added {
-					messages.append(message)
-				}
-				// MARK: - modify message if needed
-				// if message.type == .modified {}
-				// MARK: - remove message if needed
-				// if message.type == .removed {}
-			}
-			self?.dataManager.messagesService.saveMessages(messages, forChannelId: id, completion: {
-				DispatchQueue.main.async {
-					self?.scrollTableViewToEnd()
-				}
-			})
-		}
-	}
 	
 	private func resizeTextViewToFitText() {
 		let size = CGSize(width: messageInputField.frame.width, height: .infinity)
@@ -237,16 +154,9 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	private func setup() {
-		let userProfileHandler = GCDUserProfileInfoHandler()
-		userProfileHandler.loadOwnerInfo { [weak self] in
-			switch $0 {
-			case .success(let owner): self?.ownerName = owner.fullName
-			case .failure: self?.ownerName = Owner().fullName
-			}
-		}
-		
+	
 		view.backgroundColor = NavigationBarAppearance.backgroundColor.uiColor()
-		setMessageListener()
+		
 		setupNavigationBar()
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -290,12 +200,12 @@ final class ConversationViewController: UIViewController {
 		}
 		let titleLabel = UILabel()
 		titleLabel.font = Constants.titleFont
-		titleLabel.text = channel?.name
+		titleLabel.text = presenter?.getChannelName()
 		titleLabel.sizeToFit()
 		titleLabel.textAlignment = .center
 		titleLabel.translatesAutoresizingMaskIntoConstraints = false
 		titleLabel.textColor = NavigationBarAppearance.elementsColor.uiColor()
-		let channelImageView = UserImageView(labelTitle: getChannelTitleForName(channel?.name), labelfontSize: Constants.userImageViewLabelfontSize)
+		let channelImageView = UserImageView(labelTitle: presenter?.getChannelTitle() ?? "", labelfontSize: Constants.userImageViewLabelfontSize)
 		channelImageView.layer.cornerRadius = Constants.userImageViewCornerRadius
 		channelImageView.translatesAutoresizingMaskIntoConstraints = false
 		navigationTitleView.addSubview(channelImageView)
@@ -311,17 +221,6 @@ final class ConversationViewController: UIViewController {
 		channelImageView.widthAnchor.constraint(equalToConstant: Constants.userImageViewWidth).isActive = true
 	}
 	
-	private func getChannelTitleForName(_ name: String?) -> String {
-		var result = ""
-		guard let channelName = name else { return result }
-		if channelName.isEmpty { return result }
-		let arr = channelName.components(separatedBy: " ")
-		result.append(arr[0].first ?? " ")
-		if arr.count > 1 {
-			result.append(arr[1].first ?? " ")
-		}
-		return result.uppercased()
-	}
 	private func setupMessageInputField() {
 		messageInputField.layer.cornerRadius = Constants.messageInputFieldCornerRadius
 		messageInputField.translatesAutoresizingMaskIntoConstraints = false
@@ -376,8 +275,7 @@ final class ConversationViewController: UIViewController {
 	}
 	
 	func scrollTableViewToEnd() {
-		guard let id = channel?.identifier else { return }
-		let count = dataManager.messagesService.messagesCount(forChannel: id)
+		guard let count = presenter?.getMessagesCount() else { return }
 		let cellNumber = count - 1
 		let indexPath = IndexPath(row: cellNumber, section: 0)
 		DispatchQueue.main.async {
@@ -406,5 +304,41 @@ extension ConversationViewController: UITextViewDelegate {
 			isPlaceholderShown = true
 			textView.textColor = .lightGray
 		}
+	}
+}
+
+extension ConversationViewController: IConversationMessagesView {
+	
+	func setInputTextFieldForAddAction(text: String) {
+		messageInputField.becomeFirstResponder()
+		messageInputField.text = text
+	}
+
+	func presentImagePickerVC(viewController: UIViewController) {
+		present(viewController, animated: true, completion: nil)
+	}
+	
+	func tableViewBeginUpdate() {
+		tableView.beginUpdates()
+	}
+	
+	func tableViewEndUpdate() {
+		tableView.endUpdates()
+	}
+	
+	func tableViewInsertRows(at indexPaths: [IndexPath], with animation: UITableView.RowAnimation) {
+		tableView.insertRows(at: indexPaths, with: animation)
+	}
+	
+	func tableViewDeleteRows(at indexPaths: [IndexPath], with animation: UITableView.RowAnimation) {
+		tableView.deleteRows(at: indexPaths, with: animation)
+	}
+	
+	func tableViewReloadRows(at indexPaths: [IndexPath], with animation: UITableView.RowAnimation) {
+		tableView.reloadRows(at: indexPaths, with: animation)
+	}
+	
+	func setViewFrame(_ frame: CGRect) {
+		view.frame = frame
 	}
 }

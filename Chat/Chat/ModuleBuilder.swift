@@ -20,4 +20,12 @@ final class ModuleAssembly: Assembly {
 		view.presenter = presenter
 		return view
 	}
+	
+	static func createConversationMessgesNodule(forChannel channel: DBChannel?) -> UIViewController {
+		let view = ConversationViewController()
+		let networkService = NetworkService(apiKey: APIKey.key)
+		let presenter = ConversationMessagesPresenter(view: view, networkService: networkService, dataManager: DataManager.shared, channel: channel)
+		view.presenter = presenter
+		return view
+	}
 }
