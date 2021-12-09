@@ -54,7 +54,7 @@ class ConversationMessagesPresenter: NSObject, IConversationMessagesPresenter {
 		static let headerDateTitle = "headerDateTitle"
 	}
 	
-	let view: IConversationMessagesView
+	weak var view: IConversationMessagesView?
 	let networkService: NetworkServiceProtocol
 	let dataManager: DataManager
 	let channel: DBChannel?
@@ -112,11 +112,11 @@ class ConversationMessagesPresenter: NSObject, IConversationMessagesPresenter {
 		if let controller = imagePickerVC as? ImagePickerViewController {
 			controller.presenter?.completion = { imageAndLink in
 				DispatchQueue.main.async {
-					self.view.setInputTextFieldForAddAction(text: imageAndLink.link)
+					self.view?.setInputTextFieldForAddAction(text: imageAndLink.link)
 				}
 			}
 		}
-		view.presentImagePickerVC(viewController: imagePickerVC)
+		view?.presentImagePickerVC(viewController: imagePickerVC)
 	}
 	
 	func sendButtonAction(forMessage message: String) {
@@ -144,7 +144,7 @@ class ConversationMessagesPresenter: NSObject, IConversationMessagesPresenter {
 			}
 			self?.dataManager.messagesService.saveMessages(messages, forChannelId: id, completion: {
 				DispatchQueue.main.async {
-					self?.view.scrollTableViewToEnd()
+					self?.view?.scrollTableViewToEnd()
 				}
 			})
 		}
@@ -291,11 +291,11 @@ class ConversationMessagesPresenter: NSObject, IConversationMessagesPresenter {
 
 extension ConversationMessagesPresenter: NSFetchedResultsControllerDelegate {
 	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		view.tableViewBeginUpdate()
+		view?.tableViewBeginUpdate()
 	}
 	
 	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-		view.tableViewEndUpdate()
+		view?.tableViewEndUpdate()
 	}
 	
 	func controller(
@@ -307,18 +307,18 @@ extension ConversationMessagesPresenter: NSFetchedResultsControllerDelegate {
 		switch type {
 		case .insert:
 			guard let newIndexPath = newIndexPath else { return	}
-			view.tableViewInsertRows(at: [newIndexPath], with: .none)
+			view?.tableViewInsertRows(at: [newIndexPath], with: .none)
 		case .delete:
 			guard let indexPath = indexPath else { return	}
-			view.tableViewDeleteRows(at: [indexPath], with: .none)
+			view?.tableViewDeleteRows(at: [indexPath], with: .none)
 		case .update:
 			guard let indexPath = indexPath else { return }
-			view.tableViewReloadRows(at: [indexPath], with: .none)
+			view?.tableViewReloadRows(at: [indexPath], with: .none)
 		case .move:
 			guard let indexPath = indexPath else { return }
 			guard let newIndexPath = newIndexPath else { return	}
-			view.tableViewDeleteRows(at: [indexPath], with: .none)
-			view.tableViewInsertRows(at: [newIndexPath], with: .none)
+			view?.tableViewDeleteRows(at: [indexPath], with: .none)
+			view?.tableViewInsertRows(at: [newIndexPath], with: .none)
 		default: break
 		}
 	}

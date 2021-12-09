@@ -30,7 +30,7 @@ protocol ImagePickerPresenterProtocol: AnyObject {
 
 final class ImagePickerPresenter: ImagePickerPresenterProtocol {
 	
-	let view: ImagePickerViewProtocol
+	weak var view: ImagePickerViewProtocol?
 	var imagesList: [ImageInfo] = []
 	let networkService: NetworkServiceProtocol
 	var completion: ((ImageAndLink) -> Void) = {_ in }
@@ -42,7 +42,7 @@ final class ImagePickerPresenter: ImagePickerPresenterProtocol {
 	}
 	
 	func cancellButtonTapped() {
-		view.cancellButtonTapped()
+		view?.cancellButtonTapped()
 	}
 	
 	private func getImageList() {
@@ -53,7 +53,7 @@ final class ImagePickerPresenter: ImagePickerPresenterProtocol {
 				case .success(let imagesList):
 					if let list = imagesList?.hits {
 						self.imagesList = list
-						self.view.loadImagesListSucsess()
+						self.view?.loadImagesListSucsess()
 					}
 				case .failure(let error):
 					print(error.localizedDescription)
@@ -83,7 +83,7 @@ final class ImagePickerPresenter: ImagePickerPresenterProtocol {
 	func didSelectCell(_ cell: UICollectionViewCell) {
 		if let imageView = cell.backgroundView as? UIImageView, let image = imageView.image {
 			completion(ImageAndLink(image: image, link: imagesList[cell.tag].imageURL ?? ""))
-			view.cancellButtonTapped()
+			view?.cancellButtonTapped()
 		}
 	}
 	
