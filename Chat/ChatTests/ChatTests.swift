@@ -35,7 +35,7 @@ class ChatTests: XCTestCase {
         try super.tearDownWithError()
     }
 	
-	func testImagePickerPresenterNetworkServiceWithFailure() {
+	func testImagePickerPresenterNetworkServiceGetImageListWithFailure() {
 		let view = ImagePickerViewController()
 		let networkServiceStub = NetworkServiceStub()
 		let sut = ImagePickerPresenter(view: view, networkService: networkServiceStub)
@@ -53,12 +53,15 @@ class ChatTests: XCTestCase {
 		wait(for: [promise], timeout: 3)
 		XCTAssertNotNil(error)
 	}
-
-	func testNetworkServiceWithBadApiKeyTimeout3() throws {
-		let networkService = NetworkService(apiKey: "wrongApiKey")
+	
+	func testImagePickerPresenterNetworkServiceGetImageFromURLWithFailure() {
+		let view = ImagePickerViewController()
+		let networkServiceStub = NetworkServiceStub()
+		let sut = ImagePickerPresenter(view: view, networkService: networkServiceStub)
 		let promise = XCTestExpectation()
 		var error: Error?
-		networkService.getImagesList(completion: { result in
+		let url = URL(string: "https://www.apple.com/")!
+		sut.networkService.getImageFromURL(url, completion: { result in
 			switch result {
 			case .failure(let err):
 				error = err
@@ -70,23 +73,41 @@ class ChatTests: XCTestCase {
 		wait(for: [promise], timeout: 3)
 		XCTAssertNotNil(error)
 	}
-	
-	func testNetworkServiceImagesListNotNilWtithCorrectApiKeyTimeout3() throws {
-		let networkService = NetworkService(apiKey: APIKey.key)
-		let promise = XCTestExpectation()
-		var imageList: ImagesList?
-		networkService.getImagesList(completion: { result in
-			switch result {
-			case .success(let imgList):
-				imageList = imgList
-				promise.fulfill()
-			default: break
-			}
-		})
-		
-		wait(for: [promise], timeout: 3)
-		XCTAssertNotNil(imageList)
-	}
+
+	// MARK: - Bad tests
+//	func testNetworkServiceWithBadApiKeyTimeout3() throws {
+//		let networkService = NetworkService(apiKey: "wrongApiKey")
+//		let promise = XCTestExpectation()
+//		var error: Error?
+//		networkService.getImagesList(completion: { result in
+//			switch result {
+//			case .failure(let err):
+//				error = err
+//				promise.fulfill()
+//			default: break
+//			}
+//		})
+//
+//		wait(for: [promise], timeout: 3)
+//		XCTAssertNotNil(error)
+//	}
+//
+//	func testNetworkServiceImagesListNotNilWtithCorrectApiKeyTimeout3() throws {
+//		let networkService = NetworkService(apiKey: APIKey.key)
+//		let promise = XCTestExpectation()
+//		var imageList: ImagesList?
+//		networkService.getImagesList(completion: { result in
+//			switch result {
+//			case .success(let imgList):
+//				imageList = imgList
+//				promise.fulfill()
+//			default: break
+//			}
+//		})
+//
+//		wait(for: [promise], timeout: 3)
+//		XCTAssertNotNil(imageList)
+//	}
 
 //    func testPerformanceExample() throws {
 //        // This is an example of a performance test case.

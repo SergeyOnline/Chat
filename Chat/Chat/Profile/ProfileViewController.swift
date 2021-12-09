@@ -104,7 +104,7 @@ final class ProfileViewController: UIViewController {
 		indicator.translatesAutoresizingMaskIntoConstraints = false
 		return indicator
 	}()
-	internal let userProfileHandlerGCD = GCDUserProfileInfoHandler()
+	internal var userProfileHandlerGCD: UserProfileInfoHandlerProtocol = GCDUserProfileInfoHandler()
 	private var picker = UIImagePickerController()
 	private var isKeyboardHidden = true
 	var completion: (() -> Void) = {}

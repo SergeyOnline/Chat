@@ -56,6 +56,7 @@
 		87BE211627466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BE211527466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift */; };
 		87BE211827466C0C008FF4A6 /* ConversationsListViewController+TableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BE211727466C0C008FF4A6 /* ConversationsListViewController+TableViewDelegate.swift */; };
 		87BE211A27466C21008FF4A6 /* ConversationsListViewController+TableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87BE211927466C21008FF4A6 /* ConversationsListViewController+TableViewDataSource.swift */; };
+		87C0E05F27627E9C00CBF13A /* ProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C0E05E27627E9C00CBF13A /* ProfileTests.swift */; };
 		87C305DF275E5096008E8434 /* ChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C305DE275E5096008E8434 /* ChatTests.swift */; };
 		87C305E6275E50EE008E8434 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C305E5275E50EE008E8434 /* XCTest.framework */; };
 		87C305EE275E51A2008E8434 /* ChatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C305ED275E51A2008E8434 /* ChatUITests.swift */; };
@@ -142,6 +143,7 @@
 		87BE211527466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConversationViewController+TableViewDataSource.swift"; sourceTree = "<group>"; };
 		87BE211727466C0C008FF4A6 /* ConversationsListViewController+TableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConversationsListViewController+TableViewDelegate.swift"; sourceTree = "<group>"; };
 		87BE211927466C21008FF4A6 /* ConversationsListViewController+TableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConversationsListViewController+TableViewDataSource.swift"; sourceTree = "<group>"; };
+		87C0E05E27627E9C00CBF13A /* ProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTests.swift; sourceTree = "<group>"; };
 		87C305DC275E5096008E8434 /* ChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		87C305DE275E5096008E8434 /* ChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTests.swift; sourceTree = "<group>"; };
 		87C305E5275E50EE008E8434 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -401,6 +403,7 @@
 		87C305DD275E5096008E8434 /* ChatTests */ = {
 			isa = PBXGroup;
 			children = (
+				87C0E05E27627E9C00CBF13A /* ProfileTests.swift */,
 				87C305DE275E5096008E8434 /* ChatTests.swift */,
 			);
 			path = ChatTests;
@@ -742,6 +745,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87C0E05F27627E9C00CBF13A /* ProfileTests.swift in Sources */,
 				87C305FC275F6CFF008E8434 /* APIKey.swift in Sources */,
 				87C305DF275E5096008E8434 /* ChatTests.swift in Sources */,
 			);
