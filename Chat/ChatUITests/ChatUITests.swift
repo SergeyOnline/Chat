@@ -20,16 +20,14 @@ class ChatUITests: XCTestCase {
 	
 	func testProfileIsNameTextFieldExist() throws {
 
-//		app.tabBars["Панель вкладок"].buttons["Профиль"].tap()
-		app.tabBars["Tab Bar"].buttons["Profile"].tap()
+		app.tabBars[AccessibilityIdentifiers.TabBarScreen.tabBar].buttons[AccessibilityIdentifiers.TabBarScreen.profileButton].tap()
 		
 		XCTAssertTrue(app.textFields[AccessibilityIdentifiers.ProfileScreen.nameTextField].exists)
 	}
 	
 	func testProfileIsInfoTextViewExist() throws {
 		
-//		app.tabBars["Панель вкладок"].buttons["Профиль"].tap()
-		app.tabBars["Tab Bar"].buttons["Profile"].tap()
+		app.tabBars[AccessibilityIdentifiers.TabBarScreen.tabBar].buttons[AccessibilityIdentifiers.TabBarScreen.profileButton].tap()
 				
 		XCTAssertTrue(app.textViews[AccessibilityIdentifiers.ProfileScreen.infoTextView].exists)
 	}

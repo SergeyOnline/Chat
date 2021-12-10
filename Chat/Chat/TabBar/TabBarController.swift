@@ -59,6 +59,7 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		delegate = self
+		tabBar.accessibilityIdentifier = AccessibilityIdentifiers.TabBarScreen.tabBar
 		conversationsListVC.tabBarItem.title = NSLocalizedString(LocalizeKeys.channelsItemTitle, comment: "")
 		if #available(iOS 13.0, *) {
 			conversationsListVC.tabBarItem.image = UIImage(systemName: Constants.channelsItemImageFill)
@@ -67,6 +68,7 @@ final class TabBarController: UITabBarController {
 		if #available(iOS 13.0, *) {
 			profileVC.tabBarItem.image = UIImage(systemName: Constants.profileItemImage)
 		}
+		profileVC.tabBarItem.accessibilityIdentifier = AccessibilityIdentifiers.TabBarScreen.profileButton
 		
 		self.setViewControllers([conversationsListVC, profileVC], animated: false)
 		self.selectedIndex = 0

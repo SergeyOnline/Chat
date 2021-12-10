@@ -12,4 +12,9 @@ enum AccessibilityIdentifiers {
 		static let infoTextView = "info_text_view"
 		static let nameTextField = "name_text_field"
 	}
+	
+	enum TabBarScreen {
+		static let tabBar = "tabBar"
+		static let profileButton = "profile_button"
+	}
 }
