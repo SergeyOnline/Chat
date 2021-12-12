@@ -29,6 +29,7 @@ platform :ios do
   desc "Build and run tests"
   lane :build_and_run_tests do |options|
     scan(
+      workspace: './Chat/Chat.xcworkspace',
       clean: true
     )
 
