@@ -29,23 +29,46 @@ enum NetworkError: Error {
 
 }
 
+protocol IImageLoaderAPI {
+	var host: String { get }
+	var parameters: String { get }
+}
+
+struct ImageLoaderAPI: IImageLoaderAPI {
+	private let bundle = Bundle.main
+	
+	var host: String {
+		return bundle.pixabayHost
+	}
+	
+	var parameters: String {
+		return bundle.pixabayParameters
+	}
+}
+
 protocol NetworkServiceProtocol {
-	init(apiKey: String)
+	init(imageLoaderAPI: IImageLoaderAPI)
+//	init(apiKey: String)
 	func getImagesList(completion: @escaping (Result<ImagesList?, Error>) -> Void)
 	func getImageFromURL(_ url: URL, completion: @escaping (Result<UIImage?, Error>) -> Void)
 }
 
 final class NetworkService: NetworkServiceProtocol {
 	
-	let apiKey: String
+//	let apiKey: String
+//
+//	required init(apiKey: String) {
+//		self.apiKey = apiKey
+//	}
+	let imageLoaderAPI: IImageLoaderAPI
 	
-	required init(apiKey: String) {
-		self.apiKey = apiKey
+	required init(imageLoaderAPI: IImageLoaderAPI) {
+		self.imageLoaderAPI = imageLoaderAPI
 	}
 	
 	func getImagesList(completion: @escaping (Result<ImagesList?, Error>) -> Void) {
-
-		guard let url = URL(string: "https://pixabay.com/api/?key=\(apiKey)&q=animals&image_type=photo&per_page=102") else {
+		
+		guard let url = URL(string: "https://\(imageLoaderAPI.host)\(imageLoaderAPI.parameters)") else {
 			completion(.failure(NetworkError.badURL))
 			return
 		}

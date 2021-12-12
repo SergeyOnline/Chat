@@ -64,8 +64,8 @@
 		87C305F6275E51B4008E8434 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87C305E5275E50EE008E8434 /* XCTest.framework */; };
 		87C305F8275EBF0D008E8434 /* AccessibilityIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C305F7275EBF0D008E8434 /* AccessibilityIdentifiers.swift */; };
 		87C305F9275ECC09008E8434 /* AccessibilityIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C305F7275EBF0D008E8434 /* AccessibilityIdentifiers.swift */; };
-		87C305FB275F6AB0008E8434 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C305FA275F6AB0008E8434 /* APIKey.swift */; };
-		87C305FC275F6CFF008E8434 /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C305FA275F6AB0008E8434 /* APIKey.swift */; };
+		87C305FB275F6AB0008E8434 /* PixabayAPIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C305FA275F6AB0008E8434 /* PixabayAPIKey.swift */; };
+		87C305FC275F6CFF008E8434 /* PixabayAPIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C305FA275F6AB0008E8434 /* PixabayAPIKey.swift */; };
 		87C5F07927609CE0006870FF /* ConversationMessagesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C5F07827609CE0006870FF /* ConversationMessagesPresenter.swift */; };
 		87E6AAA5272D4D6A00A2DAFD /* Chat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 87E6AAA3272D4D6A00A2DAFD /* Chat.xcdatamodeld */; };
 		B0CBBA62FC92543AE0A2337B /* Pods_ChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C8FC38B1AB5E5892AF2E86B /* Pods_ChatTests.framework */; };
@@ -120,6 +120,7 @@
 		87750AB5271E132E00B84A9C /* UserProfileInfoHandlerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileInfoHandlerProtocol.swift; sourceTree = "<group>"; };
 		8775C7F12724C3A200AA8480 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		8775C7F32724C40200AA8480 /* ChannelMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelMessage.swift; sourceTree = "<group>"; };
+		8775E9822763E0F300D493A4 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		878182BD271C6E89008077DF /* GCDUserProfileInfoHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GCDUserProfileInfoHandler.swift; sourceTree = "<group>"; };
 		8781CC132713191000566A90 /* ThemesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesViewController.swift; sourceTree = "<group>"; };
 		8781CC15271324BE00566A90 /* Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
@@ -151,7 +152,7 @@
 		87C305ED275E51A2008E8434 /* ChatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUITests.swift; sourceTree = "<group>"; };
 		87C305EF275E51A2008E8434 /* ChatUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		87C305F7275EBF0D008E8434 /* AccessibilityIdentifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityIdentifiers.swift; sourceTree = "<group>"; };
-		87C305FA275F6AB0008E8434 /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
+		87C305FA275F6AB0008E8434 /* PixabayAPIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixabayAPIKey.swift; sourceTree = "<group>"; };
 		87C5F07827609CE0006870FF /* ConversationMessagesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationMessagesPresenter.swift; sourceTree = "<group>"; };
 		87E6AAA4272D4D6A00A2DAFD /* Chat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chat.xcdatamodel; sourceTree = "<group>"; };
 		9DD2E2A840343F2A30F4AA76 /* Pods-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.debug.xcconfig"; path = "Target Support Files/Pods-Chat/Pods-Chat.debug.xcconfig"; sourceTree = "<group>"; };
@@ -213,6 +214,7 @@
 		876BABED26FF38E800D5BF31 = {
 			isa = PBXGroup;
 			children = (
+				8775E9822763E0F300D493A4 /* Config.xcconfig */,
 				876BABF826FF38E800D5BF31 /* Chat */,
 				87C305DD275E5096008E8434 /* ChatTests */,
 				87C305EC275E51A1008E8434 /* ChatUITests */,
@@ -324,7 +326,7 @@
 			children = (
 				87B7E5EA2715950300F7F1C3 /* UserDefaultsKeys.swift */,
 				87750AB3271E014900B84A9C /* FileKeys.swift */,
-				87C305FA275F6AB0008E8434 /* APIKey.swift */,
+				87C305FA275F6AB0008E8434 /* PixabayAPIKey.swift */,
 			);
 			path = KeyConstants;
 			sourceTree = "<group>";
@@ -694,7 +696,7 @@
 			files = (
 				878A597B2746DA51006F9158 /* MessagesService.swift in Sources */,
 				8781CC16271324BE00566A90 /* Themes.swift in Sources */,
-				87C305FB275F6AB0008E8434 /* APIKey.swift in Sources */,
+				87C305FB275F6AB0008E8434 /* PixabayAPIKey.swift in Sources */,
 				8775C7F22724C3A200AA8480 /* Channel.swift in Sources */,
 				87A8274E274AE966001750C8 /* ProfileViewController+TextViewDelegate.swift in Sources */,
 				87BE211627466633008FF4A6 /* ConversationViewController+TableViewDataSource.swift in Sources */,
@@ -746,7 +748,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				87C0E05F27627E9C00CBF13A /* ProfileTests.swift in Sources */,
-				87C305FC275F6CFF008E8434 /* APIKey.swift in Sources */,
+				87C305FC275F6CFF008E8434 /* PixabayAPIKey.swift in Sources */,
 				87C305DF275E5096008E8434 /* ChatTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -816,6 +818,7 @@
 /* Begin XCBuildConfiguration section */
 		876BAC0826FF38EB00D5BF31 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8775E9822763E0F300D493A4 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -870,6 +873,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -925,6 +929,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

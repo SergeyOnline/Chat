@@ -14,7 +14,11 @@ class NetworkServiceStub: NetworkServiceProtocol {
 		case someError
 	}
 	
-	required init(apiKey: String = "") {}
+	private let imageLoaderAPI: IImageLoaderAPI
+	
+	required init(imageLoaderAPI: IImageLoaderAPI) {
+		self.imageLoaderAPI = imageLoaderAPI
+	}
 	
 	func getImagesList(completion: @escaping (Result<ImagesList?, Error>) -> Void) {
 		completion(.failure(TestError.someError))
@@ -37,7 +41,7 @@ class ChatTests: XCTestCase {
 	
 	func testImagePickerPresenterNetworkServiceGetImageListWithFailure() {
 		let view = ImagePickerViewController()
-		let networkServiceStub = NetworkServiceStub()
+		let networkServiceStub = NetworkServiceStub(imageLoaderAPI: ImageLoaderAPI())
 		let sut = ImagePickerPresenter(view: view, networkService: networkServiceStub)
 		let promise = XCTestExpectation()
 		var error: Error?
@@ -56,7 +60,7 @@ class ChatTests: XCTestCase {
 	
 	func testImagePickerPresenterNetworkServiceGetImageFromURLWithFailure() {
 		let view = ImagePickerViewController()
-		let networkServiceStub = NetworkServiceStub()
+		let networkServiceStub = NetworkServiceStub(imageLoaderAPI: ImageLoaderAPI())
 		let sut = ImagePickerPresenter(view: view, networkService: networkServiceStub)
 		let promise = XCTestExpectation()
 		var error: Error?

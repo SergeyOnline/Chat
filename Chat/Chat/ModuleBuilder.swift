@@ -15,7 +15,8 @@ protocol Assembly {
 final class ModuleAssembly: Assembly {
 	static func createImagePickerModule() -> UIViewController {
 		let view = ImagePickerViewController()
-		let networkService = NetworkService(apiKey: APIKey.key)
+		let networkService = NetworkService(imageLoaderAPI: ImageLoaderAPI())
+//		let networkService = NetworkService(apiKey: APIKey.key)
 		let presenter = ImagePickerPresenter(view: view, networkService: networkService)
 		view.presenter = presenter
 		return view
@@ -23,7 +24,8 @@ final class ModuleAssembly: Assembly {
 	
 	static func createConversationMessgesNodule(forChannel channel: DBChannel?) -> UIViewController {
 		let view = ConversationViewController()
-		let networkService = NetworkService(apiKey: APIKey.key)
+		let networkService = NetworkService(imageLoaderAPI: ImageLoaderAPI())
+//		let networkService = NetworkService(apiKey: APIKey.key)
 		let presenter = ConversationMessagesPresenter(view: view, networkService: networkService, dataManager: DataManager.shared, channel: channel)
 		view.presenter = presenter
 		return view
