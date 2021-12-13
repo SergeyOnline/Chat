@@ -26,13 +26,30 @@ default_platform(:ios)
 
 platform :ios do
 
-  desc "Build and run tests"
-  lane :build_and_run_tests do |options|
+  desc "Build for testing"
+  lane :build_for_testing do |options|
     scan(
       workspace: './Chat/Chat.xcworkspace',
+      build_for_testing: true,
       clean: true
     )
-
-    puts("HERE!")
+    puts("Build for testing!")
   end
+
+  desc "Run tests"
+  lane :run_tests do |options|
+    scan(
+      workspace: './Chat/Chat.xcworkspace',
+      test_without_building: true
+    )
+    puts("Run tests!")
+  end
+
+  desc "Build and test"
+  lane :build_and_test do |options|
+    build_for_testing
+    run_tests
+    puts("Build and test!")
+  end
+
 end
