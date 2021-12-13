@@ -9,8 +9,7 @@ jobs:
       env:
         ImageOS: macos11
       with:
-        ruby-version: 2.6
+        ruby-version: 2.6.8
         bundler-cache: true
-        working-directory: /Users/sergej/actions-runner/_work
     - name: Run
       run: bundle exec fastlane ios build_and_test
