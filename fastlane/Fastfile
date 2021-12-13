@@ -31,7 +31,7 @@ platform :ios do
     scan(
       workspace: './Chat/Chat.xcworkspace',
       #clean: true,
-      devices: ['iPhone 11 (15.0)'],
+      devices: ['iPhone 11'],
       build_for_testing: true,
     )
     puts("Build for testing!")
