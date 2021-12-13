@@ -5,11 +5,11 @@ jobs:
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
-    - uses: ruby/setup-ruby@v2
+    - uses: ruby/setup-ruby@v1
       env:
-        ImageOS: macos11
+        ImageOS: macos-latest
       with:
-        ruby-version: 2.6.9
+        ruby-version: 2.6
         bundler-cache: true
     - name: Run
       run: bundle exec fastlane ios build_and_test
