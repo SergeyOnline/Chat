@@ -36,19 +36,19 @@ platform :ios do
     puts("Build for testing!")
   end
 
-  desc "Run tests"
-  lane :run_tests do |options|
+  desc "Run all tests"
+  lane :run_all_tests do |options|
     scan(
       workspace: './Chat/Chat.xcworkspace',
       test_without_building: true
     )
-    puts("Run tests!")
+    puts("Run all tests!")
   end
 
   desc "Build and test"
   lane :build_and_test do |options|
     build_for_testing
-    run_tests
+    run_all_tests
     puts("Build and test!")
   end
 
