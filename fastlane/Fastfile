@@ -30,8 +30,8 @@ platform :ios do
   lane :build_for_testing do |options|
     scan(
       workspace: './Chat/Chat.xcworkspace',
+      clean: true,
       build_for_testing: true,
-      clean: true
     )
     puts("Build for testing!")
   end
