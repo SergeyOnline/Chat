@@ -30,7 +30,7 @@ platform :ios do
   lane :build_for_testing do |options|
     scan(
       workspace: './Chat/Chat.xcworkspace',
-      clean: true,
+      #clean: true,
       devices: ['iPhone 11 (15.0)'],
       build_for_testing: true,
     )
