@@ -6,10 +6,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
-      #env:
-        #ImageOS: macos11
+      env:
+        ImageOS: macos11
       with:
-        ruby-version: 2.6
+        ruby-version: 2.6.9
         bundler-cache: true
     - name: Run
       run: bundle exec fastlane ios build_and_test
