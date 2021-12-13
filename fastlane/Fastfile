@@ -30,8 +30,6 @@ platform :ios do
   lane :build_for_testing do |options|
     scan(
       workspace: './Chat/Chat.xcworkspace',
-      destination: 'platform=iOS Simulator,name=iPhone 11,OS=15.0',
-      clean: true,
       build_for_testing: true,
     )
     puts("Build for testing!")
