@@ -107,7 +107,7 @@ class ProfileTests: XCTestCase {
 		}
 		
 		wait(for: [promise], timeout: 3)
-		XCTAssertNotNil(testImage)
+		XCTAssertNil(testImage)
 	}
 
 //    func testPerformanceExample() throws {
