@@ -12,4 +12,4 @@ jobs:
         ruby-version: 2.6.8
         bundler-cache: true
     - name: Run
-      run: bundle exec fastlane ios build_and_test
+      run: bundle exec fastlane build_and_test
