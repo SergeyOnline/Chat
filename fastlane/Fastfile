@@ -1,55 +1,25 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
+desc "Build for testing"
+lane :build_for_testing do |options|
+  scan(
+    workspace: './Chat/Chat.xcworkspace',
+    clean: true,
+    build_for_testing: true,
+  )
+  puts("Build for testing!")
+end
 
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+desc "Run all tests"
+lane :run_all_tests do |options|
+  scan(
+    workspace: './Chat/Chat.xcworkspace',
+    test_without_building: true
+  )
+  puts("Run all tests!")
+end
 
-#default_platform(:ios)
-
-#platform :ios do
-#  desc "Description of what the lane does"
-#  lane :custom_lane do
-#    # add actions here: https://docs.fastlane.tools/actions
-#  end
-#end
-
-#default_platform(:ios)
-
-#platform :ios do
-
-  desc "Build for testing"
-  lane :build_for_testing do |options|
-    scan(
-      workspace: './Chat/Chat.xcworkspace',
-      clean: true,
-      build_for_testing: true,
-    )
-    puts("Build for testing!")
-  end
-
-  desc "Run all tests"
-  lane :run_all_tests do |options|
-    scan(
-      workspace: './Chat/Chat.xcworkspace',
-      test_without_building: true
-    )
-    puts("Run all tests!")
-  end
-
-  desc "Build and test"
-  lane :build_and_test do |options|
-    build_for_testing
-    run_all_tests
-    puts("Build and test!")
-  end
-
-#end
+desc "Build and test"
+lane :build_and_test do |options|
+  build_for_testing
+  run_all_tests
+  puts("Build and test!")
+end
