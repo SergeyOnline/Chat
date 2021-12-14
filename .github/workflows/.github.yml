@@ -17,8 +17,6 @@ jobs:
   notify:
     name: Discord Notification
     runs-on: self-hosted
-    needs:
-      - build
     steps:
       - name: Test Success
         uses: rjstone/discord-webhook-notify@v1
