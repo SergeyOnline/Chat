@@ -13,22 +13,18 @@ jobs:
         bundler-cache: true
     - name: Run
       run: bundle exec fastlane build_and_test
-
-  notify:
-    name: Discord Notification
-    runs-on: self-hosted
-    steps:
-      - name: Test Success
-        uses: rjstone/discord-webhook-notify@v1
-        if: success()
-        with:
-          severity: info
-          details: Test Succeeded!
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Test Failure
-        uses: rjstone/discord-webhook-notify@v1
-        if: failure()
-        with:
-          severity: error
-          details: Test Failure!
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+    - name: Test Success
+      uses: rjstone/discord-webhook-notify@v1
+      if: success()
+      with:
+        severity: info
+        details: Test Succeeded!
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+    - name: Test Failure
+      uses: rjstone/discord-webhook-notify@v1
+      if: failure()
+      with:
+        severity: error
+        details: Test Failure!
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      
