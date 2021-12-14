@@ -31,8 +31,6 @@ platform :ios do
     scan(
       workspace: './Chat/Chat.xcworkspace',
       #clean: true,
-      #devices: ['iPhone 8 Plus (13.0)'],
-      derived_data_path: "./Chat/DerivedData",
       build_for_testing: true,
     )
     puts("Build for testing!")
@@ -42,7 +40,6 @@ platform :ios do
   lane :run_all_tests do |options|
     scan(
       workspace: './Chat/Chat.xcworkspace',
-      derived_data_path: "./Chat/DerivedData",
       test_without_building: true
     )
     puts("Run all tests!")
