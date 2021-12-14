@@ -25,4 +25,4 @@ jobs:
         uses: rjstone/discord-webhook-notify@v1
         with:
           severity: info
-          webhookUrl: ${{ https://discord.com/api/webhooks/916363769377095710/poSDRAcgM85utckmM9Ke603HkZXQCjZsNV7sH-uJ5e8TmlMlJhIIimeDuZX8JeDooLPg/github }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
