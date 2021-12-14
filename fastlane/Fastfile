@@ -31,6 +31,7 @@
     scan(
       workspace: './Chat/Chat.xcworkspace',
       #clean: true,
+      invocation_based_tests: true,
       build_for_testing: true,
     )
     puts("Build for testing!")
@@ -40,6 +41,7 @@
   lane :run_all_tests do |options|
     scan(
       workspace: './Chat/Chat.xcworkspace',
+      invocation_based_tests: true,
       test_without_building: true
     )
     puts("Run all tests!")
