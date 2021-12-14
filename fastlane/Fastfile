@@ -32,7 +32,7 @@ platform :ios do
       workspace: './Chat/Chat.xcworkspace',
       #clean: true,
       #devices: ['iPhone 12'],
-      #destination: 'platform:iOS Simulator, id:07D03460-C2E7-4500-B5B9-1BDADBADC0B4, OS:15.0, name:iPhone 12',
+      destination: 'platform:iOS Simulator, OS:13.0, name:iPhone 8',
       build_for_testing: true,
     )
     puts("Build for testing!")
