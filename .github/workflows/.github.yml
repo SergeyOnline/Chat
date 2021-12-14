@@ -13,3 +13,16 @@ jobs:
         bundler-cache: true
     - name: Run
       run: bundle exec fastlane build_and_test
+
+  notify:
+    name: Discord Notification
+    runs-on: self-hosted
+    needs:
+      - build
+    if: ${{ always() }}
+    steps:
+      - name: Notify
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: info
+          webhookUrl: ${{ https://discord.com/api/webhooks/916363769377095710/poSDRAcgM85utckmM9Ke603HkZXQCjZsNV7sH-uJ5e8TmlMlJhIIimeDuZX8JeDooLPg/github }}
