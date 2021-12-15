@@ -8,6 +8,8 @@ jobs:
     - uses: ruby/setup-ruby@v1
       env:
         ImageOS: macos11
+        PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
       with:
         ruby-version: 2.6.8
         bundler-cache: true
