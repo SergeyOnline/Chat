@@ -7,7 +7,7 @@
 */
 
 // MARK: - MainViewController
-"navigationItemTitle" = "Tinkoff Chat";
+"navigationItemTitle" = "Chat";
 
 // MARK: - ProfileViewController
 "profileLabel" = "My Profile";
@@ -44,6 +44,7 @@
 "theme1ButtonTitle" = "Light";
 "theme2ButtonTitle" = "Dark";
 "theme3ButtonTitle" = "Dark blue";
+"theme4ButtonTitle" = "🦄";
 
 // MARK: - TabBarController
 "profile" = "Profile";

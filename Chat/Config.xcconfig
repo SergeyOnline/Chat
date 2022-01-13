@@ -1,0 +1,12 @@
+//
+//  Config.xcconfig
+//  Chat
+//
+//  Created by Сергей on 10.12.2021.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+PIXABAY_HOST = pixabay.com/api/
+PIXABAY_PARAMETERS = ?key=$(PIXABAY_API_KEY)&q=animals&image_type=photo&per_page=102

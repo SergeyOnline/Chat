@@ -38,3 +38,17 @@ extension String {
 		return count
 	}
 }
+
+extension Bundle {
+	var pixabayApiKey: String {
+		return object(forInfoDictionaryKey: "Pixabay API key") as? String ?? ""
+	}
+	
+	var pixabayHost: String {
+		return object(forInfoDictionaryKey: "Pixabay host") as? String ?? ""
+	}
+	
+	var pixabayParameters: String {
+		return object(forInfoDictionaryKey: "Pixabay parameters") as? String ?? ""
+	}
+}

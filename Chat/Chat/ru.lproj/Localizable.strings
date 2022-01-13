@@ -7,7 +7,7 @@
 */
 
 // MARK: - MainViewController
-"navigationItemTitle" = "Тинькофф Чат";
+"navigationItemTitle" = "Чат";
 
 // MARK:  - ProfileViewController
 "profileLabel" = "Мой Профиль";
@@ -44,6 +44,7 @@
 "theme1ButtonTitle" = "Светлая";
 "theme2ButtonTitle" = "Темная";
 "theme3ButtonTitle" = "Темно-синяя";
+"theme4ButtonTitle" = "🦄";
 
 // MARK: - TabBarController
 "profile" = "Профиль";

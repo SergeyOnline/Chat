@@ -92,6 +92,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			Theme.theme = .dark
 		case 3:
 			Theme.theme = .darkBlue
+		case 4:
+			Theme.theme = .pink
 		default:
 			break
 		}

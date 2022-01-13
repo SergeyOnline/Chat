@@ -14,9 +14,10 @@ extension ConversationsListViewController: UITableViewDelegate {
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		var conversationVC: ConversationViewController
 		let channel = fetchResultController.object(at: indexPath)
-		conversationVC = ConversationViewController(channel: channel)
+//		var conversationVC: ConversationViewController
+//		conversationVC = ConversationViewController(channel: channel)
+		let conversationVC = ModuleAssembly.createConversationMessgesNodule(forChannel: channel)
 		self.navigationController?.pushViewController(conversationVC, animated: true)
 	}
 	

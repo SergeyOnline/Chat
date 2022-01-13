@@ -31,15 +31,14 @@ final class ProfileViewController: UIViewController {
 		static let keyboardNotificatoinKey = "UIKeyboardFrameEndUserInfoKey"
 	}
 	internal enum SaveButtonStatus {
-		case enable
-		case disable
+		case enable, disable
 	}
 	
 	// MARK: - Model
 	var owner = Owner()
 	
 	// MARK: - UI
-	private var imageView: UserImageView
+	internal var imageView: UserImageView
 	internal var infoTextView: UITextView = {
 		let textView = UITextView()
 		textView.isScrollEnabled = false
@@ -47,6 +46,7 @@ final class ProfileViewController: UIViewController {
 		textView.font = UIFont.systemFont(ofSize: 16)
 		textView.translatesAutoresizingMaskIntoConstraints = false
 		textView.isUserInteractionEnabled = false
+		textView.accessibilityIdentifier = AccessibilityIdentifiers.ProfileScreen.infoTextView
 		return textView
 	}()
 	lazy var editButton: UIButton = {
@@ -89,6 +89,7 @@ final class ProfileViewController: UIViewController {
 															 attributes: [NSAttributedString.Key.foregroundColor: UIColor.systemGray])
 		textField.isEnabled = false
 		textField.addTarget(self, action: #selector(nameTextFieldEditing(_:)), for: .editingChanged)
+		textField.accessibilityIdentifier = AccessibilityIdentifiers.ProfileScreen.nameTextField
 		return textField
 	}()
 	private var profileLabel = ProfileLabel(text: NSLocalizedString(LocalizeKeys.profileLabel, comment: ""), font: UIFont.boldSystemFont(ofSize: 26))
@@ -103,10 +104,49 @@ final class ProfileViewController: UIViewController {
 		indicator.translatesAutoresizingMaskIntoConstraints = false
 		return indicator
 	}()
-	private let userProfileHandlerGCD = GCDUserProfileInfoHandler()
+	internal var userProfileHandlerGCD: UserProfileInfoHandlerProtocol = GCDUserProfileInfoHandler()
 	private var picker = UIImagePickerController()
 	private var isKeyboardHidden = true
 	var completion: (() -> Void) = {}
+	private var isEditImageButtonAnimated = false {
+		didSet {
+			if isEditImageButtonAnimated {
+				editImageButton.layer.removeAllAnimations()
+				let center = editImageButton.layer.position
+				let moveXPosition = CAKeyframeAnimation(keyPath: "position.x")
+				moveXPosition.values = [center.x, center.x - 5, center.x, center.x + 5,	center.x]
+				moveXPosition.keyTimes = [0, 0.25, 0.5, 0.75, 1.0]
+				let moveYPosition = CAKeyframeAnimation(keyPath: "position.y")
+				moveYPosition.values = [center.y, center.y - 5,	center.y, center.y + 5,	center.y]
+				moveYPosition.keyTimes = [0, 0.25, 0.5, 0.75, 1.0]
+				let rotate = CAKeyframeAnimation(keyPath: "transform.rotation")
+				rotate.values = [0, Double.pi / 10, 0, -Double.pi / 10, 0]
+				rotate.keyTimes = [0, 0.25, 0.5, 0.75, 1.0]
+				rotate.duration = 0.1
+				rotate.autoreverses = true
+				let group = CAAnimationGroup()
+				group.animations = [moveXPosition, moveYPosition, rotate]
+				group.duration = 0.3
+				group.repeatCount = .infinity
+				editImageButton.layer.add(group, forKey: "animation")
+			} else {
+				guard let layer = editImageButton.layer.presentation() else { return }
+				editImageButton.layer.removeAnimation(forKey: "animation")
+				let center = editImageButton.center
+				let position = CAKeyframeAnimation(keyPath: "position")
+				position.values = [layer.position, center]
+				position.keyTimes = [0, 1.0]
+				let rotate = CAKeyframeAnimation(keyPath: "transform.rotation")
+				rotate.values = [layer.value(forKey: "transform.rotation") ?? 0, 0]
+				rotate.keyTimes = [0, 1.0]
+				let group = CAAnimationGroup()
+				group.animations = [position, rotate]
+				group.duration = 0.3
+				group.repeatCount = 1.0
+				editImageButton.layer.add(group, forKey: "stopAnimation")
+			}
+		}
+	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -123,9 +163,7 @@ final class ProfileViewController: UIViewController {
 		infoTextView.text = owner.info
 		super.init(nibName: nil, bundle: nil)
 	}
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 	
 	// MARK: - Actions
 	@objc func editButtonAction(_ sender: UIButton) {
@@ -134,31 +172,32 @@ final class ProfileViewController: UIViewController {
 		showSaveButtons()
 	}
 	@objc func editImageButtonAction(_ sender: UIButton) {
+		isEditImageButtonAnimated = true
 		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 		let cameraAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.cameraAction, comment: ""), style: .default) { _ in
+			self.isEditImageButtonAnimated = false
 			self.openCamera()
 		}
 		let gallaryAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.gallaryAction, comment: ""), style: .default) { _ in
+			self.isEditImageButtonAnimated = false
 			self.openGallary()
 		}
 		let deleteAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.deleteAction, comment: ""), style: .destructive) { _ in
 			self.imageView.image = nil
+			self.isEditImageButtonAnimated = false
 			self.userProfileHandlerGCD.saveOwnerImage(image: nil) { _ in
-				DispatchQueue.main.async {
-					self.completion()
-				}
+				DispatchQueue.main.async { self.completion() }
 			}
 		}
 		let downloadAction = UIAlertAction(title: NSLocalizedString(LocalizeKeys.downloadAction, comment: ""), style: .default) { _ in
+			self.isEditImageButtonAnimated = false
 			let avatarVC = ModuleAssembly.createImagePickerModule()
 			if let avatarController = avatarVC as? ImagePickerViewController {
 				avatarController.presenter?.completion = { imageAndLink in
 					self.imageView.image = imageAndLink.image
 					self.imageView.contentMode = UIImageView.ContentMode.scaleAspectFill
 					self.userProfileHandlerGCD.saveOwnerImage(image: imageAndLink.image) { _ in
-						DispatchQueue.main.async {
-							self.completion()
-						}
+						DispatchQueue.main.async { self.completion() }
 					}
 				}
 			}
@@ -180,6 +219,7 @@ final class ProfileViewController: UIViewController {
 	}
 
 	@objc func alertTapGestureHandler(_ sender: UITapGestureRecognizer) {
+		isEditImageButtonAnimated = false
 		dismiss(animated: true, completion: nil)
 	}
 	
@@ -214,11 +254,7 @@ final class ProfileViewController: UIViewController {
 	}
 	@objc func nameTextFieldEditing(_ sender: UITextField) {
 		guard let text = sender.text else { return }
-		if text.isEmpty {
-			changeSaveButtonsStatusTo(.disable)
-		} else {
-			changeSaveButtonsStatusTo(.enable)
-		}
+		changeSaveButtonsStatusTo(text.isEmpty ? .disable : .enable)
 		if (sender.text?.count ?? 0) > 28 || (text.numberOfWords == 2 && text.last == " ") {
 			sender.text?.removeLast()
 		}
@@ -273,9 +309,7 @@ final class ProfileViewController: UIViewController {
 		if UIImagePickerController .isSourceTypeAvailable(.camera) {
 			picker.sourceType = .camera
 			present(picker, animated: true, completion: nil)
-		} else {
-			print("No access to the camera")
-		}
+		} else { print("No access to the camera") }
 	}
 	private func openGallary() {
 		picker.sourceType = .photoLibrary
@@ -298,15 +332,12 @@ final class ProfileViewController: UIViewController {
 		}
 		userProfileHandlerGCD.loadOwnerImage { [weak self] in
 			switch $0 {
-			case .success(let image):
-				self?.imageView.image = image
-			case .failure:
-				break
+			case .success(let image): self?.imageView.image = image
+			case .failure: break
 			}
 		}
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_ :)), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_ :)), name: UIResponder.keyboardWillHideNotification, object: nil)
-		
 		headerView.addSubview(profileLabel)
 		profileLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 16).isActive = true
 		profileLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor, constant: 20).isActive = true
@@ -465,26 +496,5 @@ final class ProfileViewController: UIViewController {
 	
 	deinit {
 		NotificationCenter.default.removeObserver(self)
-	}
-}
-
-extension ProfileViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-	// MARK: - Image Picker Controller Delegate
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-		picker.dismiss(animated: true, completion: nil)
-		imageView.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-		guard let image = imageView.image else { return }
-		userProfileHandlerGCD.saveOwnerImage(image: image) { error in
-			DispatchQueue.main.async {
-				if let error = error {
-					print("ERROR: \(error.localizedDescription)")
-				} else {
-					self.completion()
-				}
-			}
-		}
-	}
-	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		picker.dismiss(animated: true, completion: nil)
 	}
 }

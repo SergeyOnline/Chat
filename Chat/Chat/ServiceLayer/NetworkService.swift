@@ -17,7 +17,7 @@ enum NetworkError: Error {
 	var localizedDescription: String {
 		switch self {
 		case .badURL:
-			return "Иad URL address"
+			return "Bad URL address"
 		case .dataError:
 			return "Error loading data"
 		case .badImage:
@@ -29,20 +29,46 @@ enum NetworkError: Error {
 
 }
 
+protocol IImageLoaderAPI {
+	var host: String { get }
+	var parameters: String { get }
+}
+
+struct ImageLoaderAPI: IImageLoaderAPI {
+	private let bundle = Bundle.main
+	
+	var host: String {
+		return bundle.pixabayHost
+	}
+	
+	var parameters: String {
+		return bundle.pixabayParameters
+	}
+}
+
 protocol NetworkServiceProtocol {
+	init(imageLoaderAPI: IImageLoaderAPI)
+//	init(apiKey: String)
 	func getImagesList(completion: @escaping (Result<ImagesList?, Error>) -> Void)
 	func getImageFromURL(_ url: URL, completion: @escaping (Result<UIImage?, Error>) -> Void)
 }
 
 final class NetworkService: NetworkServiceProtocol {
 	
-	private enum Constants {
-		static let keyApi = "24422532-c10439d091c29ea900ea93a03"
+//	let apiKey: String
+//
+//	required init(apiKey: String) {
+//		self.apiKey = apiKey
+//	}
+	let imageLoaderAPI: IImageLoaderAPI
+	
+	required init(imageLoaderAPI: IImageLoaderAPI) {
+		self.imageLoaderAPI = imageLoaderAPI
 	}
 	
 	func getImagesList(completion: @escaping (Result<ImagesList?, Error>) -> Void) {
-
-		guard let url = URL(string: "https://pixabay.com/api/?key=\(Constants.keyApi)&q=animals&image_type=photo&per_page=102") else {
+		
+		guard let url = URL(string: "https://\(imageLoaderAPI.host)\(imageLoaderAPI.parameters)") else {
 			completion(.failure(NetworkError.badURL))
 			return
 		}

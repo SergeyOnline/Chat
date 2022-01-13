@@ -28,24 +28,6 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			guard let value = newValue else { return }
 			messageLabel.text = value
 			nameLabel.textColor = getColorFromName(nameLabel.text)
-			let text = value.lowercased()
-			if !(text.hasPrefix("https://") || text.hasPrefix("http://") || text.hasSuffix(".jpg") || text.hasSuffix(".png")) {
-				return
-			}
-			
-			guard let url = URL(string: value), UIApplication.shared.canOpenURL(url) else { return }
-			networkService.getImageFromURL(url) { result in
-				switch result {
-				case .success(let image):
-					DispatchQueue.main.async {
-						self.messageImageView.isHidden = false
-						self.messageImageView.image = image
-						self.messageLabel.isHidden = true
-					}
-				case .failure: return
-				}
-				
-			}
 		}
 	}
 	
@@ -54,8 +36,6 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 			dateLabel.text = date
 		}
 	}
-	
-	private let networkService = NetworkService()
 	
 	var messageLabel: UILabel = {
 		let label = UILabel()
@@ -109,7 +89,7 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 	private var tailImageView: UIImageView
 	private var wrapperMessageLabelStack = CustomStackView()
 	private var messageAndDateStack = CustomStackView(axis: .horizontal, distribution: .equalSpacing, spacing: 5)
-		
+	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		if #available(iOS 14.0, *) {
 			let image = UIImage(systemName: Constants.tailImageViewName)
@@ -132,6 +112,12 @@ final class MessageCell: UITableViewCell, MessageCellConfiguration {
 		messageLabel.isHidden = false
 		tailImageView.removeFromSuperview()
 		wrapperMessageLabelStack.removeFromSuperview()
+	}
+	
+	func setupCellForImage(_ image: UIImage?) {
+		self.messageImageView.isHidden = false
+		self.messageImageView.image = image
+		self.messageLabel.isHidden = true
 	}
 	
 	// MARK: - Private functions
