@@ -221,13 +221,14 @@ class ThemesViewController: UIViewController {
 	}
 	
 	private func createAndAnimateImageView(location: CGPoint) {
-		guard let image = UIImage(named: "emblem") else { return }
+		guard let image = UIImage(named: "unicorn") else { return }
 		let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+		imageView.tintColor = .yellow
 		imageView.layer.cornerRadius = 15
 		imageView.clipsToBounds = true
 		imageView.contentMode = .scaleAspectFit
-		imageView.layer.borderWidth = 0.5
-		imageView.layer.borderColor = UIColor.black.cgColor
+//		imageView.layer.borderWidth = 0.5
+//		imageView.layer.borderColor = UIColor.black.cgColor
 		imageView.image = image
 		imageView.center = location
 		view.addSubview(imageView)

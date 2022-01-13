@@ -7,7 +7,7 @@
 */
 
 // MARK: - MainViewController
-"navigationItemTitle" = "Тинькофф Чат";
+"navigationItemTitle" = "Чат";
 
 // MARK:  - ProfileViewController
 "profileLabel" = "Мой Профиль";

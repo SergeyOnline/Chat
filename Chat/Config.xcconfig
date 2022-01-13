@@ -9,4 +9,6 @@
 // https://help.apple.com/xcode/#/dev745c5c974
 
 PIXABAY_HOST = pixabay.com/api/
+PIXABAY_API_KEY = 24422532-c10439d091c29ea900ea93a03
 PIXABAY_PARAMETERS = ?key=$(PIXABAY_API_KEY)&q=animals&image_type=photo&per_page=102
+FIREBASE_API_KEY = AIzaSyBEoPdTs8OjqKTtii55YUkM3vsz_cVa4M4
